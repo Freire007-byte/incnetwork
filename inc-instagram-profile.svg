@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a0b18"/>
+      <stop offset="100%" stop-color="#06070f"/>
+    </linearGradient>
+    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7c6dff"/>
+      <stop offset="50%" stop-color="#4da8ff"/>
+      <stop offset="100%" stop-color="#00e5ff"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#7c6dff" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#7c6dff" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="blur">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="soft">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="500" height="500" fill="url(#bg)"/>
+
+  <!-- Ambient glow -->
+  <circle cx="250" cy="250" r="200" fill="url(#glow)"/>
+
+  <!-- Outer ring -->
+  <circle cx="250" cy="250" r="230" fill="none" stroke="url(#g)" stroke-width="3" opacity="0.6"/>
+  <circle cx="250" cy="250" r="218" fill="none" stroke="url(#g)" stroke-width="0.8" opacity="0.2"/>
+
+  <!-- ◈ Diamond — outer -->
+  <polygon points="250,100 390,250 250,400 110,250"
+           fill="none" stroke="url(#g)" stroke-width="4"
+           filter="url(#blur)"/>
+
+  <!-- ◈ Diamond — inner outline -->
+  <polygon points="250,140 355,250 250,360 145,250"
+           fill="url(#g)" opacity="0.06"/>
+  <polygon points="250,142 353,250 250,358 147,250"
+           fill="none" stroke="url(#g)" stroke-width="2" opacity="0.5"/>
+
+  <!-- Center dot -->
+  <circle cx="250" cy="250" r="22" fill="url(#g)" filter="url(#blur)"/>
+  <circle cx="250" cy="250" r="10" fill="#fff" opacity="0.95"/>
+
+  <!-- INC text -->
+  <text x="250" y="458"
+        text-anchor="middle"
+        font-family="'Courier New', monospace"
+        font-size="38" font-weight="900" letter-spacing="16"
+        fill="url(#g)" filter="url(#soft)">INC</text>
+
+  <!-- NETWORK text -->
+  <text x="250" y="482"
+        text-anchor="middle"
+        font-family="'Courier New', monospace"
+        font-size="13" font-weight="600" letter-spacing="8"
+        fill="url(#g)" opacity="0.5">NETWORK</text>
+</svg>
