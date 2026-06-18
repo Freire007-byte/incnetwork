@@ -2,7 +2,7 @@
 # CACA PUMP -- Setup via Netlify
 # Rodar na VPS: curl -s https://incnetwork.netlify.app/setup.sh | bash
 
-BASE="https://incnetwork.netlify.app"
+BASE="https://raw.githubusercontent.com/Freire007-byte/incnetwork/main"
 PYTHON="/root/inc-radar/.venv/bin/python"
 if [ ! -f "$PYTHON" ]; then PYTHON=$(which python3); fi
 
