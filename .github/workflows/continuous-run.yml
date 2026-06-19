@@ -44,7 +44,7 @@ jobs:
           python-version: '3.11'
 
       - name: Instalar dependencias
-        run: pip install requests --quiet
+        run: pip install requests solders base58 --quiet
 
       - name: Criar diretorios e restaurar seed
         run: |
@@ -100,6 +100,10 @@ jobs:
           "
 
       - name: Iniciar agentes e atualizar dashboard a cada 30min
+        env:
+          WALLET_1_KEY: ${{ secrets.WALLET_1_KEY }}
+          WALLET_2_KEY: ${{ secrets.WALLET_2_KEY }}
+          WALLET_3_KEY: ${{ secrets.WALLET_3_KEY }}
         run: |
           export DB_PATH=data/caca_pump.db
 
@@ -121,6 +125,15 @@ jobs:
           python3 agents/patterns.py >> logs/patterns.log 2>&1 &
           echo "patterns PID=$!"
 
+          # Distribuidor: monitora W1 e divide SOL entre as 3 carteiras
+          python3 agents/distributor.py >> logs/distributor.log 2>&1 &
+          echo "distributor PID=$!"
+
+          # Trader live: opera com as 3 carteiras via Jupiter API
+          python3 agents/trader_live.py >> logs/trader_live.log 2>&1 &
+          echo "trader_live PID=$!"
+
+          # Simulacao em paralelo para comparacao
           python3 inc-radar/pump_hunter_sim.py >> logs/sim.log 2>&1 &
           echo "sim PID=$!"
 
