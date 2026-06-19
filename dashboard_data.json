@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-19 18:06:31 UTC",
+  "updated_at": "2026-06-19 18:09:47 UTC",
   "tokens": [
     {
       "mint": "8oGoTGPstdxKqe7EHUsboWbz4rbkaPG4FFX38CKbpump",
@@ -1550,18 +1550,6 @@
       }
     ],
     "log_tail": [
-      "[18:01:23] [t=242.7min] [SCANNER] +28 candidatos (fila=28)\n",
-      "[18:01:38] [t=243.0min] [SCANNER] +28 candidatos (fila=28)\n",
-      "[18:01:54] [t=243.3min] [SCANNER] +28 candidatos (fila=28)\n",
-      "[18:02:09] [t=243.5min] [SCANNER] +28 candidatos (fila=28)\n",
-      "[18:02:25] [t=243.8min] [SCANNER] +28 candidatos (fila=28)\n",
-      "[18:02:41] [t=244.0min] [SCANNER] +28 candidatos (fila=28)\n",
-      "[18:02:56] [t=244.3min] [SCANNER] +27 candidatos (fila=27)\n",
-      "[18:03:12] [t=244.6min] [SCANNER] +27 candidatos (fila=27)\n",
-      "[18:03:27] [t=244.8min] [SCANNER] +27 candidatos (fila=27)\n",
-      "[18:03:43] [t=245.1min] [SCANNER] +27 candidatos (fila=27)\n",
-      "[18:03:58] [t=245.3min] [SCANNER] +27 candidatos (fila=27)\n",
-      "[18:04:20] [t=245.7min] [SCANNER] +27 candidatos (fila=27)\n",
       "[18:04:36] [t=246.0min] [SCANNER] +27 candidatos (fila=27)\n",
       "[18:04:51] [t=246.2min] [SCANNER] +27 candidatos (fila=27)\n",
       "[18:05:08] [t=246.5min] [SCANNER] +27 candidatos (fila=27)\n",
@@ -1569,7 +1557,19 @@
       "[18:05:41] [t=247.0min] [SCANNER] +27 candidatos (fila=27)\n",
       "[18:05:57] [t=247.3min] [SCANNER] +27 candidatos (fila=27)\n",
       "[18:06:12] [t=247.6min] [SCANNER] +27 candidatos (fila=27)\n",
-      "[18:06:28] [t=247.8min] [SCANNER] +27 candidatos (fila=27)\n"
+      "[18:06:28] [t=247.8min] [SCANNER] +27 candidatos (fila=27)\n",
+      "[18:06:43] [t=248.1min] [SCANNER] +27 candidatos (fila=27)\n",
+      "[18:06:59] [t=248.3min] [SCANNER] +27 candidatos (fila=27)\n",
+      "[18:07:14] [t=248.6min] [SCANNER] +27 candidatos (fila=27)\n",
+      "[18:07:30] [t=248.9min] [SCANNER] +27 candidatos (fila=27)\n",
+      "[18:07:45] [t=249.1min] [SCANNER] +27 candidatos (fila=27)\n",
+      "[18:08:01] [t=249.4min] [SCANNER] +27 candidatos (fila=27)\n",
+      "[18:08:17] [t=249.6min] [SCANNER] +27 candidatos (fila=27)\n",
+      "[18:08:32] [t=249.9min] [SCANNER] +27 candidatos (fila=27)\n",
+      "[18:08:48] [t=250.2min] [SCANNER] +27 candidatos (fila=27)\n",
+      "[18:09:03] [t=250.4min] [SCANNER] +27 candidatos (fila=27)\n",
+      "[18:09:19] [t=250.7min] [SCANNER] +27 candidatos (fila=27)\n",
+      "[18:09:34] [t=250.9min] [SCANNER] +27 candidatos (fila=27)\n"
     ]
   },
   "total_tokens": 80,
