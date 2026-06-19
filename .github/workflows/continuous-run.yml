@@ -132,9 +132,9 @@ jobs:
             sleep 1800
             CYCLE=$(( CYCLE + 1 ))
             echo "=== Update #$CYCLE -- $(date -u '+%H:%M') UTC ==="
-            DB_PATH=data/caca_pump.db python3 agents/export_dashboard.py || true
             git fetch origin main --quiet 2>/dev/null || true
             git reset --hard origin/main --quiet 2>/dev/null || true
+            DB_PATH=data/caca_pump.db python3 agents/export_dashboard.py || true
             git add dashboard_data.json || true
             git diff --cached --quiet || git commit -m "live: dashboard $(date -u '+%H:%M') UTC"
             git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/Freire007-byte/incnetwork.git HEAD:main || true
