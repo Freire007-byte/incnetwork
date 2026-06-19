@@ -1,0 +1,9 @@
+# DB ao vivo -- nao commitar, persiste via artifact
+data/caca_pump.db
+data/caca_pump.db-wal
+data/caca_pump.db-shm
+
+# Logs locais
+logs/
+__pycache__/
+*.pyc

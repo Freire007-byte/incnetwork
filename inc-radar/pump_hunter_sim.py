@@ -36,7 +36,7 @@ start_ts  = time.time()
 
 def log(msg):
     t_min = (time.time() - start_ts) / 60
-    line  = f"[{time.strftime('%H:%M:%S')}] [t={t_min:.1f}min] {msg}"
+    line  = f"[{time.strftime('%H:%M:%S', time.gmtime())}] [t={t_min:.1f}min] {msg}"
     print(line, flush=True)
     try:
         with open(LOG_FILE, "a") as f: f.write(line + "\n")
@@ -238,9 +238,9 @@ def watchdog_worker():
 
             with lock:
                 if mint in positions and not positions[mint].get("be_applied") and price >= pos["entry"] * 1.20:
-                    positions[mint]["sl"] = pos["entry"] * 1.01
+                    positions[mint]["sl"] = pos["entry"] * 1.12
                     positions[mint]["be_applied"] = True
-                    log(f"[BREAK-EVEN] {pos['symbol']} SL → entry+1% @ ${pos['entry']*1.01:.8f}")
+                    log(f"[BREAK-EVEN] {pos['symbol']} SL → entry+12% @ ${pos['entry']*1.12:.8f}")
                 if mint in positions:
                     pos = positions[mint]
 

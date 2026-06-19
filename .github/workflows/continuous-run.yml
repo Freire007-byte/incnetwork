@@ -126,7 +126,7 @@ jobs:
 
           echo "Agentes iniciados. Atualizando dashboard a cada 30min por 5h20m..."
 
-          END_TIME=$(( $(date +%s) + 19200 ))
+          END_TIME=$(( $(date +%s) + 18000 ))
           CYCLE=0
           while [ $(date +%s) -lt $END_TIME ]; do
             sleep 1800
