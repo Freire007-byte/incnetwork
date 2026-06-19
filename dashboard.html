@@ -111,15 +111,20 @@
 </div>
 
 <script>
+// Remove service worker do incnetwork que interfere nos requests
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.getRegistrations().then(regs => {
+    regs.forEach(r => r.unregister());
+  });
+}
+
 const PAT_NAMES = {0:'BALEIA_FORTE',1:'BOT_SWARM',2:'LENTO_WHALE',3:'EXPLOSIVO',4:'ORGANIC',5:'RUG_CAND',6:'MISTO'};
-const DATA_URL = 'dashboard_data.json?t=' + Date.now();
 
 async function load() {
   document.getElementById('refresh-btn').textContent = '...';
   try {
-    const url = location.hostname === 'localhost'
-      ? 'dashboard_data.json?t=' + Date.now()
-      : 'dashboard_data.json?t=' + Date.now();
+    const base = location.origin + location.pathname.replace('dashboard.html', '');
+    const url = base + 'dashboard_data.json?t=' + Date.now();
     const r = await fetch(url, {cache: 'no-store'});
     if (!r.ok) throw new Error(`HTTP ${r.status}`);
     const d = await r.json();
