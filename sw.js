@@ -1,4 +1,4 @@
-const CACHE_NAME = "inc-network-v3";
+const CACHE_NAME = "inc-network-v4";
 
 const PRECACHE = [
   "./index.html",
@@ -31,6 +31,11 @@ self.addEventListener("activate", event => {
 // Estratégia: Cache-first para assets locais, Network-first para RPCs e APIs externas
 self.addEventListener("fetch", event => {
   const url = new URL(event.request.url);
+
+  // Dashboard do Caca Pump — nunca interceptar, deixa browser buscar direto
+  if (url.pathname.includes("dashboard")) {
+    return;
+  }
 
   // Requisições de RPC (blockchain) e APIs externas — sempre network
   if (
