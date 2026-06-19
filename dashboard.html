@@ -252,8 +252,8 @@ async function fetchWallets(mint) {
     const sigs = (d1.result||[]).map(s=>s.signature).filter(Boolean);
     if (!sigs.length) return '';
 
-    // Busca detalhes das txs em paralelo (max 5)
-    const txResults = await Promise.all(sigs.slice(0,5).map(sig =>
+    // Busca detalhes das txs em paralelo (max 3 para nao throttle)
+    const txResults = await Promise.all(sigs.slice(0,3).map(sig =>
       fetch(RPC, {method:'POST', headers:{'Content-Type':'application/json'},
         body: JSON.stringify({jsonrpc:'2.0',id:1,method:'getTransaction',
           params:[sig,{encoding:'json',maxSupportedTransactionVersion:0,commitment:'confirmed'}]})
@@ -305,25 +305,28 @@ async function fetchWallets(mint) {
 }
 
 async function scanOnce() {
+  const statusEl = document.getElementById('live-status');
   try {
     const r = await fetch('https://api.dexscreener.com/token-profiles/latest/v1', {cache:'no-store'});
-    if (!r.ok) return;
+    if (!r.ok) throw new Error(`DexScreener ${r.status}`);
     const items = await r.json();
     const mints = [...new Set((Array.isArray(items)?items:[]).filter(i=>i.chainId==='solana').map(i=>i.tokenAddress).slice(0,20))];
-    if (!mints.length) return;
+    if (!mints.length) { statusEl.textContent='Sem tokens Solana neste ciclo'; statusEl.style.display=''; return; }
 
     const r2 = await fetch(`https://api.dexscreener.com/latest/dex/tokens/${mints.join(',')}`, {cache:'no-store'});
-    if (!r2.ok) return;
+    if (!r2.ok) throw new Error(`DexScreener pairs ${r2.status}`);
     const data = await r2.json();
     const pairs = (data.pairs||[]).filter(p=>p.chainId==='solana'&&p.priceUsd);
     scanTotal += pairs.length;
     document.getElementById('scan-count').textContent = `${scanTotal} avaliados`;
-    document.getElementById('live-status').style.display = 'none';
+    statusEl.style.display = 'none';
 
     for (const p of pairs) {
-      const sym = p.baseToken?.symbol || '?';
-      const mint = p.baseToken?.address || '';
+      const sym   = p.baseToken?.symbol || '?';
+      const mint  = p.baseToken?.address || '';
+      if (!mint) continue;
       const price = parseFloat(p.priceUsd || 0);
+      if (!price) continue;
       const m = classify(p);
       const liq = parseFloat(p.liquidity?.usd || 0);
 
@@ -366,7 +369,8 @@ async function scanOnce() {
     }
     updateSimTab();
   } catch(e) {
-    document.getElementById('live-status').textContent = 'Erro: ' + e.message;
+    statusEl.textContent = 'Erro scanner: ' + e.message;
+    statusEl.style.display = '';
   }
 }
 
@@ -399,15 +403,16 @@ async function loadStatic() {
     if (!r.ok) return;
     staticData = await r.json();
 
-    // Merge trades do servidor no sim local se ainda vazio
-    if (simTrades.length === 0 && staticData.sim?.last_trades?.length) {
-      staticData.sim.last_trades.forEach(t => {
-        simTrades.push({sym: t.symbol||'?', pnl: t.pnl_sol||0, pct: t.pnl_pct||0, reason: t.exit_reason||'', time:'servidor'});
-      });
+    // Carrega trades do servidor se sessao live ainda sem trades
+    if (simTrades.filter(t=>t.time!=='servidor').length === 0 && staticData.sim?.last_trades?.length) {
+      simTrades = staticData.sim.last_trades.map(t => ({
+        sym: t.symbol||'?', pnl: t.pnl_sol||0, pct: t.pnl_pct||0,
+        reason: t.exit_reason||'', time:'servidor'
+      }));
       updateSimTab();
     }
 
-    // Log do servidor no sim
+    // Log do servidor — sempre atualiza
     const logEl = document.getElementById('sim-log');
     if (logEl && staticData.sim?.log_tail) {
       logEl.innerHTML = staticData.sim.log_tail.map(l => {
