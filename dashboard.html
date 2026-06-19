@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Caca Pump — Dashboard</title>
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --card: #111827;
+    --border: #1f2937;
+    --green: #10b981;
+    --red: #ef4444;
+    --yellow: #f59e0b;
+    --blue: #3b82f6;
+    --purple: #8b5cf6;
+    --text: #e5e7eb;
+    --muted: #6b7280;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; font-size: 14px; }
+
+  header { background: var(--card); border-bottom: 1px solid var(--border); padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+  header h1 { font-size: 16px; font-weight: 700; color: var(--green); }
+  #updated { font-size: 11px; color: var(--muted); }
+  #status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+  .container { padding: 12px 16px; max-width: 600px; margin: 0 auto; }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+  .grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 12px; }
+  .card-title { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 6px; }
+  .card-value { font-size: 22px; font-weight: 700; }
+  .card-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+  .pnl-pos { color: var(--green); }
+  .pnl-neg { color: var(--red); }
+
+  h2 { font-size: 13px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin: 16px 0 8px; }
+
+  .pattern-bar { margin-bottom: 6px; }
+  .pattern-name { font-size: 12px; color: var(--text); margin-bottom: 3px; display: flex; justify-content: space-between; }
+  .bar-track { background: var(--border); border-radius: 4px; height: 6px; }
+  .bar-fill { height: 6px; border-radius: 4px; transition: width .4s; }
+  .c0 { background: var(--green); }
+  .c1 { background: var(--red); }
+  .c2 { background: var(--blue); }
+  .c3 { background: var(--yellow); }
+  .c4 { background: var(--purple); }
+  .c5 { background: #ec4899; }
+  .c6 { background: var(--muted); }
+
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  th { color: var(--muted); font-weight: 500; text-align: left; padding: 6px 4px; border-bottom: 1px solid var(--border); font-size: 11px; }
+  td { padding: 7px 4px; border-bottom: 1px solid var(--border); }
+  tr:last-child td { border-bottom: none; }
+
+  .badge { display: inline-block; padding: 2px 7px; border-radius: 10px; font-size: 10px; font-weight: 600; }
+  .badge-0 { background: rgba(16,185,129,.15); color: var(--green); }
+  .badge-1 { background: rgba(239,68,68,.15); color: var(--red); }
+  .badge-2 { background: rgba(59,130,246,.15); color: var(--blue); }
+  .badge-3 { background: rgba(245,158,11,.15); color: var(--yellow); }
+  .badge-4 { background: rgba(139,92,246,.15); color: var(--purple); }
+  .badge-5 { background: rgba(236,72,153,.15); color: #ec4899; }
+  .badge-6 { background: rgba(107,114,128,.15); color: var(--muted); }
+
+  .wallet-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); }
+  .wallet-row:last-child { border-bottom: none; }
+  .wallet-addr { font-family: monospace; font-size: 11px; color: var(--blue); }
+  .wallet-sol { font-weight: 600; color: var(--yellow); }
+
+  .trade-entry { background: rgba(16,185,129,.06); border: 1px solid rgba(16,185,129,.2); }
+  .trade-exit-win { background: rgba(16,185,129,.1); border: 1px solid rgba(16,185,129,.3); }
+  .trade-exit-loss { background: rgba(239,68,68,.08); border: 1px solid rgba(239,68,68,.2); }
+
+  .sim-trade { border-radius: 8px; padding: 8px 10px; margin-bottom: 6px; font-size: 12px; }
+  .sim-trade-header { display: flex; justify-content: space-between; align-items: center; font-weight: 600; }
+  .sim-trade-detail { color: var(--muted); margin-top: 3px; font-size: 11px; }
+
+  .log-box { background: #000; border: 1px solid var(--border); border-radius: 8px; padding: 10px; font-family: monospace; font-size: 11px; color: #9ca3af; max-height: 200px; overflow-y: auto; margin-top: 4px; }
+  .log-line { margin-bottom: 2px; }
+  .log-ok { color: var(--green); }
+  .log-warn { color: var(--yellow); }
+
+  #refresh-btn { background: var(--green); color: #000; border: none; border-radius: 6px; padding: 6px 12px; font-size: 12px; font-weight: 600; cursor: pointer; }
+  #refresh-btn:active { opacity: .7; }
+
+  .loading { text-align: center; color: var(--muted); padding: 40px; }
+  .error-msg { background: rgba(239,68,68,.1); border: 1px solid var(--red); border-radius: 8px; padding: 12px; color: var(--red); font-size: 13px; margin-bottom: 12px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div style="display:flex;align-items:center;gap:8px">
+    <div id="status-dot"></div>
+    <h1>CACA PUMP</h1>
+  </div>
+  <div style="display:flex;align-items:center;gap:10px">
+    <span id="updated">carregando...</span>
+    <button id="refresh-btn" onclick="load()">↺</button>
+  </div>
+</header>
+
+<div class="container">
+  <div id="error" style="display:none" class="error-msg"></div>
+  <div id="content" class="loading">Carregando dados...</div>
+</div>
+
+<script>
+const PAT_NAMES = {0:'BALEIA_FORTE',1:'BOT_SWARM',2:'LENTO_WHALE',3:'EXPLOSIVO',4:'ORGANIC',5:'RUG_CAND',6:'MISTO'};
+const DATA_URL = 'dashboard_data.json?t=' + Date.now();
+
+async function load() {
+  document.getElementById('refresh-btn').textContent = '...';
+  try {
+    const url = location.hostname === 'localhost'
+      ? 'dashboard_data.json?t=' + Date.now()
+      : 'dashboard_data.json?t=' + Date.now();
+    const r = await fetch(url, {cache: 'no-store'});
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    const d = await r.json();
+    render(d);
+    document.getElementById('error').style.display = 'none';
+  } catch(e) {
+    document.getElementById('error').style.display = 'block';
+    document.getElementById('error').textContent = 'Erro ao carregar: ' + e.message + '. Os agentes ainda nao geraram dados — aguarde o primeiro ciclo do GitHub Actions (~5min).';
+    document.getElementById('content').innerHTML = '';
+  }
+  document.getElementById('refresh-btn').textContent = '↺';
+}
+
+function render(d) {
+  document.getElementById('updated').textContent = d.updated_at || '';
+
+  const sim = d.sim || {};
+  const pnl = sim.pnl_sol || 0;
+  const pnlPct = ((pnl / ((sim.trades||1)*10))*100).toFixed(1);
+  const winRate = sim.trades > 0 ? ((sim.wins/sim.trades)*100).toFixed(0) : 0;
+
+  // Patterns totals
+  const pats = d.patterns || {};
+  const patTotal = Object.values(pats).reduce((a,b)=>a+b,0) || 1;
+
+  // Top wallet
+  const wallets = (d.wallets||[]).slice(0,5);
+
+  // Recent trades
+  const lastTrades = (sim.last_trades||[]).slice().reverse().slice(0,8);
+
+  let html = `
+  <div class="grid-4">
+    <div class="card">
+      <div class="card-title">Tokens</div>
+      <div class="card-value">${d.total_tokens||0}</div>
+      <div class="card-sub">coletados</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Carteiras</div>
+      <div class="card-value">${d.total_wallets||0}</div>
+      <div class="card-sub">mapeadas</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Padrões</div>
+      <div class="card-value">${patTotal}</div>
+      <div class="card-sub">analisados</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Win Rate</div>
+      <div class="card-value ${pnl>=0?'pnl-pos':'pnl-neg'}">${winRate}%</div>
+      <div class="card-sub">${sim.wins||0}W ${sim.losses||0}L</div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">PnL Simulado</div>
+      <div class="card-value ${pnl>=0?'pnl-pos':'pnl-neg'}">${pnl>=0?'+':''}${pnl.toFixed(3)} SOL</div>
+      <div class="card-sub">entrada: 10 SOL/trade</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Trades</div>
+      <div class="card-value">${sim.trades||0}</div>
+      <div class="card-sub">${pnl>=0?'+':''}${pnlPct}% retorno</div>
+    </div>
+  </div>
+
+  <h2>Padrões Detectados</h2>
+  <div class="card">
+  `;
+
+  Object.entries(pats).forEach(([name,cnt],i) => {
+    const pct = Math.round((cnt/patTotal)*100);
+    html += `
+    <div class="pattern-bar">
+      <div class="pattern-name"><span>${name}</span><span>${cnt} (${pct}%)</span></div>
+      <div class="bar-track"><div class="bar-fill c${i}" style="width:${pct}%"></div></div>
+    </div>`;
+  });
+
+  html += `</div>
+
+  <h2>Tokens Recentes</h2>
+  <div class="card" style="overflow-x:auto">
+  <table>
+    <tr><th>Token</th><th>Padrão</th><th>Baleias</th><th>Bots%</th></tr>
+  `;
+
+  (d.tokens||[]).slice(0,15).forEach(t => {
+    const pid = t.pattern_id ?? -1;
+    const pname = PAT_NAMES[pid] || 'N/A';
+    const botPct = t.bot_ratio ? (t.bot_ratio*100).toFixed(0)+'%' : '-';
+    html += `<tr>
+      <td><b>${t.symbol||'?'}</b><br><span style="color:var(--muted);font-size:10px">${(t.name||'').substring(0,12)}</span></td>
+      <td><span class="badge badge-${pid}">${pname}</span></td>
+      <td>${t.whale_count||0}</td>
+      <td>${botPct}</td>
+    </tr>`;
+  });
+
+  html += `</table></div>
+
+  <h2>Top Carteiras</h2>
+  <div class="card">`;
+
+  wallets.forEach(w => {
+    const addr = w.wallet || '';
+    const short = addr.length > 12 ? addr.slice(0,6)+'...'+addr.slice(-4) : addr;
+    html += `<div class="wallet-row">
+      <div>
+        <div class="wallet-addr">${short}</div>
+        <div style="color:var(--muted);font-size:10px">${w.role||'?'} · ${w.tokens||0} tokens</div>
+      </div>
+      <div class="wallet-sol">${(w.total_sol||0).toFixed(2)} SOL</div>
+    </div>`;
+  });
+
+  html += `</div>
+
+  <h2>Ultimos Trades (Sim)</h2>
+  `;
+
+  if (!lastTrades.length) {
+    html += `<div class="card" style="color:var(--muted);text-align:center;padding:20px">Aguardando primeiras operações...</div>`;
+  } else {
+    lastTrades.forEach(t => {
+      const pnlSol = t.pnl_sol ?? 0;
+      const cls = t.type === 'entry' ? 'trade-entry' : (pnlSol > 0 ? 'trade-exit-win' : 'trade-exit-loss');
+      const icon = t.type === 'entry' ? '▶' : (pnlSol>0?'✓':'✗');
+      const pnlStr = t.type === 'entry' ? '' : `${pnlSol>=0?'+':''}${pnlSol.toFixed(3)} SOL`;
+      html += `<div class="sim-trade ${cls}">
+        <div class="sim-trade-header">
+          <span>${icon} ${t.symbol||'?'}</span>
+          <span class="${pnlSol>=0?'pnl-pos':'pnl-neg'}">${pnlStr}</span>
+        </div>
+        <div class="sim-trade-detail">${t.type||''} · ${t.reason||''}</div>
+      </div>`;
+    });
+  }
+
+  // Log tail
+  const logLines = sim.log_tail || [];
+  if (logLines.length > 0) {
+    html += `<h2>Log Simulação</h2><div class="log-box">`;
+    logLines.forEach(l => {
+      const clean = (l+'').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      const cls = clean.includes('[SIM') ? 'log-ok' : (clean.includes('[SKIP]')?'log-warn':'');
+      html += `<div class="log-line ${cls}">${clean}</div>`;
+    });
+    html += `</div>`;
+  }
+
+  html += `<div style="height:30px"></div>`;
+
+  document.getElementById('content').innerHTML = html;
+}
+
+load();
+setInterval(load, 60000);
+</script>
+</body>
+</html>

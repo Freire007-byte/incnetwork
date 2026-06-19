@@ -1,0 +1,17 @@
+{
+  "updated_at": "Aguardando primeiro ciclo dos agentes...",
+  "total_tokens": 0,
+  "total_wallets": 0,
+  "tokens": [],
+  "patterns": {},
+  "wallets": [],
+  "sim": {
+    "trades": 0,
+    "wins": 0,
+    "losses": 0,
+    "pnl_sol": 0.0,
+    "entry_sol": 10.0,
+    "last_trades": [],
+    "log_tail": ["[...] Sistema iniciando, aguarde o primeiro ciclo (~5 minutos)..."]
+  }
+}

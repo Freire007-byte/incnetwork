@@ -1,0 +1,141 @@
+name: Caca Pump -- Agentes 7 Dias
+
+on:
+  schedule:
+    - cron: '0 */5 * * *'
+  workflow_dispatch:
+
+jobs:
+  run-agents:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Restaurar banco de dados
+        uses: actions/download-artifact@v4
+        with:
+          name: caca-pump-db
+          path: data/
+        continue-on-error: true
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Instalar dependencias
+        run: pip install requests --quiet
+
+      - name: Criar diretorios
+        run: |
+          mkdir -p data logs
+          mkdir -p /tmp/inc_study
+
+      - name: Inicializar banco
+        run: |
+          DB_PATH=data/caca_pump.db python -c "
+          import sys; sys.path.insert(0,'agents')
+          import os; os.environ['DB_PATH']='data/caca_pump.db'
+          import sqlite3
+          DB='data/caca_pump.db'
+          conn=sqlite3.connect(DB)
+          conn.execute('PRAGMA journal_mode=WAL')
+          for sql in [
+            'CREATE TABLE IF NOT EXISTS tokens (mint TEXT PRIMARY KEY, symbol TEXT, name TEXT, created_at INTEGER, market_cap REAL, vol_24h REAL, liq_usd REAL, peak_h1 REAL, peak_h6 REAL, collected_at INTEGER, source TEXT DEFAULT dexscreener)',
+            'CREATE TABLE IF NOT EXISTS token_txs (id INTEGER PRIMARY KEY AUTOINCREMENT, mint TEXT, wallet TEXT, sol_amount REAL, tx_type TEXT, role TEXT, ts INTEGER)',
+            'CREATE TABLE IF NOT EXISTS wallet_appearances (id INTEGER PRIMARY KEY AUTOINCREMENT, wallet TEXT, mint TEXT, role TEXT, sol_amount REAL, ts INTEGER)',
+            'CREATE TABLE IF NOT EXISTS token_patterns (mint TEXT PRIMARY KEY, pattern_id INTEGER DEFAULT -1, whale_count INTEGER DEFAULT 0, bot_count INTEGER DEFAULT 0, retail_count INTEGER DEFAULT 0, sol_5min REAL DEFAULT 0, bot_ratio REAL DEFAULT 0, duration_min REAL DEFAULT 0, analyzed_at INTEGER DEFAULT 0)',
+            'CREATE TABLE IF NOT EXISTS wallet_groups (id INTEGER PRIMARY KEY AUTOINCREMENT, wallet TEXT, group_id INTEGER, role TEXT, token_count INTEGER, total_sol REAL)'
+          ]: conn.execute(sql)
+          conn.commit(); conn.close()
+          print('DB OK')
+          "
+
+      - name: Patch caminhos dos agentes
+        run: |
+          python3 -c "
+          import os, re
+          base = os.getcwd()
+          files = ['agents/collector.py','agents/analyzer.py','agents/network.py',
+                   'agents/patterns.py','agents/pumpfun.py','inc-radar/pump_hunter_sim.py']
+          for f in files:
+              if not os.path.exists(f): continue
+              c = open(f).read()
+              c = c.replace('/root/caca-pump/agents', base+'/agents')
+              c = c.replace('/root/caca-pump/data',   base+'/data')
+              c = c.replace('/root/caca-pump/logs',   base+'/logs')
+              c = c.replace('/tmp/inc_study',         '/tmp/inc_study')
+              open(f,'w').write(c)
+              print(f'Patched {f}')
+          "
+
+      - name: Iniciar agentes em background
+        run: |
+          export DB_PATH=data/caca_pump.db
+
+          python3 agents/collector.py >> logs/collector.log 2>&1 &
+          echo "collector PID=$!"
+
+          python3 agents/analyzer.py >> logs/analyzer.log 2>&1 &
+          echo "analyzer PID=$!"
+
+          python3 agents/pumpfun.py >> logs/pumpfun.log 2>&1 &
+          echo "pumpfun PID=$!"
+
+          python3 agents/network.py >> logs/network.log 2>&1 &
+          echo "network PID=$!"
+
+          python3 agents/patterns.py >> logs/patterns.log 2>&1 &
+          echo "patterns PID=$!"
+
+          python3 inc-radar/pump_hunter_sim.py >> logs/sim.log 2>&1 &
+          echo "sim PID=$!"
+
+          echo "Agentes iniciados. Rodando por 5h30m..."
+          sleep 19800
+
+          echo "Finalizando agentes..."
+          kill $(jobs -p) 2>/dev/null || true
+          sleep 5
+
+      - name: Exportar dados do dashboard
+        run: |
+          DB_PATH=data/caca_pump.db python3 agents/export_dashboard.py
+        if: always()
+
+      - name: Publicar dashboard no GitHub Pages
+        run: |
+          git config user.email "cacapump-bot@github.com"
+          git config user.name "CacaPump Bot"
+          git add dashboard_data.json data/caca_pump.db logs/ || true
+          git diff --cached --quiet || git commit -m "Auto: dados $(date -u '+%Y-%m-%d %H:%M') UTC"
+          git push origin main || true
+        if: always()
+
+      - name: Salvar banco como artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: caca-pump-db
+          path: data/caca_pump.db
+          retention-days: 8
+          overwrite: true
+        if: always()
+
+      - name: Status final
+        run: |
+          echo "=== RESUMO ==="
+          python3 -c "
+          import sqlite3, json
+          conn = sqlite3.connect('data/caca_pump.db')
+          print(f'Tokens: {conn.execute(\"SELECT COUNT(*) FROM tokens\").fetchone()[0]}')
+          print(f'Carteiras: {conn.execute(\"SELECT COUNT(DISTINCT wallet) FROM wallet_appearances\").fetchone()[0]}')
+          print(f'Padroes: {conn.execute(\"SELECT COUNT(*) FROM token_patterns WHERE pattern_id>=0\").fetchone()[0]}')
+          conn.close()
+          " 2>/dev/null || true
+          tail -5 /tmp/inc_study/sim_results.txt 2>/dev/null || true
+        if: always()
