@@ -123,8 +123,12 @@ const PAT_NAMES = {0:'BALEIA_FORTE',1:'BOT_SWARM',2:'LENTO_WHALE',3:'EXPLOSIVO',
 async function load() {
   document.getElementById('refresh-btn').textContent = '...';
   try {
-    const url = 'https://raw.githubusercontent.com/Freire007-byte/incnetwork/main/dashboard_data.json?t=' + Date.now();
-    const r = await fetch(url, {cache: 'no-store'});
+    // GitHub API retorna sempre dados frescos (sem CDN)
+    const url = 'https://api.github.com/repos/Freire007-byte/incnetwork/contents/dashboard_data.json';
+    const r = await fetch(url, {
+      cache: 'no-store',
+      headers: {'Accept': 'application/vnd.github.v3.raw'}
+    });
     if (!r.ok) throw new Error(`HTTP ${r.status}`);
     const d = await r.json();
     render(d);
@@ -284,7 +288,7 @@ function render(d) {
 }
 
 load();
-setInterval(load, 60000);
+setInterval(load, 120000);
 </script>
 </body>
 </html>
