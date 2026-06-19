@@ -5,9 +5,9 @@
 import subprocess, json, time, os, queue, threading, sys
 
 SIM_DURATION_MIN = 300  # 5 horas -- margem antes do job timeout de 350min
-ENTRY_SOL        = 10.0
-TP_PCT           = 0.35   # +35% take profit
-SL_PCT           = 0.12   # -12% stop loss
+ENTRY_SOL        = 1.0   # 1 SOL real por entrada
+TP_PCT           = 0.25   # +25% take profit
+SL_PCT           = 0.07   # -7% stop loss (apertado para moeda real)
 MAX_HOLD_MIN     = 12     # saida forcada apos 12 min
 MAX_POSITIONS    = 3
 
@@ -235,10 +235,10 @@ def watchdog_worker():
             if not price: continue
 
             with lock:
-                if mint in positions and not positions[mint].get("be_applied") and price >= pos["entry"] * 1.20:
-                    positions[mint]["sl"] = pos["entry"] * 1.12
+                if mint in positions and not positions[mint].get("be_applied") and price >= pos["entry"] * 1.15:
+                    positions[mint]["sl"] = pos["entry"] * 1.05
                     positions[mint]["be_applied"] = True
-                    log(f"[BREAK-EVEN] {pos['symbol']} SL → entry+12% @ ${pos['entry']*1.12:.8f}")
+                    log(f"[BREAK-EVEN] {pos['symbol']} SL → entry+5% @ ${pos['entry']*1.05:.8f}")
                 if mint in positions:
                     pos = positions[mint]
 
