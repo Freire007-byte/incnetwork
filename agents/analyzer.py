@@ -67,6 +67,7 @@ def analyze_token(conn, mint, sym):
 
     if sigs and isinstance(sigs, list):
         rpc_whale = rpc_bot = rpc_retail = 0
+        rpc_sol = 0.0
         for sig_info in sigs[:8]:
             sig = sig_info.get("signature","")
             bt  = sig_info.get("blockTime", 0)
@@ -84,16 +85,18 @@ def analyze_token(conn, mint, sym):
                 if diff < 0.001: continue
                 if diff >= WHALE_SOL:
                     rpc_whale += 1
-                    sol_early += diff
+                    rpc_sol += diff
                 elif diff <= BOT_SOL:
                     rpc_bot += 1
                 else:
                     rpc_retail += 1
             time.sleep(0.4)
-        # Usa max entre estimativa DexScreener e RPC real
-        whale_c   = max(whale_c, rpc_whale)
-        bot_c     = max(bot_c, rpc_bot)
-        retail_c  = max(retail_c, rpc_retail)
+        # RPC e fonte primaria (dados reais) -- so usa DexScreener se RPC nao retornou nada
+        if rpc_whale + rpc_bot + rpc_retail > 0:
+            whale_c  = rpc_whale
+            bot_c    = rpc_bot
+            retail_c = rpc_retail
+            sol_early = rpc_sol
 
     total     = whale_c + bot_c + retail_c
     bot_ratio = bot_c / max(1, total)
@@ -102,10 +105,10 @@ def analyze_token(conn, mint, sym):
         pid = 0  # BALEIA_FORTE
     elif bot_ratio > 0.8:
         pid = 1  # BOT_SWARM
-    elif whale_c >= 3:
-        pid = 2  # LENTO_WHALE
     elif sol_early > 50:
         pid = 3  # EXPLOSIVO
+    elif whale_c >= 3:
+        pid = 2  # LENTO_WHALE
     elif whale_c < 2 and bot_ratio < 0.3:
         pid = 4  # ORGANIC
     elif whale_c < 2 and bot_ratio > 0.6:

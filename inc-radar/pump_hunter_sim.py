@@ -27,7 +27,7 @@ TRADES_FILE = "/tmp/inc_study/sim_trades.jsonl"
 
 os.makedirs("/tmp/inc_study", exist_ok=True)
 
-candidate_q = queue.Queue(maxsize=50)
+candidate_q = queue.Queue(maxsize=200)
 signal_q    = queue.Queue(maxsize=10)
 
 positions = {}
@@ -80,13 +80,11 @@ def scanner_worker():
                 if not mint: continue
                 candidates.append(mint)
 
-        d2 = curl_get("https://api.dexscreener.com/latest/dex/search?q=SOL")
-        if d2 and d2.get("pairs"):
-            for p in d2["pairs"][:20]:
-                if p.get("chainId") != "solana": continue
-                ca = p.get("pairCreatedAt", 0)
-                if ca and ca < cutoff_ms: continue
-                mint = (p.get("baseToken") or {}).get("address", "")
+        d2 = curl_get("https://api.dexscreener.com/token-boosts/latest/v1")
+        if d2 and isinstance(d2, list):
+            for t in d2[:30]:
+                if t.get("chainId") != "solana": continue
+                mint = t.get("tokenAddress", "")
                 if mint and mint not in candidates:
                     candidates.append(mint)
 
@@ -96,7 +94,7 @@ def scanner_worker():
                 candidate_q.put_nowait(mint)
                 added += 1
             except queue.Full:
-                break
+                continue
 
         if added > 0:
             log(f"[SCANNER] +{added} candidatos (fila={candidate_q.qsize()})")
@@ -104,7 +102,8 @@ def scanner_worker():
 
 def classifier_worker():
     log("[CLASSIFIER] iniciado")
-    seen = set()
+    seen = {}
+    SEEN_EXPIRY = 900  # reavalia token apos 15min
     while True:
         elapsed = (time.time() - start_ts) / 60
         if elapsed >= SIM_DURATION_MIN:
@@ -113,8 +112,10 @@ def classifier_worker():
             mint = candidate_q.get(timeout=5)
         except queue.Empty:
             continue
+        now = time.time()
+        seen = {m: t for m, t in seen.items() if now - t < SEEN_EXPIRY}
         if mint in seen: continue
-        seen.add(mint)
+        seen[mint] = now
 
         d = curl_get(f"https://api.dexscreener.com/latest/dex/tokens/{mint}", timeout=8)
         if not d or not d.get("pairs"): continue
@@ -255,7 +256,7 @@ def watchdog_worker():
                 with lock:
                     if mint in positions:
                         _close_position(mint, pos, price, reason)
-        time.sleep(20)
+        time.sleep(5)
 
 def _close_position(mint, pos, price, reason):
     pnl_pct = (price - pos["entry"]) / pos["entry"] * 100

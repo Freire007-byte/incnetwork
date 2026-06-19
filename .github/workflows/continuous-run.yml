@@ -9,6 +9,10 @@ permissions:
   contents: write
   actions: write
 
+concurrency:
+  group: caca-pump-agents
+  cancel-in-progress: false
+
 jobs:
   run-agents:
     runs-on: ubuntu-latest
