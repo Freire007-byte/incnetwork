@@ -142,6 +142,7 @@ def classifier_worker():
         total    = whale_c + bot_c
         bot_ratio = bot_c / max(1, total)
         reasons   = []
+        if h1 <= 0:                     reasons.append(f"h1={h1:+.0f}%<=0")
         if whale_c < MIN_WHALE_COUNT:   reasons.append(f"whales={whale_c}<{MIN_WHALE_COUNT}")
         if sol_5min < MIN_SOL_5MIN:     reasons.append(f"sol5m={sol_5min:.1f}<{MIN_SOL_5MIN}")
         if bot_ratio > MAX_BOT_RATIO:   reasons.append(f"bots={bot_ratio:.0%}>{MAX_BOT_RATIO:.0%}")
@@ -186,7 +187,7 @@ def trader_worker():
             if len(positions) >= MAX_POSITIONS: continue
             if sig["mint"] in positions: continue
 
-        entry = sig["price"]
+        entry = get_price(sig["mint"]) or sig["price"]
         tp    = entry * (1 + TP_PCT)
         sl    = entry * (1 - SL_PCT)
         log(f"[SIM ENTRADA] {sig['symbol']} @ ${entry:.8f} | TP=${tp:.8f} (+{TP_PCT:.0%}) SL=${sl:.8f} (-{SL_PCT:.0%}) max={MAX_HOLD_MIN}min")
@@ -197,6 +198,7 @@ def trader_worker():
                 "entry_time": time.time(),
                 "whale_count": sig["whale_count"],
                 "sol_5min": sig["sol_5min"],
+                "be_applied": False,
             }
 
 def watchdog_worker():
@@ -219,17 +221,31 @@ def watchdog_worker():
                 if mint not in positions: continue
                 pos = positions[mint]
 
+            hold_min = (time.time() - pos["entry_time"]) / 60
+
+            if hold_min >= MAX_HOLD_MIN:
+                price = get_price(mint) or pos["entry"]
+                with lock:
+                    if mint in positions:
+                        _close_position(mint, pos, price, "TEMPO")
+                continue
+
             price = get_price(mint)
             if not price: continue
 
-            hold_min = (time.time() - pos["entry_time"]) / 60
-            reason   = None
+            with lock:
+                if mint in positions and not positions[mint].get("be_applied") and price >= pos["entry"] * 1.20:
+                    positions[mint]["sl"] = pos["entry"] * 1.01
+                    positions[mint]["be_applied"] = True
+                    log(f"[BREAK-EVEN] {pos['symbol']} SL → entry+1% @ ${pos['entry']*1.01:.8f}")
+                if mint in positions:
+                    pos = positions[mint]
+
+            reason = None
             if price >= pos["tp"]:
                 reason = "TP"
             elif price <= pos["sl"]:
                 reason = "SL"
-            elif hold_min >= MAX_HOLD_MIN:
-                reason = "TEMPO"
 
             if reason:
                 with lock:
