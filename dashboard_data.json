@@ -1,6 +1,20 @@
 {
-  "updated_at": "2026-06-19 18:09:47 UTC",
+  "updated_at": "2026-06-19 18:12:20 UTC",
   "tokens": [
+    {
+      "mint": "7WRE3LKDCCr9sDMKH9599AXfedPsifrNZQtoZpHopump",
+      "symbol": "Pumba",
+      "name": "Pumba",
+      "market_cap": 0.0,
+      "vol_24h": 17294.19,
+      "liq_usd": 0.0,
+      "pattern_id": 0,
+      "whale_count": 25,
+      "bot_count": 18,
+      "retail_count": 260,
+      "sol_5min": 21.91,
+      "bot_ratio": 0.059
+    },
     {
       "mint": "8oGoTGPstdxKqe7EHUsboWbz4rbkaPG4FFX38CKbpump",
       "symbol": "Cuakssant",
@@ -1123,7 +1137,7 @@
     }
   ],
   "patterns": {
-    "BALEIA_FORTE": 55,
+    "BALEIA_FORTE": 56,
     "BOT_SWARM": 1,
     "LENTO_WHALE": 9,
     "ORGANIC": 6,
@@ -1243,6 +1257,12 @@
       "role": "whale",
       "tokens": 1,
       "total_sol": 0.9
+    },
+    {
+      "wallet": "WHALE_EST_7WRE3LKD",
+      "role": "whale",
+      "tokens": 1,
+      "total_sol": 0.88
     },
     {
       "wallet": "WHALE_EST_268NzgMS",
@@ -1423,12 +1443,6 @@
       "role": "whale",
       "tokens": 1,
       "total_sol": 0.64
-    },
-    {
-      "wallet": "WHALE_EST_EpPytnMz",
-      "role": "whale",
-      "tokens": 1,
-      "total_sol": 0.64
     }
   ],
   "sim": {
@@ -1550,16 +1564,6 @@
       }
     ],
     "log_tail": [
-      "[18:04:36] [t=246.0min] [SCANNER] +27 candidatos (fila=27)\n",
-      "[18:04:51] [t=246.2min] [SCANNER] +27 candidatos (fila=27)\n",
-      "[18:05:08] [t=246.5min] [SCANNER] +27 candidatos (fila=27)\n",
-      "[18:05:26] [t=246.8min] [SCANNER] +27 candidatos (fila=27)\n",
-      "[18:05:41] [t=247.0min] [SCANNER] +27 candidatos (fila=27)\n",
-      "[18:05:57] [t=247.3min] [SCANNER] +27 candidatos (fila=27)\n",
-      "[18:06:12] [t=247.6min] [SCANNER] +27 candidatos (fila=27)\n",
-      "[18:06:28] [t=247.8min] [SCANNER] +27 candidatos (fila=27)\n",
-      "[18:06:43] [t=248.1min] [SCANNER] +27 candidatos (fila=27)\n",
-      "[18:06:59] [t=248.3min] [SCANNER] +27 candidatos (fila=27)\n",
       "[18:07:14] [t=248.6min] [SCANNER] +27 candidatos (fila=27)\n",
       "[18:07:30] [t=248.9min] [SCANNER] +27 candidatos (fila=27)\n",
       "[18:07:45] [t=249.1min] [SCANNER] +27 candidatos (fila=27)\n",
@@ -1569,9 +1573,19 @@
       "[18:08:48] [t=250.2min] [SCANNER] +27 candidatos (fila=27)\n",
       "[18:09:03] [t=250.4min] [SCANNER] +27 candidatos (fila=27)\n",
       "[18:09:19] [t=250.7min] [SCANNER] +27 candidatos (fila=27)\n",
-      "[18:09:34] [t=250.9min] [SCANNER] +27 candidatos (fila=27)\n"
+      "[18:09:34] [t=250.9min] [SCANNER] +27 candidatos (fila=27)\n",
+      "[18:09:50] [t=251.2min] [SCANNER] +27 candidatos (fila=27)\n",
+      "[18:10:05] [t=251.4min] [SCANNER] +27 candidatos (fila=27)\n",
+      "[18:10:21] [t=251.7min] [SCANNER] +27 candidatos (fila=27)\n",
+      "[18:10:37] [t=252.0min] [SCANNER] +27 candidatos (fila=27)\n",
+      "[18:10:52] [t=252.2min] [SCANNER] +27 candidatos (fila=27)\n",
+      "[18:11:08] [t=252.5min] [SCANNER] +27 candidatos (fila=27)\n",
+      "[18:11:24] [t=252.8min] [SCANNER] +27 candidatos (fila=27)\n",
+      "[18:11:39] [t=253.0min] [SCANNER] +27 candidatos (fila=27)\n",
+      "[18:11:55] [t=253.3min] [SCANNER] +27 candidatos (fila=27)\n",
+      "[18:12:10] [t=253.5min] [SCANNER] +27 candidatos (fila=27)\n"
     ]
   },
-  "total_tokens": 80,
-  "total_wallets": 145
+  "total_tokens": 81,
+  "total_wallets": 147
 }
