@@ -1,18 +1,12 @@
 #!/usr/bin/env python3
-# Agente 1: Coleta tokens das ultimas 7 dias -- DexScreener + pump.fun
-import subprocess, json, time, sys
-sys.path.insert(0, "/root/caca-pump/agents")
+# Agente 1: Coleta tokens -- DexScreener profiles + boosts + pump.fun
+import subprocess, json, time, sys, os
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import db as DB
 
-LOG = "/root/caca-pump/logs/collector.log"
-
 def log(m):
-    t = time.strftime("%H:%M:%S")
-    line = f"[{t}] [COLLECTOR] {m}"
+    line = f"[{time.strftime('%H:%M:%S', time.gmtime())}] [COLLECTOR] {m}"
     print(line, flush=True)
-    try:
-        with open(LOG, "a") as f: f.write(line + "\n")
-    except: pass
 
 def curl(url, timeout=12):
     try:
@@ -28,7 +22,6 @@ def save(conn, mint, sym, name, ts, mc, vol, liq, h1, h6, src):
             (mint, sym[:20], name[:50], int(ts or 0), float(mc or 0),
              float(vol or 0), float(liq or 0), float(h1 or 0),
              float(h6 or 0), int(time.time()), src))
-        conn.commit()
         return True
     except: return False
 
@@ -36,8 +29,12 @@ def collect_dexscreener(conn):
     added = 0
     cutoff = time.time() - 7*86400
 
-    d = curl("https://api.dexscreener.com/token-profiles/latest/v1")
-    if d and isinstance(d, list):
+    for endpoint in [
+        "https://api.dexscreener.com/token-profiles/latest/v1",
+        "https://api.dexscreener.com/token-boosts/latest/v1",
+    ]:
+        d = curl(endpoint)
+        if not d or not isinstance(d, list): continue
         for t in d[:40]:
             if t.get("chainId") != "solana": continue
             mint = t.get("tokenAddress", "")
@@ -54,27 +51,12 @@ def collect_dexscreener(conn):
             h1  = float((p.get("priceChange") or {}).get("h1") or 0)
             h6  = float((p.get("priceChange") or {}).get("h6") or 0)
             vol = float((p.get("volume") or {}).get("h24") or 0)
+            mc  = float(p.get("fdv") or p.get("marketCap") or 0)
             sym  = (p.get("baseToken") or {}).get("symbol", "?")
             name = (p.get("baseToken") or {}).get("name", "?")
-            if save(conn, mint, sym, name, ts, 0, vol, liq, h1, h6, "dexscreener"): added += 1
+            if save(conn, mint, sym, name, ts, mc, vol, liq, h1, h6, "dexscreener"): added += 1
             time.sleep(0.3)
-
-    d = curl("https://api.dexscreener.com/latest/dex/search?q=SOL")
-    if d and d.get("pairs"):
-        for p in d["pairs"][:30]:
-            if p.get("chainId") != "solana": continue
-            ca = p.get("pairCreatedAt", 0)
-            ts = ca/1000 if ca > 1e12 else ca
-            if ts and ts < cutoff: continue
-            mint = (p.get("baseToken") or {}).get("address", "")
-            if not mint: continue
-            liq  = float((p.get("liquidity") or {}).get("usd") or 0)
-            h1   = float((p.get("priceChange") or {}).get("h1") or 0)
-            h6   = float((p.get("priceChange") or {}).get("h6") or 0)
-            vol  = float((p.get("volume") or {}).get("h24") or 0)
-            sym  = (p.get("baseToken") or {}).get("symbol", "?")
-            name = (p.get("baseToken") or {}).get("name", "?")
-            if save(conn, mint, sym, name, ts, 0, vol, liq, h1, h6, "dexscreener"): added += 1
+        conn.commit()
     return added
 
 def collect_pumpfun(conn):
@@ -97,6 +79,7 @@ def collect_pumpfun(conn):
         name = c.get("name", "?")[:50]
         mc   = float(c.get("usd_market_cap") or 0)
         if save(conn, mint, sym, name, ts, mc, 0, 0, 0, 0, "pumpfun"): added += 1
+    conn.commit()
     return added
 
 if __name__ == "__main__":
@@ -112,4 +95,5 @@ if __name__ == "__main__":
         if cycle % 10 == 0:
             n = conn.execute("SELECT COUNT(*) FROM tokens").fetchone()[0]
             log(f"Total acumulado: {n} tokens")
+            conn.execute("PRAGMA wal_checkpoint(PASSIVE)")
         time.sleep(60)

@@ -1,5 +1,6 @@
-import sqlite3
-DB_PATH = "/root/caca-pump/data/caca_pump.db"
+import os, sqlite3
+
+DB_PATH = os.environ.get("DB_PATH", "data/caca_pump.db")
 
 def get_conn():
     conn = sqlite3.connect(DB_PATH, timeout=10)
@@ -37,6 +38,10 @@ def init_db():
         wallet TEXT, group_id INTEGER, role TEXT,
         token_count INTEGER, total_sol REAL
     )""")
+    conn.execute("CREATE INDEX IF NOT EXISTS idx_wa_wallet ON wallet_appearances(wallet)")
+    conn.execute("CREATE INDEX IF NOT EXISTS idx_wa_mint   ON wallet_appearances(mint)")
+    conn.execute("CREATE INDEX IF NOT EXISTS idx_tp_pid    ON token_patterns(pattern_id)")
+    conn.execute("CREATE INDEX IF NOT EXISTS idx_tx_mint   ON token_txs(mint)")
     conn.commit()
     conn.close()
     print("DB OK:", DB_PATH)

@@ -4,7 +4,7 @@
 
 import subprocess, json, time, os, queue, threading, sys
 
-SIM_DURATION_MIN = 10080  # 7 dias em minutos
+SIM_DURATION_MIN = 300  # 5 horas -- margem antes do job timeout de 350min
 ENTRY_SOL        = 10.0
 TP_PCT           = 0.35   # +35% take profit
 SL_PCT           = 0.12   # -12% stop loss
@@ -18,8 +18,6 @@ MAX_BOT_RATIO    = 0.90
 MIN_LIQ_USD      = 5000
 WHALE_SOL_MIN    = 0.3
 BOT_SOL_MAX      = 0.005
-
-HELIUS_KEY = "a6a9f38c-3e3d-46a5-8038-6a3baa6c0298"
 
 LOG_FILE    = "/tmp/inc_study/sim_results.txt"
 TRADES_FILE = "/tmp/inc_study/sim_trades.jsonl"
@@ -164,15 +162,15 @@ def classifier_worker():
 
 def trader_worker():
     log("[TRADER] iniciado")
-    total_pnl = 0.0
-    wins = losses = 0
+    last_status = 0.0
 
     while True:
         elapsed = (time.time() - start_ts) / 60
         if elapsed >= SIM_DURATION_MIN:
             break
 
-        if elapsed % 2 < 0.05:
+        if elapsed - last_status >= 2.0:
+            last_status = elapsed
             with lock:
                 n = len(positions)
                 w = sum(1 for t in trades if t.get("pnl_sol",0) > 0)

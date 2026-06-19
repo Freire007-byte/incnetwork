@@ -1,25 +1,20 @@
 #!/usr/bin/env python3
 # Agente 5: pump.fun deep scanner v2 -- throttle seguro
-import subprocess, json, time, sys
-sys.path.insert(0, "/root/caca-pump/agents")
+import subprocess, json, time, sys, os
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import db as DB
 
-LOG       = "/root/caca-pump/logs/pumpfun.log"
-SCAN_DAYS = 2       # scan inicial 2 dias (expande ate 7 ao longo da semana)
+SCAN_DAYS = 2
 MAX_DAYS  = 7
-PAGE_SIZE = 25      # menor pagina = menos carga
-REQ_DELAY = 2.5     # segundos entre requests
+PAGE_SIZE = 25
+REQ_DELAY = 2.5
 MAX_PAGES = 120
 
 BASE = "https://frontend-api.pump.fun"
 
 def log(m):
-    t = time.strftime("%H:%M:%S")
-    line = f"[{t}] [PUMPFUN] {m}"
+    line = f"[{time.strftime('%H:%M:%S', time.gmtime())}] [PUMPFUN] {m}"
     print(line, flush=True)
-    try:
-        with open(LOG, "a") as f: f.write(line + "\n")
-    except: pass
 
 def curl(url, timeout=15):
     try:
@@ -43,7 +38,6 @@ def save_coin(conn, coin):
         conn.execute("INSERT OR IGNORE INTO tokens VALUES (?,?,?,?,?,?,?,?,?,?,?)",
             (mint, sym, name, int(ts or 0), mc, 0, 0, 0, 0,
              int(time.time()), "pumpfun"))
-        conn.commit()
         return True
     except: return False
 
@@ -70,6 +64,7 @@ def deep_scan(days):
                 if ts and ts > 1e12: ts = ts // 1000
                 if ts and ts < cutoff: stop = True; break
                 if save_coin(conn, coin): added += 1
+            conn.commit()
             total  += added
             pages  += 1
             offset += PAGE_SIZE
@@ -79,9 +74,11 @@ def deep_scan(days):
             if stop: break
 
     king = curl(BASE + "/coins/king-of-the-hill?includeNsfw=false")
-    if king and isinstance(king, list):
-        for c in king:
+    if king:
+        items = king if isinstance(king, list) else [king]
+        for c in items:
             if save_coin(conn, c): total += 1
+        conn.commit()
 
     conn.close()
     log(f"Deep scan: +{total} tokens")
@@ -91,13 +88,14 @@ def monitor_novos():
     conn  = DB.get_conn()
     added = 0
     cutoff = time.time() - 600
-    data = curl(BASE + "/coins?offset=0&limit=20&sort=created_timestamp&order=DESC&includeNsfw=false")
+    data = curl(BASE + "/coins?offset=0&limit=50&sort=created_timestamp&order=DESC&includeNsfw=false")
     if data and isinstance(data, list):
         for coin in data:
             ts = coin.get("created_timestamp", 0)
             if ts and ts > 1e12: ts = ts // 1000
             if ts and ts < cutoff: continue
             if save_coin(conn, coin): added += 1
+        conn.commit()
     conn.close()
     return added
 
@@ -117,9 +115,10 @@ def enrich_dexscreener(batch=8):
         h1  = float((p.get("priceChange") or {}).get("h1") or 0)
         h6  = float((p.get("priceChange") or {}).get("h6") or 0)
         vol = float((p.get("volume") or {}).get("h24") or 0)
+        mc  = float(p.get("fdv") or p.get("marketCap") or 0)
         if liq > 0:
-            conn.execute("UPDATE tokens SET liq_usd=?,vol_24h=?,peak_h1=?,peak_h6=? WHERE mint=?",
-                (liq, vol, h1, h6, mint))
+            conn.execute("UPDATE tokens SET liq_usd=?,vol_24h=?,peak_h1=?,peak_h6=?,market_cap=? WHERE mint=?",
+                (liq, vol, h1, h6, mc, mint))
             enriched += 1
         time.sleep(1.5)
     conn.commit()

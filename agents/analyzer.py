@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # Agente 2: Analisa transacoes -- classifica whales/bots/retail via Solana RPC publico
-import subprocess, json, time, sys
-sys.path.insert(0, "C:/Users/Loja/caca_pump_local/agents")
+import subprocess, json, time, sys, os
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import db as DB
 
 WHALE_SOL = 0.3
@@ -10,7 +10,7 @@ BATCH     = 4
 RPC_URL   = "https://api.mainnet-beta.solana.com"
 
 def log(m):
-    t = time.strftime("%H:%M:%S")
+    t = time.strftime("%H:%M:%S", time.gmtime())
     print(f"[{t}] [ANALYZER] {m}", flush=True)
 
 def rpc(payload, timeout=20):
@@ -70,7 +70,6 @@ def analyze_token(conn, mint, sym):
         rpc_sol = 0.0
         for sig_info in sigs[:8]:
             sig = sig_info.get("signature","")
-            bt  = sig_info.get("blockTime", 0)
             tx  = rpc({
                 "jsonrpc":"2.0","id":1,
                 "method":"getTransaction",
@@ -80,9 +79,11 @@ def analyze_token(conn, mint, sym):
             meta = tx.get("meta") or {}
             pre  = meta.get("preBalances", [])
             post = meta.get("postBalances", [])
+            accs = (tx.get("transaction") or {}).get("message", {}).get("accountKeys", [])
             for i in range(min(len(pre), len(post))):
-                diff = abs(post[i] - pre[i]) / 1e9
-                if diff < 0.001: continue
+                diff = (post[i] - pre[i]) / 1e9
+                if diff < 0.001: continue  # so quem recebeu SOL (comprador)
+                wallet = accs[i] if i < len(accs) else f"ACCT_{i}_{mint[:8]}"
                 if diff >= WHALE_SOL:
                     rpc_whale += 1
                     rpc_sol += diff
@@ -90,8 +91,12 @@ def analyze_token(conn, mint, sym):
                     rpc_bot += 1
                 else:
                     rpc_retail += 1
+                role = "whale" if diff >= WHALE_SOL else ("bot" if diff <= BOT_SOL else "retail")
+                conn.execute(
+                    "INSERT INTO wallet_appearances (wallet,mint,role,sol_amount,ts) VALUES (?,?,?,?,?)",
+                    (wallet, mint, role, round(diff, 4), int(time.time())))
             time.sleep(0.4)
-        # RPC e fonte primaria (dados reais) -- so usa DexScreener se RPC nao retornou nada
+        # RPC e fonte primaria -- so usa DexScreener se RPC nao retornou nada
         if rpc_whale + rpc_bot + rpc_retail > 0:
             whale_c  = rpc_whale
             bot_c    = rpc_bot
@@ -119,19 +124,6 @@ def analyze_token(conn, mint, sym):
     conn.execute("INSERT OR REPLACE INTO token_patterns VALUES (?,?,?,?,?,?,?,?,?)",
         (mint, pid, whale_c, bot_c, retail_c,
          round(sol_early, 2), round(bot_ratio, 3), 0.0, int(time.time())))
-
-    if sol_pairs:
-        p = max(sol_pairs, key=lambda x: float((x.get("liquidity") or {}).get("usd") or 0))
-        liq = float((p.get("liquidity") or {}).get("usd") or 0)
-        role_map = []
-        if whale_c > 0:
-            role_map.append(("WHALE_EST", "whale", round(sol_early/max(1,whale_c), 2)))
-        if bot_c > 0:
-            role_map.append(("BOT_EST", "bot", 0.003))
-        for wallet, role, sol_amt in role_map[:10]:
-            conn.execute(
-                "INSERT INTO wallet_appearances (wallet,mint,role,sol_amount,ts) VALUES (?,?,?,?,?)",
-                (wallet + f"_{mint[:8]}", mint, role, sol_amt, int(time.time())))
 
     conn.commit()
     log(f"[{sym}] pid={pid} whales={whale_c} bots={bot_c} retail={retail_c} sol5m={sol_early:.1f}")

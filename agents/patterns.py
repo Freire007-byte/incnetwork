@@ -1,22 +1,21 @@
 #!/usr/bin/env python3
 # Agente 4: Classifica padroes dos pumps -- roda a cada 3h
-import json, time, sys
-sys.path.insert(0, "/root/caca-pump/agents")
+import json, time, sys, os
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import db as DB
 
 PATTERN_NAMES = {
-    0: "PUMP_BALEIA_FORTE",   # 5+ whales, >3 SOL/5min -- ENTRAR 0-3min
-    1: "PUMP_BOT_SWARM",      # bots dominam >80%       -- NAO ENTRAR
-    2: "PUMP_LENTO_WHALE",    # 3+ whales, dur>20min    -- ate 5min
-    3: "PUMP_EXPLOSIVO",      # >50 SOL/5min            -- imediato
-    4: "ORGANIC_SLOW",        # crescimento organico    -- observar
-    5: "RUG_CANDIDATO",       # sem whales, bots 60%+   -- BLOQUEAR
-    6: "PUMP_MISTO",          # misto                   -- ate 3min cautela
+    0: "PUMP_BALEIA_FORTE",
+    1: "PUMP_BOT_SWARM",
+    2: "PUMP_LENTO_WHALE",
+    3: "PUMP_EXPLOSIVO",
+    4: "ORGANIC_SLOW",
+    5: "RUG_CANDIDATO",
+    6: "PUMP_MISTO",
 }
 
 def log(m):
-    t = time.strftime("%H:%M:%S")
-    print(f"[{t}] [PATTERNS] {m}", flush=True)
+    print(f"[{time.strftime('%H:%M:%S', time.gmtime())}] [PATTERNS] {m}", flush=True)
 
 def run_analysis():
     conn = DB.get_conn()
@@ -31,7 +30,7 @@ def run_analysis():
 
     total = conn.execute("SELECT COUNT(*) FROM tokens").fetchone()[0]
     report = {"total_analyzed": n, "total_tokens": total,
-              "patterns": {}, "ts": time.strftime("%Y-%m-%d %H:%M:%S")}
+              "patterns": {}, "ts": time.strftime("%Y-%m-%d %H:%M:%S UTC", time.gmtime())}
 
     for pid, pname in PATTERN_NAMES.items():
         row = conn.execute("""
@@ -51,9 +50,6 @@ def run_analysis():
             "avg_bot_ratio": round(row[4] or 0, 3),
         }
 
-    with open("/root/caca-pump/data/patterns_report.json", "w") as f:
-        json.dump(report, f, indent=2)
-
     log(f"{n} tokens | {len(report['patterns'])} padroes identificados")
     conn.close()
 
@@ -61,4 +57,4 @@ if __name__ == "__main__":
     log("Iniciado -- classificando padroes de pump")
     while True:
         run_analysis()
-        time.sleep(10800)  # a cada 3 horas
+        time.sleep(10800)
