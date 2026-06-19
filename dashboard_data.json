@@ -1,17 +1,1104 @@
 {
-  "updated_at": "Aguardando primeiro ciclo dos agentes...",
-  "total_tokens": 0,
-  "total_wallets": 0,
-  "tokens": [],
-  "patterns": {},
-  "wallets": [],
+  "updated_at": "2026-06-19 15:39:16 UTC",
+  "tokens": [
+    {
+      "mint": "GT541LwRhAZFL149mpHtrEMTjZqm1r269eBfrq7Npump",
+      "symbol": "DRIP",
+      "name": "Bitcoin Drip",
+      "market_cap": 0.0,
+      "vol_24h": 20904.38,
+      "liq_usd": 0.0,
+      "pattern_id": 0,
+      "whale_count": 86,
+      "bot_count": 17,
+      "retail_count": 244,
+      "sol_5min": 52.04,
+      "bot_ratio": 0.049
+    },
+    {
+      "mint": "DAE2ugmx3GsZbM6RMvvVjm1Z2QmwguDDMCDpsVVbpump",
+      "symbol": "MechaWar",
+      "name": "MechaWar",
+      "market_cap": 0.0,
+      "vol_24h": 6887.92,
+      "liq_usd": 9838.85,
+      "pattern_id": 0,
+      "whale_count": 6,
+      "bot_count": 16,
+      "retail_count": 114,
+      "sol_5min": 7.48,
+      "bot_ratio": 0.118
+    },
+    {
+      "mint": "89SWf1zfiWSp3doPhM4vstqxjTF1iozs1EU8noN6pump",
+      "symbol": "RICH",
+      "name": "Get Rich Quick",
+      "market_cap": 0.0,
+      "vol_24h": 18442.31,
+      "liq_usd": 14311.29,
+      "pattern_id": 0,
+      "whale_count": 175,
+      "bot_count": 2,
+      "retail_count": 68,
+      "sol_5min": 108.5,
+      "bot_ratio": 0.008
+    },
+    {
+      "mint": "6tSvbKAGPJqgvLCPEJ1oyhAGVdPAiuezqsRQuwt2pump",
+      "symbol": "SOL",
+      "name": "SOLANA CTO",
+      "market_cap": 0.0,
+      "vol_24h": 488.04,
+      "liq_usd": 0.0,
+      "pattern_id": 2,
+      "whale_count": 3,
+      "bot_count": 18,
+      "retail_count": 10,
+      "sol_5min": 3.96,
+      "bot_ratio": 0.581
+    },
+    {
+      "mint": "AYVxfeWG7bgniJtF9FMJ94KgFGSGkHXxBB9bCrzBpump",
+      "symbol": "LUCIA",
+      "name": "Lucia Caminos",
+      "market_cap": 0.0,
+      "vol_24h": 8845.71,
+      "liq_usd": 0.0,
+      "pattern_id": 0,
+      "whale_count": 37,
+      "bot_count": 25,
+      "retail_count": 144,
+      "sol_5min": 26.44,
+      "bot_ratio": 0.121
+    },
+    {
+      "mint": "EeZeY7QfrBVsuQCmNPQ2EvNpyv1QvZSpyVxBMmTqpump",
+      "symbol": "SOLANA",
+      "name": "AnsemGoblinGigachad420WifInu69",
+      "market_cap": 0.0,
+      "vol_24h": 41094.14,
+      "liq_usd": 4863.7,
+      "pattern_id": 0,
+      "whale_count": 172,
+      "bot_count": 10,
+      "retail_count": 289,
+      "sol_5min": 103.56,
+      "bot_ratio": 0.021
+    },
+    {
+      "mint": "u81K3FTW1stJLBgBXY8PLR5bzMw3h5WFvdckcVUXZjW",
+      "symbol": "SOL",
+      "name": "Solana",
+      "market_cap": 0.0,
+      "vol_24h": 447.9,
+      "liq_usd": 0.0,
+      "pattern_id": 0,
+      "whale_count": 8,
+      "bot_count": 17,
+      "retail_count": 14,
+      "sol_5min": 9.92,
+      "bot_ratio": 0.436
+    },
+    {
+      "mint": "56sAoDpzquriyKzaU9fxkeCLqKY2sU13TL9syhsWpump",
+      "symbol": "SOL",
+      "name": "Solpack",
+      "market_cap": 0.0,
+      "vol_24h": 453.64,
+      "liq_usd": 0.0,
+      "pattern_id": 0,
+      "whale_count": 6,
+      "bot_count": 7,
+      "retail_count": 5,
+      "sol_5min": 12.72,
+      "bot_ratio": 0.389
+    },
+    {
+      "mint": "9TrRZM1xRzmDYExhBbTGruzMUZsYUvz2UY3cafjdpump",
+      "symbol": "Jason",
+      "name": "Jason Duval ",
+      "market_cap": 0.0,
+      "vol_24h": 20022.71,
+      "liq_usd": 0.0,
+      "pattern_id": 0,
+      "whale_count": 46,
+      "bot_count": 16,
+      "retail_count": 355,
+      "sol_5min": 33.68,
+      "bot_ratio": 0.038
+    },
+    {
+      "mint": "E5BjH517HPV2Mqcuyea9YgnNUfQJ8aBARxjSLiuVpump",
+      "symbol": "BARTER",
+      "name": "The Primitive Market",
+      "market_cap": 0.0,
+      "vol_24h": 11154.18,
+      "liq_usd": 0.0,
+      "pattern_id": 0,
+      "whale_count": 121,
+      "bot_count": 23,
+      "retail_count": 53,
+      "sol_5min": 74.2,
+      "bot_ratio": 0.117
+    },
+    {
+      "mint": "woEz8bno1sJWW3Ycx7RcX8i8RdVfBswYsiTVP216gta",
+      "symbol": "$VICE",
+      "name": "GRAND THEFT AUTO VI",
+      "market_cap": 0.0,
+      "vol_24h": 2021.96,
+      "liq_usd": 7004.75,
+      "pattern_id": 0,
+      "whale_count": 19,
+      "bot_count": 41,
+      "retail_count": 23,
+      "sol_5min": 14.94,
+      "bot_ratio": 0.494
+    },
+    {
+      "mint": "gAYuqKUgzEz11eQbpH3125GUc8Lvc21W4P31pXKpump",
+      "symbol": "YOU",
+      "name": "Your next opponent is",
+      "market_cap": 0.0,
+      "vol_24h": 20478.26,
+      "liq_usd": 0.0,
+      "pattern_id": 0,
+      "whale_count": 84,
+      "bot_count": 5,
+      "retail_count": 213,
+      "sol_5min": 63.35,
+      "bot_ratio": 0.017
+    },
+    {
+      "mint": "AdEDzMybuRBJBoF4Hm17qbp5yqsXEyNjnYFMDH2mpump",
+      "symbol": "Navi",
+      "name": "Navi",
+      "market_cap": 0.0,
+      "vol_24h": 278375.01,
+      "liq_usd": 18667.56,
+      "pattern_id": 0,
+      "whale_count": 1407,
+      "bot_count": 0,
+      "retail_count": 2321,
+      "sol_5min": 844.5,
+      "bot_ratio": 0.0
+    },
+    {
+      "mint": "5kuTkFHSha6Dc4po34fhHVYfUf9XzqFSGxRN41rmpump",
+      "symbol": "Solana",
+      "name": "SpongebobAnsemSonic69420wifInuAI",
+      "market_cap": 0.0,
+      "vol_24h": 160276.43,
+      "liq_usd": 11460.2,
+      "pattern_id": 0,
+      "whale_count": 165,
+      "bot_count": 0,
+      "retail_count": 3032,
+      "sol_5min": 99.07,
+      "bot_ratio": 0.0
+    },
+    {
+      "mint": "GtUNKUqZ5Gpa1MYDDeHYUkf3zwCFG8neb5p1sR34pump",
+      "symbol": "CAPS",
+      "name": "Capsverse",
+      "market_cap": 0.0,
+      "vol_24h": 21488.66,
+      "liq_usd": 0.0,
+      "pattern_id": 0,
+      "whale_count": 21,
+      "bot_count": 30,
+      "retail_count": 479,
+      "sol_5min": 15.56,
+      "bot_ratio": 0.057
+    },
+    {
+      "mint": "Bh4to2KQyUuZWmn4h7FpTUVQJ3Lc2vhACMaTzbbGpump",
+      "symbol": "TRUNP",
+      "name": "Trunp",
+      "market_cap": 0.0,
+      "vol_24h": 476533.2,
+      "liq_usd": 13685.95,
+      "pattern_id": 0,
+      "whale_count": 6,
+      "bot_count": 11,
+      "retail_count": 215,
+      "sol_5min": 16.38,
+      "bot_ratio": 0.047
+    },
+    {
+      "mint": "DBTgtVh4AKTZQh5WxMrBFJzfWSDf6HhsB2cENKLspump",
+      "symbol": "SOL",
+      "name": "Solana CTO",
+      "market_cap": 0.0,
+      "vol_24h": 721.17,
+      "liq_usd": 0.0,
+      "pattern_id": 0,
+      "whale_count": 8,
+      "bot_count": 20,
+      "retail_count": 10,
+      "sol_5min": 7.81,
+      "bot_ratio": 0.526
+    },
+    {
+      "mint": "GXXCskAXFCwQTHS4cA8irGwBbjh8eUMbeAT267jPyFDR",
+      "symbol": "SOL",
+      "name": "Solar Doge Network",
+      "market_cap": 0.0,
+      "vol_24h": 4641.3,
+      "liq_usd": 0.0,
+      "pattern_id": 4,
+      "whale_count": 0,
+      "bot_count": 14,
+      "retail_count": 42,
+      "sol_5min": 0.0,
+      "bot_ratio": 0.25
+    },
+    {
+      "mint": "3742UyPKmF8cubtLE3mUKVB1Xd5XR2oqSYrDKHgspump",
+      "symbol": "Sol",
+      "name": "flutterwave",
+      "market_cap": 0.0,
+      "vol_24h": 1275.86,
+      "liq_usd": 0.0,
+      "pattern_id": 0,
+      "whale_count": 6,
+      "bot_count": 14,
+      "retail_count": 10,
+      "sol_5min": 9.63,
+      "bot_ratio": 0.467
+    },
+    {
+      "mint": "Dm7UPvDdQgmCLo5Fx21Thh7pUWGJYbYUp9m3yKm8pump",
+      "symbol": "SoL",
+      "name": "State of Leonida",
+      "market_cap": 0.0,
+      "vol_24h": 146125.89,
+      "liq_usd": 0.0,
+      "pattern_id": 2,
+      "whale_count": 6,
+      "bot_count": 25,
+      "retail_count": 10,
+      "sol_5min": 4.04,
+      "bot_ratio": 0.61
+    },
+    {
+      "mint": "FoiUBbx7SAtGVJrBx2rtDbka6XebS12Qzd2WzXvgpump",
+      "symbol": "WAIFU",
+      "name": "WaifuCoin",
+      "market_cap": 0.0,
+      "vol_24h": 582218.43,
+      "liq_usd": 20766.49,
+      "pattern_id": 0,
+      "whale_count": 10,
+      "bot_count": 0,
+      "retail_count": 421,
+      "sol_5min": 6.2,
+      "bot_ratio": 0.0
+    },
+    {
+      "mint": "GTbBk8wBrYaN7dE4pjjaT4LN6v5pdd6hQnqT6qpw8q2j",
+      "symbol": "SOL",
+      "name": "SOLANA",
+      "market_cap": 0.0,
+      "vol_24h": 11790.36,
+      "liq_usd": 0.0,
+      "pattern_id": 0,
+      "whale_count": 6,
+      "bot_count": 14,
+      "retail_count": 187,
+      "sol_5min": 5.4,
+      "bot_ratio": 0.068
+    },
+    {
+      "mint": "F5x2MoFMKF1NNyXznnFfxm7647SW3w2gp8yFB3AVpump",
+      "symbol": "TRACEY",
+      "name": "The Crocodile Hero",
+      "market_cap": 0.0,
+      "vol_24h": 208484.5,
+      "liq_usd": 6379.48,
+      "pattern_id": 0,
+      "whale_count": 10,
+      "bot_count": 0,
+      "retail_count": 412,
+      "sol_5min": 6.35,
+      "bot_ratio": 0.0
+    },
+    {
+      "mint": "AUcHUfXcz9hWLcaRahA6MWWGNPJ1dXw9rAqJHTr5pump",
+      "symbol": "QWANT",
+      "name": "Le Qwant",
+      "market_cap": 0.0,
+      "vol_24h": 239178.41,
+      "liq_usd": 5177.59,
+      "pattern_id": 6,
+      "whale_count": 2,
+      "bot_count": 15,
+      "retail_count": 71,
+      "sol_5min": 3.23,
+      "bot_ratio": 0.17
+    },
+    {
+      "mint": "ChP8DbnBtTiEYa65Bdj3xemE88XZRG3yzkFq8nxBpump",
+      "symbol": "SCF",
+      "name": "Smoking Chicken Fish",
+      "market_cap": 0.0,
+      "vol_24h": 25152.6,
+      "liq_usd": 0.0,
+      "pattern_id": 2,
+      "whale_count": 4,
+      "bot_count": 16,
+      "retail_count": 6,
+      "sol_5min": 1.29,
+      "bot_ratio": 0.615
+    },
+    {
+      "mint": "4iuCtabWs4VU16PFcQ8XB2ehrq5bJLFaYEi5gD2Vpump",
+      "symbol": "fedora ",
+      "name": "Fedora",
+      "market_cap": 0.0,
+      "vol_24h": 42510.89,
+      "liq_usd": 0.0,
+      "pattern_id": 1,
+      "whale_count": 0,
+      "bot_count": 37,
+      "retail_count": 8,
+      "sol_5min": 0.0,
+      "bot_ratio": 0.822
+    },
+    {
+      "mint": "6bZsryBMSGBYnwGtESgeGE5APtSSJX2BQrx7tBEfpump",
+      "symbol": "Junior",
+      "name": "The Psychic Dog",
+      "market_cap": 0.0,
+      "vol_24h": 66385.72,
+      "liq_usd": 0.0,
+      "pattern_id": 2,
+      "whale_count": 4,
+      "bot_count": 20,
+      "retail_count": 23,
+      "sol_5min": 3.42,
+      "bot_ratio": 0.426
+    },
+    {
+      "mint": "2H5yWbfB3u2KZwZj4RsBrfTXL8KB2YNE8i2Yb7cvpump",
+      "symbol": "BABYDADDY",
+      "name": "Rich Baby Daddy",
+      "market_cap": 0.0,
+      "vol_24h": 125170.62,
+      "liq_usd": 19080.54,
+      "pattern_id": 0,
+      "whale_count": 14,
+      "bot_count": 1,
+      "retail_count": 456,
+      "sol_5min": 8.52,
+      "bot_ratio": 0.002
+    },
+    {
+      "mint": "39CbyuttcAiSkeFjbYthAENuDvrFphvAHsW7WorqsFwn",
+      "symbol": "Americas",
+      "name": "Project Americas",
+      "market_cap": 0.0,
+      "vol_24h": 21155.05,
+      "liq_usd": 0.0,
+      "pattern_id": 0,
+      "whale_count": 8,
+      "bot_count": 13,
+      "retail_count": 15,
+      "sol_5min": 14.44,
+      "bot_ratio": 0.361
+    },
+    {
+      "mint": "5Dv3voRfE5PDEbTKzzy4V42gyxj65wTmEPqvWeLUpump",
+      "symbol": "WCA",
+      "name": "World Cup Anime",
+      "market_cap": 0.0,
+      "vol_24h": 78333.39,
+      "liq_usd": 11764.12,
+      "pattern_id": 0,
+      "whale_count": 10,
+      "bot_count": 24,
+      "retail_count": 698,
+      "sol_5min": 11.59,
+      "bot_ratio": 0.033
+    },
+    {
+      "mint": "BwLS1TLvwb771PyNuyktWyxUDdxpziZ5oGYKgQfNpump",
+      "symbol": "QUACKSSANT",
+      "name": "Quackssant",
+      "market_cap": 0.0,
+      "vol_24h": 93843.89,
+      "liq_usd": 0.0,
+      "pattern_id": 0,
+      "whale_count": 10,
+      "bot_count": 16,
+      "retail_count": 21,
+      "sol_5min": 7.39,
+      "bot_ratio": 0.34
+    },
+    {
+      "mint": "A7agBDfExRUwHJX4nK2Ab5G34vftJr5hRgBCBwqXpump",
+      "symbol": "HIDEOUT",
+      "name": "Hideout",
+      "market_cap": 0.0,
+      "vol_24h": 93127.26,
+      "liq_usd": 0.0,
+      "pattern_id": 2,
+      "whale_count": 4,
+      "bot_count": 0,
+      "retail_count": 224,
+      "sol_5min": 2.75,
+      "bot_ratio": 0.0
+    },
+    {
+      "mint": "4EedHLnG8vxyBpqV39bquwR6tWBhEaJ5FHLfh14bpump",
+      "symbol": "HARIZZMENT",
+      "name": "Sexual Harizzment",
+      "market_cap": 0.0,
+      "vol_24h": 81770.35,
+      "liq_usd": 0.0,
+      "pattern_id": 6,
+      "whale_count": 2,
+      "bot_count": 19,
+      "retail_count": 69,
+      "sol_5min": 1.38,
+      "bot_ratio": 0.211
+    },
+    {
+      "mint": "GyV33NF4oGGNiJGx7AqENK7jG6pyWRN7A6sMcJTSpump",
+      "symbol": "SOLBUNDLER",
+      "name": "SOLBUNDLER",
+      "market_cap": 0.0,
+      "vol_24h": 7050.35,
+      "liq_usd": 0.0,
+      "pattern_id": 2,
+      "whale_count": 4,
+      "bot_count": 14,
+      "retail_count": 52,
+      "sol_5min": 1.6,
+      "bot_ratio": 0.2
+    },
+    {
+      "mint": "A1MtvU5vS8F9zpqUxygtJSTK5x4Q6DcYFRfyi1spump",
+      "symbol": "$BCAT",
+      "name": "black cat wif hat",
+      "market_cap": 0.0,
+      "vol_24h": 179641.4,
+      "liq_usd": 7333.09,
+      "pattern_id": 0,
+      "whale_count": 6,
+      "bot_count": 3,
+      "retail_count": 6,
+      "sol_5min": 7.16,
+      "bot_ratio": 0.2
+    },
+    {
+      "mint": "DKMcp75x9Sp5govTbV5BRdjwqYyFqkmnmNBgYTJ3pump",
+      "symbol": "way",
+      "name": "the new way",
+      "market_cap": 0.0,
+      "vol_24h": 57213.46,
+      "liq_usd": 0.0,
+      "pattern_id": 6,
+      "whale_count": 2,
+      "bot_count": 28,
+      "retail_count": 50,
+      "sol_5min": 1.14,
+      "bot_ratio": 0.35
+    },
+    {
+      "mint": "EpPytnMzfZdPhMyp8Ak8FmPhZNFPULXDGXiyqrJ8pump",
+      "symbol": "CryptoBandits",
+      "name": "CryptoBandits",
+      "market_cap": 0.0,
+      "vol_24h": 307321.49,
+      "liq_usd": 11541.05,
+      "pattern_id": 0,
+      "whale_count": 53,
+      "bot_count": 3,
+      "retail_count": 1231,
+      "sol_5min": 34.01,
+      "bot_ratio": 0.002
+    },
+    {
+      "mint": "BohiYrLdvMgsqtzHz9azWPT3xa8fK8FmRtF3Tt5Fpump",
+      "symbol": "PLEDRA",
+      "name": "Pledra Protocol",
+      "market_cap": 0.0,
+      "vol_24h": 168473.98,
+      "liq_usd": 17926.38,
+      "pattern_id": 0,
+      "whale_count": 21,
+      "bot_count": 42,
+      "retail_count": 1966,
+      "sol_5min": 13.14,
+      "bot_ratio": 0.021
+    },
+    {
+      "mint": "HFhHPt4DNQNATbhXEVCFEcd8tadd8cHd8kqFi7Utpump",
+      "symbol": "GTAUSA",
+      "name": "Grand Theft Auto America",
+      "market_cap": 0.0,
+      "vol_24h": 354807.36,
+      "liq_usd": 35043.17,
+      "pattern_id": 0,
+      "whale_count": 94,
+      "bot_count": 20,
+      "retail_count": 2527,
+      "sol_5min": 61.52,
+      "bot_ratio": 0.008
+    },
+    {
+      "mint": "24vQ1JnZbRCatgzjjD2gKdp34wmqE6s1X9q3Y8uQpump",
+      "symbol": "BoostCoin",
+      "name": "BoostCoin",
+      "market_cap": 0.0,
+      "vol_24h": 22324.72,
+      "liq_usd": 0.0,
+      "pattern_id": 6,
+      "whale_count": 2,
+      "bot_count": 8,
+      "retail_count": 12,
+      "sol_5min": 1.84,
+      "bot_ratio": 0.364
+    },
+    {
+      "mint": "CtNC5wuHcGBDMEYHMnpnqFi63gJpxhnPuRSX8SH2pump",
+      "symbol": "USOT",
+      "name": "United States Oil Trust",
+      "market_cap": 0.0,
+      "vol_24h": 22202.0,
+      "liq_usd": 23174.13,
+      "pattern_id": 2,
+      "whale_count": 4,
+      "bot_count": 4,
+      "retail_count": 36,
+      "sol_5min": 5.93,
+      "bot_ratio": 0.091
+    },
+    {
+      "mint": "FhhDi7qyJqn2Gjt6k3574NrVi4awHqH2gKt1WJe9pump",
+      "symbol": "WAR",
+      "name": "WAR",
+      "market_cap": 0.0,
+      "vol_24h": 226532.26,
+      "liq_usd": 8308.64,
+      "pattern_id": 0,
+      "whale_count": 35,
+      "bot_count": 11,
+      "retail_count": 3881,
+      "sol_5min": 24.19,
+      "bot_ratio": 0.003
+    },
+    {
+      "mint": "2YW7BsxxWktDHT6AtWXUkPwL8GwHu5XMVJqsGfuRpump",
+      "symbol": "Nothing",
+      "name": "Nothing Tech",
+      "market_cap": 0.0,
+      "vol_24h": 79971.64,
+      "liq_usd": 0.0,
+      "pattern_id": 2,
+      "whale_count": 4,
+      "bot_count": 41,
+      "retail_count": 224,
+      "sol_5min": 1.66,
+      "bot_ratio": 0.152
+    },
+    {
+      "mint": "ENJByQZaQ6hhz54raVPNo8WvnuvN4Zd6uuzB8qSYpump",
+      "symbol": "NA",
+      "name": "North America",
+      "market_cap": 0.0,
+      "vol_24h": 50742.86,
+      "liq_usd": 0.0,
+      "pattern_id": 0,
+      "whale_count": 8,
+      "bot_count": 25,
+      "retail_count": 637,
+      "sol_5min": 9.1,
+      "bot_ratio": 0.037
+    },
+    {
+      "mint": "7sjgj9278rm2aJVZQ6hkm7dZxC8pZX4K8WEBa6z6rMmz",
+      "symbol": "SOL",
+      "name": "Solana",
+      "market_cap": 0.0,
+      "vol_24h": 111922.37,
+      "liq_usd": 10105.35,
+      "pattern_id": 0,
+      "whale_count": 128,
+      "bot_count": 17,
+      "retail_count": 2558,
+      "sol_5min": 84.46,
+      "bot_ratio": 0.006
+    },
+    {
+      "mint": "F6Y5icueQqtAKPE879F6gU1D3RCAxgfhZZ5nnNuDsmrx",
+      "symbol": "SOLANA",
+      "name": "SpongebobAnsemSonic69420wifInuAI",
+      "market_cap": 0.0,
+      "vol_24h": 6696.3,
+      "liq_usd": 0.0,
+      "pattern_id": 0,
+      "whale_count": 8,
+      "bot_count": 8,
+      "retail_count": 148,
+      "sol_5min": 9.14,
+      "bot_ratio": 0.049
+    },
+    {
+      "mint": "3BZoxTeEuBR8HgL99dUsybiYYnRpu3nDdHqpDtiFpump",
+      "symbol": "VICE",
+      "name": "Vice City Coin",
+      "market_cap": 0.0,
+      "vol_24h": 160662.65,
+      "liq_usd": 19583.79,
+      "pattern_id": 0,
+      "whale_count": 103,
+      "bot_count": 506,
+      "retail_count": 5427,
+      "sol_5min": 64.63,
+      "bot_ratio": 0.084
+    }
+  ],
+  "patterns": {
+    "BALEIA_FORTE": 33,
+    "BOT_SWARM": 1,
+    "LENTO_WHALE": 8,
+    "ORGANIC": 1,
+    "MISTO": 4
+  },
+  "wallets": [
+    {
+      "wallet": "WHALE_EST_Bh4to2KQ",
+      "role": "whale",
+      "tokens": 1,
+      "total_sol": 2.73
+    },
+    {
+      "wallet": "WHALE_EST_56sAoDpz",
+      "role": "whale",
+      "tokens": 1,
+      "total_sol": 2.12
+    },
+    {
+      "wallet": "WHALE_EST_39Cbyutt",
+      "role": "whale",
+      "tokens": 1,
+      "total_sol": 1.8
+    },
+    {
+      "wallet": "WHALE_EST_AUcHUfXc",
+      "role": "whale",
+      "tokens": 1,
+      "total_sol": 1.61
+    },
+    {
+      "wallet": "WHALE_EST_3742UyPK",
+      "role": "whale",
+      "tokens": 1,
+      "total_sol": 1.6
+    },
+    {
+      "wallet": "WHALE_EST_CtNC5wuH",
+      "role": "whale",
+      "tokens": 1,
+      "total_sol": 1.48
+    },
+    {
+      "wallet": "WHALE_EST_6tSvbKAG",
+      "role": "whale",
+      "tokens": 1,
+      "total_sol": 1.32
+    },
+    {
+      "wallet": "WHALE_EST_DAE2ugmx",
+      "role": "whale",
+      "tokens": 1,
+      "total_sol": 1.25
+    },
+    {
+      "wallet": "WHALE_EST_u81K3FTW",
+      "role": "whale",
+      "tokens": 1,
+      "total_sol": 1.24
+    },
+    {
+      "wallet": "WHALE_EST_A1MtvU5v",
+      "role": "whale",
+      "tokens": 1,
+      "total_sol": 1.19
+    },
+    {
+      "wallet": "WHALE_EST_5Dv3voRf",
+      "role": "whale",
+      "tokens": 1,
+      "total_sol": 1.16
+    },
+    {
+      "wallet": "WHALE_EST_ENJByQZa",
+      "role": "whale",
+      "tokens": 1,
+      "total_sol": 1.14
+    },
+    {
+      "wallet": "WHALE_EST_F6Y5icue",
+      "role": "whale",
+      "tokens": 1,
+      "total_sol": 1.14
+    },
+    {
+      "wallet": "WHALE_EST_DBTgtVh4",
+      "role": "whale",
+      "tokens": 1,
+      "total_sol": 0.98
+    },
+    {
+      "wallet": "WHALE_EST_24vQ1JnZ",
+      "role": "whale",
+      "tokens": 1,
+      "total_sol": 0.92
+    },
+    {
+      "wallet": "WHALE_EST_GTbBk8wB",
+      "role": "whale",
+      "tokens": 1,
+      "total_sol": 0.9
+    },
+    {
+      "wallet": "WHALE_EST_6bZsryBM",
+      "role": "whale",
+      "tokens": 1,
+      "total_sol": 0.85
+    },
+    {
+      "wallet": "WHALE_EST_woEz8bno",
+      "role": "whale",
+      "tokens": 1,
+      "total_sol": 0.79
+    },
+    {
+      "wallet": "WHALE_EST_gAYuqKUg",
+      "role": "whale",
+      "tokens": 1,
+      "total_sol": 0.75
+    },
+    {
+      "wallet": "WHALE_EST_BwLS1TLv",
+      "role": "whale",
+      "tokens": 1,
+      "total_sol": 0.74
+    },
+    {
+      "wallet": "WHALE_EST_GtUNKUqZ",
+      "role": "whale",
+      "tokens": 1,
+      "total_sol": 0.74
+    },
+    {
+      "wallet": "WHALE_EST_9TrRZM1x",
+      "role": "whale",
+      "tokens": 1,
+      "total_sol": 0.73
+    },
+    {
+      "wallet": "WHALE_EST_AYVxfeWG",
+      "role": "whale",
+      "tokens": 1,
+      "total_sol": 0.71
+    },
+    {
+      "wallet": "WHALE_EST_4EedHLnG",
+      "role": "whale",
+      "tokens": 1,
+      "total_sol": 0.69
+    },
+    {
+      "wallet": "WHALE_EST_A7agBDfE",
+      "role": "whale",
+      "tokens": 1,
+      "total_sol": 0.69
+    },
+    {
+      "wallet": "WHALE_EST_FhhDi7qy",
+      "role": "whale",
+      "tokens": 1,
+      "total_sol": 0.69
+    },
+    {
+      "wallet": "WHALE_EST_Dm7UPvDd",
+      "role": "whale",
+      "tokens": 1,
+      "total_sol": 0.67
+    },
+    {
+      "wallet": "WHALE_EST_7sjgj927",
+      "role": "whale",
+      "tokens": 1,
+      "total_sol": 0.66
+    },
+    {
+      "wallet": "WHALE_EST_HFhHPt4D",
+      "role": "whale",
+      "tokens": 1,
+      "total_sol": 0.65
+    },
+    {
+      "wallet": "WHALE_EST_EpPytnMz",
+      "role": "whale",
+      "tokens": 1,
+      "total_sol": 0.64
+    },
+    {
+      "wallet": "WHALE_EST_3BZoxTeE",
+      "role": "whale",
+      "tokens": 1,
+      "total_sol": 0.63
+    },
+    {
+      "wallet": "WHALE_EST_BohiYrLd",
+      "role": "whale",
+      "tokens": 1,
+      "total_sol": 0.63
+    },
+    {
+      "wallet": "WHALE_EST_F5x2MoFM",
+      "role": "whale",
+      "tokens": 1,
+      "total_sol": 0.63
+    },
+    {
+      "wallet": "WHALE_EST_89SWf1zf",
+      "role": "whale",
+      "tokens": 1,
+      "total_sol": 0.62
+    },
+    {
+      "wallet": "WHALE_EST_FoiUBbx7",
+      "role": "whale",
+      "tokens": 1,
+      "total_sol": 0.62
+    },
+    {
+      "wallet": "WHALE_EST_2H5yWbfB",
+      "role": "whale",
+      "tokens": 1,
+      "total_sol": 0.61
+    },
+    {
+      "wallet": "WHALE_EST_E5BjH517",
+      "role": "whale",
+      "tokens": 1,
+      "total_sol": 0.61
+    },
+    {
+      "wallet": "WHALE_EST_GT541LwR",
+      "role": "whale",
+      "tokens": 1,
+      "total_sol": 0.61
+    },
+    {
+      "wallet": "WHALE_EST_5kuTkFHS",
+      "role": "whale",
+      "tokens": 1,
+      "total_sol": 0.6
+    },
+    {
+      "wallet": "WHALE_EST_AdEDzMyb",
+      "role": "whale",
+      "tokens": 1,
+      "total_sol": 0.6
+    },
+    {
+      "wallet": "WHALE_EST_EeZeY7Qf",
+      "role": "whale",
+      "tokens": 1,
+      "total_sol": 0.6
+    },
+    {
+      "wallet": "WHALE_EST_DKMcp75x",
+      "role": "whale",
+      "tokens": 1,
+      "total_sol": 0.57
+    },
+    {
+      "wallet": "WHALE_EST_2YW7Bsxx",
+      "role": "whale",
+      "tokens": 1,
+      "total_sol": 0.42
+    },
+    {
+      "wallet": "WHALE_EST_GyV33NF4",
+      "role": "whale",
+      "tokens": 1,
+      "total_sol": 0.4
+    },
+    {
+      "wallet": "WHALE_EST_ChP8DbnB",
+      "role": "whale",
+      "tokens": 1,
+      "total_sol": 0.32
+    },
+    {
+      "wallet": "BOT_EST_24vQ1JnZ",
+      "role": "bot",
+      "tokens": 1,
+      "total_sol": 0.003
+    },
+    {
+      "wallet": "BOT_EST_2H5yWbfB",
+      "role": "bot",
+      "tokens": 1,
+      "total_sol": 0.003
+    },
+    {
+      "wallet": "BOT_EST_2YW7Bsxx",
+      "role": "bot",
+      "tokens": 1,
+      "total_sol": 0.003
+    },
+    {
+      "wallet": "BOT_EST_3742UyPK",
+      "role": "bot",
+      "tokens": 1,
+      "total_sol": 0.003
+    },
+    {
+      "wallet": "BOT_EST_39Cbyutt",
+      "role": "bot",
+      "tokens": 1,
+      "total_sol": 0.003
+    }
+  ],
   "sim": {
-    "trades": 0,
-    "wins": 0,
-    "losses": 0,
-    "pnl_sol": 0.0,
+    "trades": 9,
+    "wins": 4,
+    "losses": 5,
+    "pnl_sol": 10.30177,
     "entry_sol": 10.0,
-    "last_trades": [],
-    "log_tail": ["[...] Sistema iniciando, aguarde o primeiro ciclo (~5 minutos)..."]
-  }
+    "last_trades": [
+      {
+        "symbol": "SOL",
+        "mint": "7sjgj9278rm2aJVZQ6hkm7dZxC8pZX4K8WEBa6z6rMmz",
+        "entry": 2.326e-05,
+        "exit": 1.97e-05,
+        "pnl_pct": -15.31,
+        "pnl_sol": -1.53052,
+        "exit_reason": "SL",
+        "hold_min": 0.7,
+        "ts": 1781873959
+      },
+      {
+        "symbol": "WAR",
+        "mint": "FhhDi7qyJqn2Gjt6k3574NrVi4awHqH2gKt1WJe9pump",
+        "entry": 2.182e-05,
+        "exit": 1.856e-05,
+        "pnl_pct": -14.94,
+        "pnl_sol": -1.49404,
+        "exit_reason": "SL",
+        "hold_min": 2.8,
+        "ts": 1781874090
+      },
+      {
+        "symbol": "VICE",
+        "mint": "3BZoxTeEuBR8HgL99dUsybiYYnRpu3nDdHqpDtiFpump",
+        "entry": 7.59e-05,
+        "exit": 6.41e-05,
+        "pnl_pct": -15.55,
+        "pnl_sol": -1.55468,
+        "exit_reason": "SL",
+        "hold_min": 6.2,
+        "ts": 1781874293
+      },
+      {
+        "symbol": "Solana",
+        "mint": "5kuTkFHSha6Dc4po34fhHVYfUf9XzqFSGxRN41rmpump",
+        "entry": 2.57e-05,
+        "exit": 3.5e-05,
+        "pnl_pct": 36.19,
+        "pnl_sol": 3.61868,
+        "exit_reason": "TP",
+        "hold_min": 3.6,
+        "ts": 1781874433
+      },
+      {
+        "symbol": "Navi",
+        "mint": "AdEDzMybuRBJBoF4Hm17qbp5yqsXEyNjnYFMDH2mpump",
+        "entry": 6.817e-05,
+        "exit": 5.91e-05,
+        "pnl_pct": -13.3,
+        "pnl_sol": -1.3305,
+        "exit_reason": "SL",
+        "hold_min": 2.2,
+        "ts": 1781875135
+      },
+      {
+        "symbol": "$VICE",
+        "mint": "woEz8bno1sJWW3Ycx7RcX8i8RdVfBswYsiTVP216gta",
+        "entry": 4.47e-06,
+        "exit": 6.102e-06,
+        "pnl_pct": 36.51,
+        "pnl_sol": 3.65101,
+        "exit_reason": "TP",
+        "hold_min": 1.2,
+        "ts": 1781875636
+      },
+      {
+        "symbol": "SOLANA",
+        "mint": "EeZeY7QfrBVsuQCmNPQ2EvNpyv1QvZSpyVxBMmTqpump",
+        "entry": 4.851e-06,
+        "exit": 7e-06,
+        "pnl_pct": 44.3,
+        "pnl_sol": 4.43001,
+        "exit_reason": "TP",
+        "hold_min": 1.8,
+        "ts": 1781878197
+      },
+      {
+        "symbol": "RICH",
+        "mint": "89SWf1zfiWSp3doPhM4vstqxjTF1iozs1EU8noN6pump",
+        "entry": 3.525e-05,
+        "exit": 5.681e-05,
+        "pnl_pct": 61.16,
+        "pnl_sol": 6.11631,
+        "exit_reason": "TP",
+        "hold_min": 1.5,
+        "ts": 1781878819
+      },
+      {
+        "symbol": "MechaWar",
+        "mint": "DAE2ugmx3GsZbM6RMvvVjm1Z2QmwguDDMCDpsVVbpump",
+        "entry": 1.957e-05,
+        "exit": 1.643e-05,
+        "pnl_pct": -16.04,
+        "pnl_sol": -1.6045,
+        "exit_reason": "SL",
+        "hold_min": 8.5,
+        "ts": 1781879405
+      }
+    ],
+    "log_tail": [
+      "[15:34:51] [t=96.2min] [SCANNER] +28 candidatos (fila=28)\n",
+      "[15:35:06] [t=96.5min] [SCANNER] +28 candidatos (fila=28)\n",
+      "[15:35:22] [t=96.7min] [SCANNER] +28 candidatos (fila=28)\n",
+      "[15:35:37] [t=97.0min] [SCANNER] +28 candidatos (fila=28)\n",
+      "[15:35:53] [t=97.2min] [SCANNER] +28 candidatos (fila=28)\n",
+      "[15:36:08] [t=97.5min] [SCANNER] +28 candidatos (fila=28)\n",
+      "[15:36:24] [t=97.8min] [SCANNER] +28 candidatos (fila=28)\n",
+      "[15:36:39] [t=98.0min] [STATUS] posicoes=0 | trades=9 | wins=4 losses=5 | pnl=+10.30177SOL\n",
+      "[15:36:39] [t=98.0min] [SCANNER] +28 candidatos (fila=28)\n",
+      "[15:36:55] [t=98.3min] [SCANNER] +28 candidatos (fila=28)\n",
+      "[15:37:10] [t=98.5min] [SCANNER] +28 candidatos (fila=28)\n",
+      "[15:37:26] [t=98.8min] [SCANNER] +28 candidatos (fila=28)\n",
+      "[15:37:41] [t=99.0min] [SCANNER] +28 candidatos (fila=28)\n",
+      "[15:37:57] [t=99.3min] [SCANNER] +28 candidatos (fila=28)\n",
+      "[15:38:12] [t=99.6min] [SCANNER] +28 candidatos (fila=28)\n",
+      "[15:38:28] [t=99.8min] [SCANNER] +28 candidatos (fila=28)\n",
+      "[15:38:39] [t=100.0min] [STATUS] posicoes=0 | trades=9 | wins=4 losses=5 | pnl=+10.30177SOL\n",
+      "[15:38:43] [t=100.1min] [SCANNER] +28 candidatos (fila=28)\n",
+      "[15:38:59] [t=100.3min] [SCANNER] +28 candidatos (fila=28)\n",
+      "[15:39:14] [t=100.6min] [SCANNER] +28 candidatos (fila=28)\n"
+    ]
+  },
+  "total_tokens": 47,
+  "total_wallets": 87
 }

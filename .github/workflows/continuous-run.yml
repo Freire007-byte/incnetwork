@@ -27,6 +27,13 @@ jobs:
           path: data/
         continue-on-error: true
 
+      - name: Restaurar trades da simulacao
+        uses: actions/download-artifact@v4
+        with:
+          name: caca-pump-sim
+          path: /tmp/inc_study/
+        continue-on-error: true
+
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
@@ -35,10 +42,20 @@ jobs:
       - name: Instalar dependencias
         run: pip install requests --quiet
 
-      - name: Criar diretorios
+      - name: Criar diretorios e restaurar seed
         run: |
           mkdir -p data logs
           mkdir -p /tmp/inc_study
+          # Se nao tem DB do artifact mas tem no git (seed inicial), usa o do git
+          if [ ! -f data/caca_pump.db ] && [ -f data/.gitkeep ]; then
+            echo "Usando DB vazio (primeiro ciclo)"
+          fi
+          # Copia trades seed do git se artifact nao restaurou
+          if [ ! -f /tmp/inc_study/sim_trades.jsonl ] && [ -f inc_study/sim_trades.jsonl ]; then
+            cp inc_study/sim_trades.jsonl /tmp/inc_study/sim_trades.jsonl
+            cp inc_study/sim_results.txt /tmp/inc_study/sim_results.txt 2>/dev/null || true
+            echo "Trades seed restaurados do git: $(wc -l < /tmp/inc_study/sim_trades.jsonl) trades"
+          fi
 
       - name: Inicializar banco
         run: |
@@ -126,6 +143,15 @@ jobs:
         with:
           name: caca-pump-db
           path: data/caca_pump.db
+          retention-days: 8
+          overwrite: true
+        if: always()
+
+      - name: Salvar trades simulacao como artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: caca-pump-sim
+          path: /tmp/inc_study/
           retention-days: 8
           overwrite: true
         if: always()

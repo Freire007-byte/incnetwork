@@ -4,8 +4,21 @@ import sqlite3, json, time, os
 
 DB_PATH = os.environ.get("DB_PATH", "data/caca_pump.db")
 OUT = "dashboard_data.json"
-SIM_TRADES = os.environ.get("SIM_TRADES", "/tmp/inc_study/sim_trades.jsonl")
-SIM_LOG    = os.environ.get("SIM_LOG", "/tmp/inc_study/sim_results.txt")
+
+# Tenta /tmp/inc_study primeiro (GitHub Actions), depois inc_study/ local (seed no git)
+def _find(candidates):
+    for p in candidates:
+        if os.path.exists(p): return p
+    return None
+
+SIM_TRADES = os.environ.get("SIM_TRADES") or _find([
+    "/tmp/inc_study/sim_trades.jsonl",
+    "inc_study/sim_trades.jsonl",
+])
+SIM_LOG = os.environ.get("SIM_LOG") or _find([
+    "/tmp/inc_study/sim_results.txt",
+    "inc_study/sim_results.txt",
+])
 
 def export():
     data = {"updated_at": time.strftime("%Y-%m-%d %H:%M:%S UTC"), "tokens": [], "patterns": {}, "wallets": [], "sim": {}}

@@ -1,0 +1,9 @@
+{"symbol": "SOL", "mint": "7sjgj9278rm2aJVZQ6hkm7dZxC8pZX4K8WEBa6z6rMmz", "entry": 2.326e-05, "exit": 1.97e-05, "pnl_pct": -15.31, "pnl_sol": -1.53052, "exit_reason": "SL", "hold_min": 0.7, "ts": 1781873959}
+{"symbol": "WAR", "mint": "FhhDi7qyJqn2Gjt6k3574NrVi4awHqH2gKt1WJe9pump", "entry": 2.182e-05, "exit": 1.856e-05, "pnl_pct": -14.94, "pnl_sol": -1.49404, "exit_reason": "SL", "hold_min": 2.8, "ts": 1781874090}
+{"symbol": "VICE", "mint": "3BZoxTeEuBR8HgL99dUsybiYYnRpu3nDdHqpDtiFpump", "entry": 7.59e-05, "exit": 6.41e-05, "pnl_pct": -15.55, "pnl_sol": -1.55468, "exit_reason": "SL", "hold_min": 6.2, "ts": 1781874293}
+{"symbol": "Solana", "mint": "5kuTkFHSha6Dc4po34fhHVYfUf9XzqFSGxRN41rmpump", "entry": 2.57e-05, "exit": 3.5e-05, "pnl_pct": 36.19, "pnl_sol": 3.61868, "exit_reason": "TP", "hold_min": 3.6, "ts": 1781874433}
+{"symbol": "Navi", "mint": "AdEDzMybuRBJBoF4Hm17qbp5yqsXEyNjnYFMDH2mpump", "entry": 6.817e-05, "exit": 5.91e-05, "pnl_pct": -13.3, "pnl_sol": -1.3305, "exit_reason": "SL", "hold_min": 2.2, "ts": 1781875135}
+{"symbol": "$VICE", "mint": "woEz8bno1sJWW3Ycx7RcX8i8RdVfBswYsiTVP216gta", "entry": 4.47e-06, "exit": 6.102e-06, "pnl_pct": 36.51, "pnl_sol": 3.65101, "exit_reason": "TP", "hold_min": 1.2, "ts": 1781875636}
+{"symbol": "SOLANA", "mint": "EeZeY7QfrBVsuQCmNPQ2EvNpyv1QvZSpyVxBMmTqpump", "entry": 4.851e-06, "exit": 7e-06, "pnl_pct": 44.3, "pnl_sol": 4.43001, "exit_reason": "TP", "hold_min": 1.8, "ts": 1781878197}
+{"symbol": "RICH", "mint": "89SWf1zfiWSp3doPhM4vstqxjTF1iozs1EU8noN6pump", "entry": 3.525e-05, "exit": 5.681e-05, "pnl_pct": 61.16, "pnl_sol": 6.11631, "exit_reason": "TP", "hold_min": 1.5, "ts": 1781878819}
+{"symbol": "MechaWar", "mint": "DAE2ugmx3GsZbM6RMvvVjm1Z2QmwguDDMCDpsVVbpump", "entry": 1.957e-05, "exit": 1.643e-05, "pnl_pct": -16.04, "pnl_sol": -1.6045, "exit_reason": "SL", "hold_min": 8.5, "ts": 1781879405}
