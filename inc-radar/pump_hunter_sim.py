@@ -5,16 +5,16 @@
 import subprocess, json, time, os, queue, threading, sys
 
 SIM_DURATION_MIN = 10080  # 7 dias em minutos
-ENTRY_SOL        = 1.0
+ENTRY_SOL        = 10.0
 TP_PCT           = 0.35   # +35% take profit
 SL_PCT           = 0.12   # -12% stop loss
 MAX_HOLD_MIN     = 12     # saida forcada apos 12 min
 MAX_POSITIONS    = 3
 
-MIN_WHALE_COUNT  = 5
-MIN_SOL_5MIN     = 3.0
-MAX_TOKEN_AGE_MIN= 30
-MAX_BOT_RATIO    = 0.85
+MIN_WHALE_COUNT  = 2
+MIN_SOL_5MIN     = 0.5
+MAX_TOKEN_AGE_MIN= 60
+MAX_BOT_RATIO    = 0.90
 WHALE_SOL_MIN    = 0.3
 BOT_SOL_MAX      = 0.005
 
@@ -129,29 +129,17 @@ def classifier_worker():
         price = float(p.get("priceUsd") or 0)
         if not price: continue
 
-        txs = curl_get(f"https://api.helius.xyz/v0/addresses/{mint}/transactions"
-                       f"?api-key={HELIUS_KEY}&limit=40&type=SWAP", timeout=12)
-        if not txs or not isinstance(txs, list): continue
-
-        whale_c = bot_c = 0
-        sol_5min = 0.0
-        t0 = None
-        for tx in txs:
-            ts = tx.get("timestamp", 0)
-            if t0 is None or (ts and ts < t0): t0 = ts
-        for tx in txs:
-            ts  = tx.get("timestamp", 0)
-            age = (ts - t0)/60 if t0 and ts else 999
-            for acc in (tx.get("accountData") or []):
-                native = abs(acc.get("nativeBalanceChange", 0)) / 1e9
-                if native < 0.001: continue
-                if native >= WHALE_SOL_MIN:
-                    whale_c += 1
-                    if age <= 5: sol_5min += native
-                elif native <= BOT_SOL_MAX:
-                    bot_c += 1
-
-        total     = whale_c + bot_c
+        # Classifica via DexScreener (sem Helius)
+        vol_m5   = float(p.get("volume", {}).get("m5") or 0)
+        buys_m5  = int((p.get("txns") or {}).get("m5", {}).get("buys") or 0)
+        sells_m5 = int((p.get("txns") or {}).get("m5", {}).get("sells") or 0)
+        buys_h1  = int((p.get("txns") or {}).get("h1", {}).get("buys") or 0)
+        SOL_PRICE = 175.0
+        avg_buy_usd = vol_m5 / max(1, buys_m5)
+        whale_c  = max(0, int(vol_m5 / (WHALE_SOL_MIN * SOL_PRICE * 1.5)))
+        bot_c    = max(0, int(buys_m5 * max(0, 1 - avg_buy_usd / 40)))
+        sol_5min = vol_m5 / SOL_PRICE
+        total    = whale_c + bot_c
         bot_ratio = bot_c / max(1, total)
         reasons   = []
         if whale_c < MIN_WHALE_COUNT:   reasons.append(f"whales={whale_c}<{MIN_WHALE_COUNT}")
@@ -159,8 +147,7 @@ def classifier_worker():
         if bot_ratio > MAX_BOT_RATIO:   reasons.append(f"bots={bot_ratio:.0%}>{MAX_BOT_RATIO:.0%}")
 
         if reasons:
-            if whale_c > 0:
-                log(f"[skip] {sym} h1={h1:+.0f}% age={age_min:.0f}m | {reasons}")
+            log(f"[skip] {sym} h1={h1:+.0f}% liq=${liq:,.0f} wh={whale_c} sol5m={sol_5min:.2f} bot={bot_ratio:.0%} | {reasons}")
             continue
 
         sig = {"mint":mint,"symbol":sym,"price":price,"liq":liq,
