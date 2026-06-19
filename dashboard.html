@@ -86,6 +86,7 @@
 
   #live-status { font-size: 11px; color: var(--muted); text-align: center; padding: 8px; }
   #scan-count { font-size: 11px; color: var(--green); }
+  .wallets-box { margin-top: 6px; border-top: 1px solid var(--border); padding-top: 4px; }
 </style>
 </head>
 <body>
@@ -218,6 +219,7 @@ function renderLive() {
         <span class="live-badge badge-${l.cls}">${l.label}</span>
       </div>
       <div class="live-detail">${l.detail}</div>
+      ${l.wallets ? `<div class="wallets-box">${l.wallets}</div>` : ''}
       <div class="live-time">${l.time}</div>
     </div>`).join('');
 
@@ -235,6 +237,71 @@ function renderLive() {
       <div class="pos-detail">entrada $${p.entry.toFixed(8)} · TP +35% · SL -12% · ${p.age||0}min</div>
     </div>`;
   }).join('');
+}
+
+async function fetchWallets(mint) {
+  try {
+    const RPC = 'https://api.mainnet-beta.solana.com';
+    // Pega ultimas 8 assinaturas do mint
+    const r1 = await fetch(RPC, {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({jsonrpc:'2.0',id:1,method:'getSignaturesForAddress',
+        params:[mint,{limit:8,commitment:'confirmed'}]})
+    });
+    const d1 = await r1.json();
+    const sigs = (d1.result||[]).map(s=>s.signature).filter(Boolean);
+    if (!sigs.length) return '';
+
+    // Busca detalhes das txs em paralelo (max 5)
+    const txResults = await Promise.all(sigs.slice(0,5).map(sig =>
+      fetch(RPC, {method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({jsonrpc:'2.0',id:1,method:'getTransaction',
+          params:[sig,{encoding:'json',maxSupportedTransactionVersion:0,commitment:'confirmed'}]})
+      }).then(r=>r.json()).catch(()=>null)
+    ));
+
+    const walletMap = {};
+    for (const res of txResults) {
+      if (!res?.result) continue;
+      const tx = res.result;
+      const accs = tx.transaction?.message?.accountKeys || [];
+      const pre  = tx.meta?.preBalances  || [];
+      const post = tx.meta?.postBalances || [];
+      accs.forEach((acc, i) => {
+        const addr = typeof acc === 'string' ? acc : acc.pubkey;
+        if (!addr || addr.length < 32) return;
+        const diff = (post[i]||0) - (pre[i]||0);
+        const solAmt = Math.abs(diff) / 1e9;
+        if (solAmt < 0.001) return;
+        if (!walletMap[addr] || walletMap[addr].sol < solAmt)
+          walletMap[addr] = {sol: solAmt, diff};
+      });
+    }
+
+    const sorted = Object.entries(walletMap)
+      .filter(([,v]) => v.sol >= 0.001)
+      .sort((a,b) => b[1].sol - a[1].sol)
+      .slice(0, 6);
+
+    if (!sorted.length) return '';
+
+    const rows = sorted.map(([addr, v]) => {
+      const short = addr.slice(0,5)+'...'+addr.slice(-4);
+      const sol = v.sol.toFixed(3);
+      let role, color;
+      if (v.sol >= 0.3)      { role='🐋 BALEIA'; color='var(--green)'; }
+      else if (v.sol <= 0.005){ role='🤖 BOT';    color='var(--red)'; }
+      else                    { role='👤 RETAIL';  color='var(--muted)'; }
+      const arrow = v.diff > 0 ? '▲' : '▼';
+      return `<div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid var(--border);font-size:11px">
+        <span style="font-family:monospace;color:var(--blue)">${short}</span>
+        <span style="color:${color}">${role}</span>
+        <span style="color:var(--text)">${arrow} ${sol} SOL</span>
+      </div>`;
+    }).join('');
+
+    return `<div style="margin-top:6px;border-top:1px solid var(--border);padding-top:4px">${rows}</div>`;
+  } catch(e) { return ''; }
 }
 
 async function scanOnce() {
@@ -281,9 +348,20 @@ async function scanOnce() {
       }
 
       if (isSignal(m) && !positions[mint]) {
-        addLog({cls:'signal', sym, label:'SINAL', detail:`baleias=${m.whaleC} sol5m=${m.sol5.toFixed(1)} bot=${(m.botR*100).toFixed(0)}% liq=$${Math.round(liq/1000)}k`, time: now()});
+        const t = now();
+        // Mostra sinal imediatamente, depois adiciona carteiras async
+        const sigItem = {cls:'signal', sym, label:'SINAL',
+          detail:`baleias=${m.whaleC} sol5m=${m.sol5.toFixed(1)} bot=${(m.botR*100).toFixed(0)}% liq=$${Math.round(liq/1000)}k`,
+          time: t, wallets: '<span style="color:var(--muted);font-size:10px">buscando carteiras...</span>'};
+        addLog(sigItem);
         positions[mint] = {sym, entry: price, curPrice: price, openedAt: Date.now(), age: 0};
-        addLog({cls:'entry', sym, label:'ENTRADA', detail:`@ $${price.toFixed(8)} · 10 SOL`, time: now()});
+        addLog({cls:'entry', sym, label:'ENTRADA', detail:`@ $${price.toFixed(8)} · 10 SOL`, time: t});
+
+        // Busca carteiras em background e atualiza
+        fetchWallets(mint).then(walletHtml => {
+          sigItem.wallets = walletHtml || '<span style="color:var(--muted);font-size:10px">sem carteiras detectadas</span>';
+          if (activeTab==='live') renderLive();
+        });
       }
     }
     updateSimTab();
