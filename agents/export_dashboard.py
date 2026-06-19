@@ -79,8 +79,10 @@ def export():
 
     try:
         if SIM_LOG and os.path.exists(SIM_LOG):
-            with open(SIM_LOG) as f:
+            with open(SIM_LOG, errors="replace") as f:
                 lines = f.readlines()
+            # filtra linhas corrompidas (null bytes de artifacts antigos)
+            lines = [l for l in lines if l.strip() and "\x00" not in l]
             data["sim"]["log_tail"] = lines[-20:]
     except Exception as e:
         data["sim"]["log_error"] = str(e)
