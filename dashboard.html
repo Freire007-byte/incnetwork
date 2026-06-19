@@ -63,6 +63,12 @@
   .pos-detail { font-size: 11px; color: var(--muted); margin-top: 3px; }
   .pos-pnl { font-size: 16px; font-weight: 700; }
 
+  /* Position chart */
+  .pos-chart-wrap { margin-top: 8px; border-radius: 6px; overflow: hidden; cursor: pointer; background: rgba(0,0,0,.35); border: 1px solid var(--border); position: relative; transition: height .2s; }
+  .pos-chart-wrap canvas { display: block; width: 100%; height: 70px; }
+  .pos-chart-wrap.expanded canvas { height: 150px; }
+  .pos-chart-hint { position: absolute; bottom: 3px; right: 6px; font-size: 9px; color: var(--muted); pointer-events: none; }
+
   /* Patterns */
   .pattern-bar { margin-bottom: 6px; }
   .pattern-name { font-size: 12px; margin-bottom: 3px; display: flex; justify-content: space-between; }
@@ -224,10 +230,10 @@ function renderLive() {
     </div>`).join('');
 
   // Posicoes abertas
-  const posArr = Object.values(positions);
+  const posArr = Object.entries(positions);
   const pb = document.getElementById('positions-box');
   if (!posArr.length) { pb.innerHTML=''; return; }
-  pb.innerHTML = '<h2>Posições abertas</h2>' + posArr.map(p => {
+  pb.innerHTML = '<h2>Posições abertas</h2>' + posArr.map(([mint, p]) => {
     const cur = p.curPrice || p.entry;
     const pct = ((cur - p.entry) / p.entry * 100).toFixed(1);
     const sol = (ENTRY_SOL * pct/100).toFixed(3);
@@ -235,8 +241,118 @@ function renderLive() {
     return `<div class="position">
       <div class="pos-header"><span>${p.sym}</span><span class="pos-pnl ${cls}">${pct>=0?'+':''}${sol} SOL</span></div>
       <div class="pos-detail">entrada $${p.entry.toFixed(8)} · TP +35% · SL -12% · ${p.age||0}min</div>
+      <div class="pos-chart-wrap" id="cwrap-${mint}" onclick="toggleChart('${mint}')">
+        <canvas id="chart-${mint}"></canvas>
+        <span class="pos-chart-hint">clique para expandir</span>
+      </div>
     </div>`;
   }).join('');
+  // Desenha graficos apos render
+  requestAnimationFrame(() => Object.keys(positions).forEach(drawChart));
+}
+
+function toggleChart(mint) {
+  const wrap = document.getElementById('cwrap-' + mint);
+  if (!wrap) return;
+  wrap.classList.toggle('expanded');
+  const hint = wrap.querySelector('.pos-chart-hint');
+  if (hint) hint.textContent = wrap.classList.contains('expanded') ? 'clique para minimizar' : 'clique para expandir';
+  requestAnimationFrame(() => drawChart(mint));
+}
+
+function drawChart(mint) {
+  const pos = positions[mint];
+  const canvas = document.getElementById('chart-' + mint);
+  if (!pos || !canvas) return;
+
+  const dpr = window.devicePixelRatio || 1;
+  const W = canvas.offsetWidth  || canvas.parentElement.offsetWidth || 280;
+  const H = canvas.offsetHeight || 70;
+  canvas.width  = W * dpr;
+  canvas.height = H * dpr;
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+  ctx.clearRect(0, 0, W, H);
+
+  const hist = pos.priceHistory || [];
+  const entry = pos.entry;
+  const tp = entry * 1.35;
+  const sl = entry * 0.88;
+
+  if (hist.length < 2) {
+    ctx.fillStyle = '#4b5563';
+    ctx.font = '10px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Aguardando dados de preço...', W/2, H/2);
+    return;
+  }
+
+  const prices = hist.map(h => h.p);
+  const pad = { t: 14, b: 10, l: 4, r: 60 };
+  const minP = Math.min(...prices, sl * 0.99);
+  const maxP = Math.max(...prices, tp * 1.01);
+  const rng  = maxP - minP || 1;
+
+  const toX = i => pad.l + (i / (hist.length - 1)) * (W - pad.l - pad.r);
+  const toY = p => pad.t + (1 - (p - minP) / rng) * (H - pad.t - pad.b);
+
+  // Fundo da zona TP/SL
+  ctx.fillStyle = 'rgba(16,185,129,0.05)';
+  ctx.fillRect(pad.l, toY(tp), W - pad.l - pad.r, toY(entry) - toY(tp));
+  ctx.fillStyle = 'rgba(239,68,68,0.05)';
+  ctx.fillRect(pad.l, toY(entry), W - pad.l - pad.r, toY(sl) - toY(entry));
+
+  // Linhas de referência
+  const drawLine = (price, color, label) => {
+    const y = toY(price);
+    ctx.save();
+    ctx.setLineDash([4, 3]);
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(W - pad.r + 2, y); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = color;
+    ctx.font = '9px monospace';
+    ctx.textAlign = 'left';
+    ctx.fillText(label, W - pad.r + 4, y + 3);
+    ctx.restore();
+  };
+  drawLine(tp,    'rgba(16,185,129,.8)',  '+35% TP');
+  drawLine(entry, 'rgba(245,158,11,.85)', 'entrada');
+  drawLine(sl,    'rgba(239,68,68,.8)',   '-12% SL');
+
+  // Área sob a curva
+  const last = prices[prices.length - 1];
+  const lineColor = last >= entry ? '#10b981' : '#ef4444';
+  ctx.beginPath();
+  ctx.moveTo(toX(0), toY(prices[0]));
+  hist.forEach((h, i) => ctx.lineTo(toX(i), toY(h.p)));
+  ctx.lineTo(toX(hist.length - 1), H);
+  ctx.lineTo(toX(0), H);
+  ctx.closePath();
+  ctx.fillStyle = last >= entry ? 'rgba(16,185,129,.1)' : 'rgba(239,68,68,.1)';
+  ctx.fill();
+
+  // Linha de preço
+  ctx.beginPath();
+  ctx.strokeStyle = lineColor;
+  ctx.lineWidth = 1.5;
+  hist.forEach((h, i) => i === 0 ? ctx.moveTo(toX(i), toY(h.p)) : ctx.lineTo(toX(i), toY(h.p)));
+  ctx.stroke();
+
+  // Marcador de entrada (linha vertical no 1º ponto)
+  ctx.save();
+  ctx.setLineDash([2, 2]);
+  ctx.strokeStyle = 'rgba(245,158,11,.6)';
+  ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(toX(0), pad.t); ctx.lineTo(toX(0), H - pad.b); ctx.stroke();
+  ctx.restore();
+
+  // Ponto actual
+  const cx = toX(hist.length - 1), cy = toY(last);
+  ctx.beginPath(); ctx.arc(cx, cy, 3.5, 0, Math.PI * 2);
+  ctx.fillStyle = lineColor; ctx.fill();
+  ctx.strokeStyle = '#fff'; ctx.lineWidth = 1; ctx.stroke();
 }
 
 async function fetchWallets(mint) {
@@ -335,6 +451,9 @@ async function scanOnce() {
         const pos = positions[mint];
         pos.curPrice = price;
         pos.age = Math.floor((Date.now() - pos.openedAt) / 60000);
+        if (!pos.priceHistory) pos.priceHistory = [];
+        pos.priceHistory.push({p: price, ts: Date.now()});
+        if (pos.priceHistory.length > 60) pos.priceHistory.shift();
         const pct = (price - pos.entry) / pos.entry;
         if (pct >= TP) {
           const pnl = ENTRY_SOL * pct;
@@ -357,7 +476,7 @@ async function scanOnce() {
           detail:`baleias=${m.whaleC} sol5m=${m.sol5.toFixed(1)} bot=${(m.botR*100).toFixed(0)}% liq=$${Math.round(liq/1000)}k`,
           time: t, wallets: '<span style="color:var(--muted);font-size:10px">buscando carteiras...</span>'};
         addLog(sigItem);
-        positions[mint] = {sym, entry: price, curPrice: price, openedAt: Date.now(), age: 0};
+        positions[mint] = {sym, entry: price, curPrice: price, openedAt: Date.now(), age: 0, priceHistory: [{p: price, ts: Date.now()}]};
         addLog({cls:'entry', sym, label:'ENTRADA', detail:`@ $${price.toFixed(8)} · 10 SOL`, time: t});
 
         // Busca carteiras em background e atualiza
