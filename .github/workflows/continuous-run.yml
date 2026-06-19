@@ -95,9 +95,12 @@ jobs:
               print(f'Patched {f}')
           "
 
-      - name: Iniciar agentes em background
+      - name: Iniciar agentes e atualizar dashboard a cada 30min
         run: |
           export DB_PATH=data/caca_pump.db
+
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
 
           python3 agents/collector.py >> logs/collector.log 2>&1 &
           echo "collector PID=$!"
@@ -117,8 +120,20 @@ jobs:
           python3 inc-radar/pump_hunter_sim.py >> logs/sim.log 2>&1 &
           echo "sim PID=$!"
 
-          echo "Agentes iniciados. Rodando por 5h30m..."
-          sleep 19800
+          echo "Agentes iniciados. Atualizando dashboard a cada 30min por 5h20m..."
+
+          END_TIME=$(( $(date +%s) + 19200 ))
+          CYCLE=0
+          while [ $(date +%s) -lt $END_TIME ]; do
+            sleep 1800
+            CYCLE=$(( CYCLE + 1 ))
+            echo "=== Update #$CYCLE -- $(date -u '+%H:%M') UTC ==="
+            DB_PATH=data/caca_pump.db python3 agents/export_dashboard.py || true
+            git pull --rebase origin main --quiet 2>/dev/null || true
+            git add dashboard_data.json || true
+            git diff --cached --quiet || git commit -m "live: dashboard $(date -u '+%H:%M') UTC"
+            git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/Freire007-byte/incnetwork.git HEAD:main || true
+          done
 
           echo "Finalizando agentes..."
           kill $(jobs -p) 2>/dev/null || true
