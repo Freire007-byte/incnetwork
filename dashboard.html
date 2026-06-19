@@ -248,15 +248,16 @@ function render(d) {
   } else {
     lastTrades.forEach(t => {
       const pnlSol = t.pnl_sol ?? 0;
-      const cls = t.type === 'entry' ? 'trade-entry' : (pnlSol > 0 ? 'trade-exit-win' : 'trade-exit-loss');
-      const icon = t.type === 'entry' ? '▶' : (pnlSol>0?'✓':'✗');
-      const pnlStr = t.type === 'entry' ? '' : `${pnlSol>=0?'+':''}${pnlSol.toFixed(3)} SOL`;
+      const cls = pnlSol > 0 ? 'trade-exit-win' : 'trade-exit-loss';
+      const icon = pnlSol > 0 ? '✓' : '✗';
+      const pnlStr = `${pnlSol>=0?'+':''}${pnlSol.toFixed(3)} SOL (${(t.pnl_pct??0).toFixed(1)}%)`;
+      const detail = `${t.exit_reason||''} · ${(t.hold_min||0).toFixed(0)}min`;
       html += `<div class="sim-trade ${cls}">
         <div class="sim-trade-header">
           <span>${icon} ${t.symbol||'?'}</span>
           <span class="${pnlSol>=0?'pnl-pos':'pnl-neg'}">${pnlStr}</span>
         </div>
-        <div class="sim-trade-detail">${t.type||''} · ${t.reason||''}</div>
+        <div class="sim-trade-detail">${detail}</div>
       </div>`;
     });
   }
