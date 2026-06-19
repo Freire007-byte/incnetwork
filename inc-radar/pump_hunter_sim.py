@@ -6,16 +6,17 @@ import subprocess, json, time, os, queue, threading, sys
 
 SIM_DURATION_MIN = 300  # 5 horas -- margem antes do job timeout de 350min
 ENTRY_SOL        = 1.0   # 1 SOL real por entrada
-TP_PCT           = 0.25   # +25% take profit
-SL_PCT           = 0.07   # -7% stop loss (apertado para moeda real)
-MAX_HOLD_MIN     = 12     # saida forcada apos 12 min
+TP_PCT           = 0.40   # +40% take profit (pumps que valem entrar vao longe)
+SL_PCT           = 0.12   # -12% stop loss (DexScreener lag faz exit real ser -10 a -15%)
+MAX_HOLD_MIN     = 10     # saida forcada apos 10 min (nao aguenta rugs lentos)
 MAX_POSITIONS    = 3
 
 MIN_WHALE_COUNT  = 2
-MIN_SOL_5MIN     = 0.5
-MAX_TOKEN_AGE_MIN= 60
-MAX_BOT_RATIO    = 0.90
-MIN_LIQ_USD      = 5000
+MIN_SOL_5MIN     = 2.0    # era 0.5 -- exige volume real (filtra micro-rugs)
+MAX_TOKEN_AGE_MIN= 20     # era 60 -- entra cedo no pump, nao no pico
+MAX_BOT_RATIO    = 0.75   # era 0.90 -- mais exigente contra bots
+MIN_LIQ_USD      = 8000   # era 5000 -- liquidez minima para slippage aceitavel
+MIN_BUYSELL_RATIO= 2.0    # buys_m5 deve ser 2x os sells (pump genuino)
 WHALE_SOL_MIN    = 0.3
 BOT_SOL_MAX      = 0.005
 
@@ -100,7 +101,7 @@ def scanner_worker():
 def classifier_worker():
     log("[CLASSIFIER] iniciado")
     seen = {}
-    SEEN_EXPIRY = 900  # reavalia token apos 15min
+    SEEN_EXPIRY = 90   # reavalia token apos 90s (pump pode acelerar rapidamente)
     while True:
         elapsed = (time.time() - start_ts) / 60
         if elapsed >= SIM_DURATION_MIN:
@@ -141,12 +142,14 @@ def classifier_worker():
         sol_5min = vol_m5 / SOL_PRICE
         total    = whale_c + bot_c
         bot_ratio = bot_c / max(1, total)
+        buy_sell = buys_m5 / max(1, sells_m5)
         reasons   = []
-        if m5 <= 0:                     reasons.append(f"m5={m5:+.0f}%<=0")
-        if liq < MIN_LIQ_USD:           reasons.append(f"liq=${liq:,.0f}<${MIN_LIQ_USD:,.0f}")
-        if whale_c < MIN_WHALE_COUNT:   reasons.append(f"whales={whale_c}<{MIN_WHALE_COUNT}")
-        if sol_5min < MIN_SOL_5MIN:     reasons.append(f"sol5m={sol_5min:.1f}<{MIN_SOL_5MIN}")
-        if bot_ratio > MAX_BOT_RATIO:   reasons.append(f"bots={bot_ratio:.0%}>{MAX_BOT_RATIO:.0%}")
+        if m5 <= 0:                       reasons.append(f"m5={m5:+.0f}%<=0")
+        if liq < MIN_LIQ_USD:             reasons.append(f"liq=${liq:,.0f}<${MIN_LIQ_USD:,.0f}")
+        if whale_c < MIN_WHALE_COUNT:     reasons.append(f"whales={whale_c}<{MIN_WHALE_COUNT}")
+        if sol_5min < MIN_SOL_5MIN:       reasons.append(f"sol5m={sol_5min:.1f}<{MIN_SOL_5MIN}")
+        if bot_ratio > MAX_BOT_RATIO:     reasons.append(f"bots={bot_ratio:.0%}>{MAX_BOT_RATIO:.0%}")
+        if buy_sell < MIN_BUYSELL_RATIO:  reasons.append(f"B/S={buy_sell:.1f}<{MIN_BUYSELL_RATIO}")
 
         if reasons:
             log(f"[skip] {sym} h1={h1:+.0f}% m5={m5:+.0f}% liq=${liq:,.0f} wh={whale_c} sol5m={sol_5min:.2f} bot={bot_ratio:.0%} | {reasons}")
@@ -155,8 +158,8 @@ def classifier_worker():
         sig = {"mint":mint,"symbol":sym,"price":price,"liq":liq,
                "h1":h1,"m5":m5,"age_min":age_min,"whale_count":whale_c,
                "sol_5min":round(sol_5min,1),"bot_ratio":round(bot_ratio,2)}
-        log(f"[SINAL] >>> {sym} h1={h1:+.0f}% m5={m5:+.0f}% age={age_min:.0f}m "
-            f"liq=${liq:,.0f} whales={whale_c} sol5m={sol_5min:.1f} bot={bot_ratio:.0%}")
+        log(f"[SINAL] >>> {sym} m5={m5:+.0f}% age={age_min:.0f}m "
+            f"liq=${liq:,.0f} wh={whale_c} sol5m={sol_5min:.1f} B/S={buy_sell:.1f} bot={bot_ratio:.0%}")
         try: signal_q.put_nowait(sig)
         except queue.Full: pass
 
@@ -235,10 +238,10 @@ def watchdog_worker():
             if not price: continue
 
             with lock:
-                if mint in positions and not positions[mint].get("be_applied") and price >= pos["entry"] * 1.15:
-                    positions[mint]["sl"] = pos["entry"] * 1.05
+                if mint in positions and not positions[mint].get("be_applied") and price >= pos["entry"] * 1.20:
+                    positions[mint]["sl"] = pos["entry"] * 1.08
                     positions[mint]["be_applied"] = True
-                    log(f"[BREAK-EVEN] {pos['symbol']} SL → entry+5% @ ${pos['entry']*1.05:.8f}")
+                    log(f"[BREAK-EVEN] {pos['symbol']} SL → entry+8% @ ${pos['entry']*1.08:.8f}")
                 if mint in positions:
                     pos = positions[mint]
 
