@@ -11,10 +11,12 @@ SL_PCT           = 0.12   # -12% stop loss
 MAX_HOLD_MIN     = 12     # saida forcada apos 12 min
 MAX_POSITIONS    = 3
 
-MIN_WHALE_COUNT  = 2
-MIN_SOL_5MIN     = 0.5
-MAX_TOKEN_AGE_MIN= 60
-MAX_BOT_RATIO    = 0.90
+MIN_WHALE_COUNT  = 3
+MIN_SOL_5MIN     = 2.0
+MAX_TOKEN_AGE_MIN= 30
+MAX_BOT_RATIO    = 0.70
+MIN_H1_PCT       = 30.0
+MIN_LIQ_USD      = 10000
 WHALE_SOL_MIN    = 0.3
 BOT_SOL_MAX      = 0.005
 
@@ -123,8 +125,8 @@ def classifier_worker():
         age_min = (time.time()*1000 - ca) / 60000 if ca else 999
         if age_min > MAX_TOKEN_AGE_MIN: continue
         liq  = float((p.get("liquidity") or {}).get("usd") or 0)
-        if liq < 3000: continue
         h1   = float((p.get("priceChange") or {}).get("h1") or 0)
+        m5   = float((p.get("priceChange") or {}).get("m5") or 0)
         sym  = (p.get("baseToken") or {}).get("symbol", "?")
         price = float(p.get("priceUsd") or 0)
         if not price: continue
@@ -142,19 +144,21 @@ def classifier_worker():
         total    = whale_c + bot_c
         bot_ratio = bot_c / max(1, total)
         reasons   = []
-        if h1 <= 0:                     reasons.append(f"h1={h1:+.0f}%<=0")
+        if h1 < MIN_H1_PCT:             reasons.append(f"h1={h1:+.0f}%<{MIN_H1_PCT:.0f}%")
+        if m5 <= 0:                     reasons.append(f"m5={m5:+.0f}%<=0")
+        if liq < MIN_LIQ_USD:           reasons.append(f"liq=${liq:,.0f}<${MIN_LIQ_USD:,.0f}")
         if whale_c < MIN_WHALE_COUNT:   reasons.append(f"whales={whale_c}<{MIN_WHALE_COUNT}")
         if sol_5min < MIN_SOL_5MIN:     reasons.append(f"sol5m={sol_5min:.1f}<{MIN_SOL_5MIN}")
         if bot_ratio > MAX_BOT_RATIO:   reasons.append(f"bots={bot_ratio:.0%}>{MAX_BOT_RATIO:.0%}")
 
         if reasons:
-            log(f"[skip] {sym} h1={h1:+.0f}% liq=${liq:,.0f} wh={whale_c} sol5m={sol_5min:.2f} bot={bot_ratio:.0%} | {reasons}")
+            log(f"[skip] {sym} h1={h1:+.0f}% m5={m5:+.0f}% liq=${liq:,.0f} wh={whale_c} sol5m={sol_5min:.2f} bot={bot_ratio:.0%} | {reasons}")
             continue
 
         sig = {"mint":mint,"symbol":sym,"price":price,"liq":liq,
-               "h1":h1,"age_min":age_min,"whale_count":whale_c,
+               "h1":h1,"m5":m5,"age_min":age_min,"whale_count":whale_c,
                "sol_5min":round(sol_5min,1),"bot_ratio":round(bot_ratio,2)}
-        log(f"[SINAL] >>> {sym} h1={h1:+.0f}% age={age_min:.0f}m "
+        log(f"[SINAL] >>> {sym} h1={h1:+.0f}% m5={m5:+.0f}% age={age_min:.0f}m "
             f"liq=${liq:,.0f} whales={whale_c} sol5m={sol_5min:.1f} bot={bot_ratio:.0%}")
         try: signal_q.put_nowait(sig)
         except queue.Full: pass
