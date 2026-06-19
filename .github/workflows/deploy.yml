@@ -1,0 +1,80 @@
+name: Deploy Caca Pump to VPS
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: SSH Deploy
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: 153.75.224.178
+          username: root
+          password: ${{ secrets.VPS_PASSWORD }}
+          port: 22
+          timeout: 120s
+          command_timeout: 300s
+          script: |
+            set -e
+            echo "=== DEPLOY CACA PUMP ==="
+
+            # Instala dependencias se necessario
+            command -v pm2 >/dev/null 2>&1 || npm install -g pm2
+            command -v curl >/dev/null 2>&1 || apt-get install -y curl
+
+            # Python venv
+            PYTHON=""
+            if [ -f "/root/inc-radar/.venv/bin/python" ]; then
+              PYTHON="/root/inc-radar/.venv/bin/python"
+            else
+              PYTHON=$(which python3)
+            fi
+            echo "Python: $PYTHON"
+
+            # Instala requests se necessario
+            $PYTHON -m pip install requests --quiet 2>/dev/null || true
+
+            # Cria diretorios
+            mkdir -p /root/caca-pump/{agents,data,logs}
+            mkdir -p /root/inc-radar
+            mkdir -p /tmp/inc_study
+
+            BASE="https://raw.githubusercontent.com/Freire007-byte/incnetwork/main"
+
+            # Download agentes
+            for f in db.py collector.py analyzer.py network.py patterns.py pumpfun.py dashboard_server.py; do
+              curl -fsSL "$BASE/agents/$f" -o "/root/caca-pump/agents/$f"
+              echo "[OK] $f"
+            done
+
+            curl -fsSL "$BASE/inc-radar/pump_hunter_sim.py" -o "/root/inc-radar/pump_hunter_sim.py"
+            echo "[OK] pump_hunter_sim.py"
+
+            # Inicializa DB
+            $PYTHON /root/caca-pump/agents/db.py
+            echo "[OK] Banco de dados"
+
+            # Para agentes antigos
+            pm2 delete cp-collector cp-analyzer cp-network cp-patterns cp-dashboard cp-pumpfun pump-sim 2>/dev/null || true
+            sleep 2
+
+            # Inicia agentes
+            pm2 start /root/caca-pump/agents/collector.py        --name cp-collector  --interpreter $PYTHON --restart-delay=30000
+            pm2 start /root/caca-pump/agents/analyzer.py         --name cp-analyzer   --interpreter $PYTHON --restart-delay=30000
+            pm2 start /root/caca-pump/agents/network.py          --name cp-network    --interpreter $PYTHON --restart-delay=30000
+            pm2 start /root/caca-pump/agents/patterns.py         --name cp-patterns   --interpreter $PYTHON --restart-delay=30000
+            pm2 start /root/caca-pump/agents/pumpfun.py          --name cp-pumpfun    --interpreter $PYTHON --restart-delay=60000
+            pm2 start /root/caca-pump/agents/dashboard_server.py --name cp-dashboard  --interpreter $PYTHON --restart-delay=10000
+            pm2 start /root/inc-radar/pump_hunter_sim.py         --name pump-sim      --interpreter $PYTHON --restart-delay=60000
+            pm2 save
+
+            echo ""
+            echo "=== STATUS FINAL ==="
+            pm2 list --no-color
+            echo ""
+            echo "Dashboard: http://153.75.224.178:8099"
+            echo "=== DEPLOY CONCLUIDO ==="
