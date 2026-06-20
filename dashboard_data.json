@@ -1,6 +1,76 @@
 {
-  "updated_at": "2026-06-20 02:34:31 UTC",
+  "updated_at": "2026-06-20 03:04:32 UTC",
   "tokens": [
+    {
+      "mint": "FXyQggDX5duRBiofGA77vNqAFLSkCywvAjyZZS41pump",
+      "symbol": "Totebag",
+      "name": "Striped Mini Canvas Tote Bag",
+      "market_cap": 24005.0,
+      "vol_24h": 3065.54,
+      "liq_usd": 10844.99,
+      "pattern_id": 6,
+      "whale_count": 0,
+      "bot_count": 1,
+      "retail_count": 1,
+      "sol_5min": 0.0,
+      "bot_ratio": 0.5
+    },
+    {
+      "mint": "2Nu6MgBDwrmBMBKa97JhPosHn72MzKo1z4FHDL2cpump",
+      "symbol": "Kohen",
+      "name": "Justice for Kohen Wiley",
+      "market_cap": 45888.0,
+      "vol_24h": 23235.63,
+      "liq_usd": 15038.37,
+      "pattern_id": 1,
+      "whale_count": 0,
+      "bot_count": 1,
+      "retail_count": 0,
+      "sol_5min": 0.0,
+      "bot_ratio": 1.0
+    },
+    {
+      "mint": "HxGnB2mj2NSASWXa6Yfx7dhem9x7YBYrU14ronFcpump",
+      "symbol": "Kohen",
+      "name": "Justice for Kohen Wiley",
+      "market_cap": 10318.96,
+      "vol_24h": 26701.1,
+      "liq_usd": 0.0,
+      "pattern_id": 5,
+      "whale_count": 1,
+      "bot_count": 11,
+      "retail_count": 6,
+      "sol_5min": 0.45,
+      "bot_ratio": 0.611
+    },
+    {
+      "mint": "8b1k1qTN8TrRPsGS9q6Nbm6QsVb6PxzZMVTCY9oxpump",
+      "symbol": "VERSE",
+      "name": "MppVerse",
+      "market_cap": 7762.84,
+      "vol_24h": 24525.6,
+      "liq_usd": 0.0,
+      "pattern_id": 5,
+      "whale_count": 1,
+      "bot_count": 7,
+      "retail_count": 2,
+      "sol_5min": 0.95,
+      "bot_ratio": 0.7
+    },
+    {
+      "mint": "EjxrYSXwcU2h1SN1LjcM7EjvoULtSVqH5SayXihCpump",
+      "symbol": "BOOST",
+      "name": "Boost Coin",
+      "market_cap": 5413.43,
+      "vol_24h": 19422.37,
+      "liq_usd": 0.0,
+      "pattern_id": 2,
+      "whale_count": 3,
+      "bot_count": 11,
+      "retail_count": 2,
+      "sol_5min": 1.81,
+      "bot_ratio": 0.688
+    },
     {
       "mint": "DCRWqh2YZVm71eX8jvqFQDXiYjyRfAMWSYDSS3uuV5j8",
       "symbol": "SILVER",
@@ -1264,11 +1334,11 @@
   ],
   "patterns": {
     "BALEIA_FORTE": 11,
-    "BOT_SWARM": 3,
-    "LENTO_WHALE": 26,
+    "BOT_SWARM": 4,
+    "LENTO_WHALE": 27,
     "ORGANIC": 12,
-    "RUG_CAND": 10,
-    "MISTO": 28
+    "RUG_CAND": 12,
+    "MISTO": 29
   },
   "wallets": [
     {
@@ -1542,6 +1612,12 @@
       "total_sol": 1.0558
     },
     {
+      "wallet": "SQHK48QT8SY1vYN44iXji7wQ6CJek8AjfX6mBp47TZq",
+      "role": "whale",
+      "tokens": 1,
+      "total_sol": 1.0504
+    },
+    {
       "wallet": "5SKuCVnDSpeUFj6uLyxfkgBTbWwAVkmdreDfSfgHLVZ9",
       "role": "whale",
       "tokens": 1,
@@ -1564,55 +1640,16 @@
       "role": "whale",
       "tokens": 1,
       "total_sol": 0.9802
-    },
-    {
-      "wallet": "9gQwBEUqVCL3nJZw1z6ajvXQEWDSJayubgJnJcnMU2GC",
-      "role": "retail",
-      "tokens": 1,
-      "total_sol": 0.9489
     }
   ],
   "sim": {
-    "total_trades": 21,
-    "trades": 21,
+    "total_trades": 24,
+    "trades": 24,
     "wins": 6,
-    "losses": 15,
-    "pnl_sol": 2.15117,
+    "losses": 18,
+    "pnl_sol": 1.4391,
     "entry_sol": 10.0,
     "last_trades": [
-      {
-        "symbol": "MFGA",
-        "mint": "8QAfLaNuyZhwg4LMomfe8CKX7XwYwSiGQDPUivkppump",
-        "entry": 0.0002944,
-        "exit": 0.00032,
-        "pnl_pct": 8.7,
-        "pnl_sol": 0.86957,
-        "exit_reason": "TEMPO",
-        "hold_min": 12.1,
-        "ts": 1781887971
-      },
-      {
-        "symbol": "TREMP",
-        "mint": "HoHtLm7M6G25u1zwKHMLL5dJbDkMqP3awLH9ULjRpump",
-        "entry": 0.0001008,
-        "exit": 8.754e-05,
-        "pnl_pct": -13.15,
-        "pnl_sol": -1.31548,
-        "exit_reason": "SL",
-        "hold_min": 0.2,
-        "ts": 1781888171
-      },
-      {
-        "symbol": "BenAndDesi",
-        "mint": "DHtbecpUsXQmBuNfRf8JjRiknCLreZSQSFnvNrhCpump",
-        "entry": 1.887e-05,
-        "exit": 1.58e-05,
-        "pnl_pct": -16.27,
-        "pnl_sol": -0.16269,
-        "exit_reason": "SL",
-        "hold_min": 3.0,
-        "ts": 1781914424
-      },
       {
         "symbol": "BenAndDesi",
         "mint": "DHtbecpUsXQmBuNfRf8JjRiknCLreZSQSFnvNrhCpump",
@@ -1689,31 +1726,64 @@
         "exit_reason": "SL",
         "hold_min": 4.9,
         "ts": 1781920863
+      },
+      {
+        "symbol": "SILVER",
+        "mint": "DCRWqh2YZVm71eX8jvqFQDXiYjyRfAMWSYDSS3uuV5j8",
+        "entry": 3.839e-05,
+        "exit": 2.392e-05,
+        "pnl_pct": -37.69,
+        "pnl_sol": -0.37692,
+        "exit_reason": "SL",
+        "hold_min": 2.0,
+        "ts": 1781923524
+      },
+      {
+        "symbol": "SILVER",
+        "mint": "DCRWqh2YZVm71eX8jvqFQDXiYjyRfAMWSYDSS3uuV5j8",
+        "entry": 2.927e-05,
+        "exit": 2.405e-05,
+        "pnl_pct": -17.83,
+        "pnl_sol": -0.17834,
+        "exit_reason": "SL",
+        "hold_min": 1.2,
+        "ts": 1781923945
+      },
+      {
+        "symbol": "MONSTARA",
+        "mint": "wXPUeqGKWu9mmDEpVvm3H4zHFGY3wN6NZGN9LCMonst",
+        "entry": 2.621e-05,
+        "exit": 2.21e-05,
+        "pnl_pct": -15.68,
+        "pnl_sol": -0.15681,
+        "exit_reason": "SL",
+        "hold_min": 1.1,
+        "ts": 1781924031
       }
     ],
     "log_tail": [
-      "[02:30:36] [t=206.2min] [skip] Mike h1=-29% m5=-5% liq=$9,893 wh=70 sol5m=31.83 bot=15% | ['m5=-5%<=0', 'B/S=1.5<2.0']\n",
-      "[02:30:39] [t=206.3min] [STATUS] posicoes=0 | trades=8 | wins=1 losses=7 | pnl=-0.92800SOL\n",
-      "[02:30:51] [t=206.5min] [SCANNER] +54 candidatos (fila=54)\n",
-      "[02:30:51] [t=206.5min] [skip] SILVER h1=+698% m5=+163% liq=$0 wh=175 sol5m=79.01 bot=0% | ['liq=$0<$8,000', 'B/S=1.8<2.0']\n",
-      "[02:31:06] [t=206.7min] [SCANNER] +54 candidatos (fila=54)\n",
-      "[02:31:21] [t=207.0min] [SCANNER] +54 candidatos (fila=54)\n",
-      "[02:31:36] [t=207.2min] [SCANNER] +54 candidatos (fila=54)\n",
-      "[02:31:51] [t=207.5min] [SCANNER] +54 candidatos (fila=54)\n",
-      "[02:32:06] [t=207.7min] [SCANNER] +54 candidatos (fila=54)\n",
-      "[02:32:07] [t=207.7min] [skip] MONSTARA h1=+313% m5=-35% liq=$0 wh=37 sol5m=17.10 bot=0% | ['m5=-35%<=0', 'liq=$0<$8,000', 'B/S=1.8<2.0']\n",
-      "[02:32:07] [t=207.7min] [skip] Mike h1=-31% m5=+11% liq=$9,744 wh=70 sol5m=31.95 bot=0% | ['B/S=1.2<2.0']\n",
-      "[02:32:22] [t=208.0min] [SCANNER] +54 candidatos (fila=54)\n",
-      "[02:32:22] [t=208.0min] [skip] SILVER h1=-7% m5=-7% liq=$11,496 wh=12 sol5m=5.53 bot=0% | ['m5=-7%<=0', 'B/S=1.2<2.0']\n",
-      "[02:32:37] [t=208.2min] [SCANNER] +54 candidatos (fila=54)\n",
-      "[02:32:39] [t=208.3min] [STATUS] posicoes=0 | trades=8 | wins=1 losses=7 | pnl=-0.92800SOL\n",
-      "[02:32:52] [t=208.5min] [SCANNER] +54 candidatos (fila=54)\n",
-      "[02:33:07] [t=208.7min] [SCANNER] +54 candidatos (fila=54)\n",
-      "[02:34:22] [t=210.0min] [SCANNER] +54 candidatos (fila=54)\n",
-      "[02:34:22] [t=210.0min] [skip] SILVER h1=+26% m5=+26% liq=$13,404 wh=404 sol5m=182.03 bot=0% | ['B/S=1.3<2.0']\n",
-      "[02:34:23] [t=210.0min] [skip] Mike h1=-66% m5=-53% liq=$6,865 wh=106 sol5m=47.83 bot=0% | ['m5=-53%<=0', 'liq=$6,865<$8,000', 'B/S=1.5<2.0']\n"
+      "[03:01:17] [t=236.9min] [SCANNER] +55 candidatos (fila=55)\n",
+      "[03:01:17] [t=236.9min] [skip] Kohen h1=+49% m5=+16% liq=$14,569 wh=87 sol5m=39.23 bot=0% | ['B/S=0.8<2.0']\n",
+      "[03:01:17] [t=236.9min] [skip] Totebag h1=-30% m5=-30% liq=$9,868 wh=79 sol5m=35.60 bot=21% | ['m5=-30%<=0', 'B/S=1.7<2.0']\n",
+      "[03:01:32] [t=237.2min] [SCANNER] +55 candidatos (fila=55)\n",
+      "[03:01:32] [t=237.2min] [skip] Kohen h1=+248% m5=-23% liq=$0 wh=108 sol5m=49.01 bot=0% | ['m5=-23%<=0', 'liq=$0<$8,000', 'B/S=0.6<2.0']\n",
+      "[03:01:32] [t=237.2min] [skip] VERSE h1=+17% m5=-36% liq=$0 wh=16 sol5m=7.21 bot=0% | ['m5=-36%<=0', 'liq=$0<$8,000', 'B/S=0.5<2.0']\n",
+      "[03:01:47] [t=237.4min] [SCANNER] +55 candidatos (fila=55)\n",
+      "[03:01:47] [t=237.4min] [skip] MONSTARA h1=-11% m5=+20% liq=$11,289 wh=33 sol5m=14.91 bot=0% | ['B/S=0.8<2.0']\n",
+      "[03:02:02] [t=237.7min] [SCANNER] +55 candidatos (fila=55)\n",
+      "[03:02:17] [t=237.9min] [SCANNER] +55 candidatos (fila=55)\n",
+      "[03:02:33] [t=238.2min] [SCANNER] +55 candidatos (fila=55)\n",
+      "[03:02:48] [t=238.4min] [SCANNER] +55 candidatos (fila=55)\n",
+      "[03:02:48] [t=238.4min] [skip] Kohen h1=+26% m5=-1% liq=$13,393 wh=81 sol5m=36.88 bot=0% | ['m5=-1%<=0', 'B/S=0.7<2.0']\n",
+      "[03:02:48] [t=238.4min] [skip] Totebag h1=-31% m5=-31% liq=$9,744 wh=186 sol5m=83.77 bot=13% | ['m5=-31%<=0', 'B/S=1.7<2.0']\n",
+      "[03:02:50] [t=238.5min] [STATUS] posicoes=0 | trades=11 | wins=1 losses=10 | pnl=-1.64007SOL\n",
+      "[03:03:03] [t=238.7min] [SCANNER] +55 candidatos (fila=55)\n",
+      "[03:03:03] [t=238.7min] [skip] Kohen h1=+272% m5=-31% liq=$0 wh=91 sol5m=41.36 bot=0% | ['m5=-31%<=0', 'liq=$0<$8,000', 'B/S=1.1<2.0']\n",
+      "[03:03:03] [t=238.7min] [skip] VERSE h1=+17% m5=-10% liq=$0 wh=1 sol5m=0.77 bot=0% | ['m5=-10%<=0', 'liq=$0<$8,000', 'whales=1<2', 'sol5m=0.8<2.0', 'B/S=0.2<2.0']\n",
+      "[03:03:18] [t=238.9min] [SCANNER] +55 candidatos (fila=55)\n",
+      "[03:03:18] [t=238.9min] [skip] MONSTARA h1=+38% m5=+83% liq=$14,045 wh=43 sol5m=19.43 bot=0% | ['B/S=1.1<2.0']\n"
     ]
   },
-  "total_tokens": 90,
-  "total_wallets": 804
+  "total_tokens": 95,
+  "total_wallets": 831
 }
