@@ -1,6 +1,48 @@
 {
-  "updated_at": "2026-06-20 12:25:15 UTC",
+  "updated_at": "2026-06-20 12:55:16 UTC",
   "tokens": [
+    {
+      "mint": "2RnAboztNQ1BCA4v7JM9L41f7EsjbTxfJszYyiyXpump",
+      "symbol": "GSRF",
+      "name": "Gulf States Reconstruction Fund",
+      "market_cap": 74904.0,
+      "vol_24h": 7141.98,
+      "liq_usd": 19431.01,
+      "pattern_id": 6,
+      "whale_count": 1,
+      "bot_count": 7,
+      "retail_count": 7,
+      "sol_5min": 1.35,
+      "bot_ratio": 0.467
+    },
+    {
+      "mint": "AuTUKS9PCP8YQuBdqSXfBRoz79USEKX8EnTkx6Wnpump",
+      "symbol": "Riona",
+      "name": "Riona Ai Agent",
+      "market_cap": 11321.05,
+      "vol_24h": 16597.69,
+      "liq_usd": 0.0,
+      "pattern_id": 2,
+      "whale_count": 3,
+      "bot_count": 18,
+      "retail_count": 4,
+      "sol_5min": 1.53,
+      "bot_ratio": 0.72
+    },
+    {
+      "mint": "BXT3rrHDQcBzbrCjQs6DorMWFndjZo8QL89pWEHQpump",
+      "symbol": "CraftWorld",
+      "name": "Craft World",
+      "market_cap": 144505.0,
+      "vol_24h": 313893.0,
+      "liq_usd": 27679.51,
+      "pattern_id": 2,
+      "whale_count": 3,
+      "bot_count": 14,
+      "retail_count": 5,
+      "sol_5min": 2.2,
+      "bot_ratio": 0.636
+    },
     {
       "mint": "6hU5FgYEyuiQdNGzQyA6ntr3jokpXQ3HGuw4awKjpump",
       "symbol": "EXPERIMENT",
@@ -942,10 +984,10 @@
   ],
   "patterns": {
     "BALEIA_FORTE": 10,
-    "LENTO_WHALE": 15,
+    "LENTO_WHALE": 17,
     "ORGANIC": 16,
     "RUG_CAND": 7,
-    "MISTO": 19
+    "MISTO": 20
   },
   "wallets": [
     {
@@ -1093,6 +1135,12 @@
       "total_sol": 1.3727
     },
     {
+      "wallet": "Aeg9rNNqNPw6qQ2RgzBHvz25AF1fPqiVBKupd6YQNZmT",
+      "role": "whale",
+      "tokens": 1,
+      "total_sol": 1.3492
+    },
+    {
       "wallet": "3FGHC274PnKedGn9dtn9gU4YfdrKLF29VyNnX4igEeNf",
       "role": "whale",
       "tokens": 1,
@@ -1115,6 +1163,12 @@
       "role": "whale",
       "tokens": 1,
       "total_sol": 1.2166
+    },
+    {
+      "wallet": "3cN1dDnCi9mRkZsvvMYCZTqWStvUxiCNQzDXkt1CvGZ5",
+      "role": "whale",
+      "tokens": 1,
+      "total_sol": 1.2033
     },
     {
       "wallet": "2rVJTBrxbhcrsDGGNdQWX68DC17Q4oMDSQfDow5iM1Yd",
@@ -1189,6 +1243,12 @@
       "total_sol": 0.9243
     },
     {
+      "wallet": "ACCT_18_AuTUKS9P",
+      "role": "whale",
+      "tokens": 1,
+      "total_sol": 0.8907
+    },
+    {
       "wallet": "6BGuEoRseZjTAgSAoUHknxarebo8qwqWym61uHcd5buY",
       "role": "whale",
       "tokens": 1,
@@ -1229,24 +1289,6 @@
       "role": "whale",
       "tokens": 1,
       "total_sol": 0.6436
-    },
-    {
-      "wallet": "15ik2AFjAmEdZLxarPEbCrpsf3EfyjU7iZW11bkVpXs",
-      "role": "whale",
-      "tokens": 1,
-      "total_sol": 0.6359
-    },
-    {
-      "wallet": "4Az5esDdbCCDu9THyyUV5S8Td7uq4srAwzrV6gW3KT9S",
-      "role": "whale",
-      "tokens": 1,
-      "total_sol": 0.5867
-    },
-    {
-      "wallet": "AtqEJTnuLNnzwbWYY6DkeUocC4quFFRGbCJ5BML4oHre",
-      "role": "retail",
-      "tokens": 1,
-      "total_sol": 0.5821000000000001
     }
   ],
   "sim": {
@@ -1369,28 +1411,28 @@
       }
     ],
     "log_tail": [
-      "[12:21:41] [t=176.6min] [SCANNER] +47 candidatos (fila=47)\n",
-      "[12:21:56] [t=176.8min] [SCANNER] +47 candidatos (fila=47)\n",
-      "[12:22:11] [t=177.1min] [SCANNER] +47 candidatos (fila=47)\n",
-      "[12:22:26] [t=177.3min] [SCANNER] +47 candidatos (fila=47)\n",
-      "[12:22:41] [t=177.6min] [SCANNER] +47 candidatos (fila=47)\n",
-      "[12:22:41] [t=177.6min] [skip] LOTTO h1=-72% m5=-2% liq=$6,457 wh=122 sol5m=54.92 bot=33% | ['m5=-2%<=0', 'liq=$6,457<$8,000', 'B/S=1.4<2.0']\n",
-      "[12:22:56] [t=177.8min] [SCANNER] +47 candidatos (fila=47)\n",
-      "[12:22:56] [t=177.8min] [skip] EXPERIMENT h1=-87% m5=-29% liq=$4,344 wh=35 sol5m=15.87 bot=3% | ['m5=-29%<=0', 'liq=$4,344<$8,000', 'B/S=0.9<2.0']\n",
-      "[12:23:11] [t=178.1min] [SCANNER] +47 candidatos (fila=47)\n",
-      "[12:23:25] [t=178.3min] [STATUS] posicoes=0 | trades=7 | wins=3 losses=4 | pnl=-0.56542SOL\n",
-      "[12:23:26] [t=178.3min] [SCANNER] +47 candidatos (fila=47)\n",
-      "[12:23:41] [t=178.6min] [SCANNER] +47 candidatos (fila=47)\n",
-      "[12:23:57] [t=178.8min] [SCANNER] +47 candidatos (fila=47)\n",
-      "[12:24:12] [t=179.1min] [SCANNER] +47 candidatos (fila=47)\n",
-      "[12:24:12] [t=179.1min] [skip] LOTTO h1=-78% m5=-43% liq=$5,819 wh=78 sol5m=35.42 bot=43% | ['m5=-43%<=0', 'liq=$5,819<$8,000', 'B/S=1.1<2.0']\n",
-      "[12:24:27] [t=179.3min] [SCANNER] +47 candidatos (fila=47)\n",
-      "[12:24:27] [t=179.3min] [skip] EXPERIMENT h1=-87% m5=-14% liq=$4,460 wh=28 sol5m=12.89 bot=18% | ['m5=-14%<=0', 'liq=$4,460<$8,000', 'B/S=0.8<2.0']\n",
-      "[12:24:42] [t=179.6min] [SCANNER] +47 candidatos (fila=47)\n",
-      "[12:24:57] [t=179.8min] [SCANNER] +47 candidatos (fila=47)\n",
-      "[12:25:12] [t=180.1min] [SCANNER] +47 candidatos (fila=47)\n"
+      "[12:51:25] [t=206.3min] [STATUS] posicoes=0 | trades=7 | wins=3 losses=4 | pnl=-0.56542SOL\n",
+      "[12:51:36] [t=206.5min] [SCANNER] +48 candidatos (fila=48)\n",
+      "[12:51:52] [t=206.7min] [SCANNER] +48 candidatos (fila=48)\n",
+      "[12:52:07] [t=207.0min] [SCANNER] +48 candidatos (fila=48)\n",
+      "[12:52:07] [t=207.0min] [skip] Riona h1=+128% m5=+100% liq=$18,631 wh=888 sol5m=399.63 bot=0% | ['B/S=0.9<2.0']\n",
+      "[12:52:22] [t=207.2min] [SCANNER] +48 candidatos (fila=48)\n",
+      "[12:52:37] [t=207.5min] [SCANNER] +48 candidatos (fila=48)\n",
+      "[12:52:52] [t=207.7min] [SCANNER] +48 candidatos (fila=48)\n",
+      "[12:53:07] [t=208.0min] [SCANNER] +48 candidatos (fila=48)\n",
+      "[12:53:22] [t=208.2min] [SCANNER] +48 candidatos (fila=48)\n",
+      "[12:53:25] [t=208.3min] [STATUS] posicoes=0 | trades=7 | wins=3 losses=4 | pnl=-0.56542SOL\n",
+      "[12:53:37] [t=208.5min] [SCANNER] +48 candidatos (fila=48)\n",
+      "[12:53:37] [t=208.5min] [skip] Riona h1=+158% m5=+83% liq=$19,896 wh=799 sol5m=359.76 bot=0% | ['B/S=0.9<2.0']\n",
+      "[12:53:52] [t=208.7min] [SCANNER] +48 candidatos (fila=48)\n",
+      "[12:54:07] [t=209.0min] [SCANNER] +48 candidatos (fila=48)\n",
+      "[12:54:22] [t=209.2min] [SCANNER] +48 candidatos (fila=48)\n",
+      "[12:54:38] [t=209.5min] [SCANNER] +48 candidatos (fila=48)\n",
+      "[12:54:53] [t=209.8min] [SCANNER] +48 candidatos (fila=48)\n",
+      "[12:55:08] [t=210.0min] [SCANNER] +48 candidatos (fila=48)\n",
+      "[12:55:08] [t=210.0min] [skip] Riona h1=+120% m5=+7% liq=$18,386 wh=721 sol5m=324.79 bot=0% | ['B/S=0.9<2.0']\n"
     ]
   },
-  "total_tokens": 67,
-  "total_wallets": 526
+  "total_tokens": 70,
+  "total_wallets": 571
 }
