@@ -3,6 +3,7 @@
 # Detecta pumps reais e simula trades sem gastar SOL
 
 import subprocess, json, time, os, queue, threading, sys
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 SIM_DURATION_MIN = 300  # 5 horas -- margem antes do job timeout de 350min
 ENTRY_SOL        = 1.0   # 1 SOL real por entrada
@@ -220,42 +221,50 @@ def watchdog_worker():
         with lock:
             mints = list(positions.keys())
 
-        for mint in mints:
-            with lock:
-                if mint not in positions: continue
-                pos = positions[mint]
+        if mints:
+            with ThreadPoolExecutor(max_workers=len(mints)) as exe:
+                price_map = {m: None for m in mints}
+                futures = {exe.submit(get_price, m): m for m in mints}
+                for fut in as_completed(futures, timeout=10):
+                    price_map[futures[fut]] = fut.result()
 
-            hold_min = (time.time() - pos["entry_time"]) / 60
-
-            if hold_min >= MAX_HOLD_MIN:
-                price = get_price(mint) or pos["entry"]
+            for mint in mints:
                 with lock:
-                    if mint in positions:
-                        _close_position(mint, pos, price, "TEMPO")
-                continue
-
-            price = get_price(mint)
-            if not price: continue
-
-            with lock:
-                if mint in positions and not positions[mint].get("be_applied") and price >= pos["entry"] * 1.20:
-                    positions[mint]["sl"] = pos["entry"] * 1.08
-                    positions[mint]["be_applied"] = True
-                    log(f"[BREAK-EVEN] {pos['symbol']} SL → entry+8% @ ${pos['entry']*1.08:.8f}")
-                if mint in positions:
+                    if mint not in positions: continue
                     pos = positions[mint]
 
-            reason = None
-            if price >= pos["tp"]:
-                reason = "TP"
-            elif price <= pos["sl"]:
-                reason = "SL"
+                price    = price_map.get(mint)
+                hold_min = (time.time() - pos["entry_time"]) / 60
 
-            if reason:
+                if hold_min >= MAX_HOLD_MIN:
+                    price = price or get_price(mint) or pos["entry"]
+                    with lock:
+                        if mint in positions:
+                            _close_position(mint, pos, price, "TEMPO")
+                    continue
+
+                if not price: continue
+
                 with lock:
+                    if mint in positions and not positions[mint].get("be_applied") and price >= pos["entry"] * 1.20:
+                        positions[mint]["sl"] = pos["entry"] * 1.08
+                        positions[mint]["be_applied"] = True
+                        log(f"[BREAK-EVEN] {pos['symbol']} SL → entry+8% @ ${pos['entry']*1.08:.8f}")
                     if mint in positions:
-                        _close_position(mint, pos, price, reason)
-        time.sleep(5)
+                        pos = positions[mint]
+
+                reason = None
+                if price >= pos["tp"]:
+                    reason = "TP"
+                elif price <= pos["sl"]:
+                    reason = "SL"
+
+                if reason:
+                    with lock:
+                        if mint in positions:
+                            _close_position(mint, pos, price, reason)
+
+        time.sleep(3)
 
 def _close_position(mint, pos, price, reason):
     pnl_pct = (price - pos["entry"]) / pos["entry"] * 100
