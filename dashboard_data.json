@@ -1,6 +1,76 @@
 {
-  "updated_at": "2026-06-21 18:15:23 UTC",
+  "updated_at": "2026-06-21 18:45:24 UTC",
   "tokens": [
+    {
+      "mint": "DANKqQfbFWuJN2DWK5n1NPx1KcGKU4DgEakJndC2FmnY",
+      "symbol": "DANK",
+      "name": "dank",
+      "market_cap": 4097.32,
+      "vol_24h": 1126.22,
+      "liq_usd": 0.0,
+      "pattern_id": 4,
+      "whale_count": 0,
+      "bot_count": 0,
+      "retail_count": 1,
+      "sol_5min": 0.0,
+      "bot_ratio": 0.0
+    },
+    {
+      "mint": "9BrexqXMpbLqBz8xTQa95tbvYzMxBeZiuzfFxEzHyknu",
+      "symbol": "MESSI",
+      "name": "Messi Duck",
+      "market_cap": 17455.82,
+      "vol_24h": 63922.3,
+      "liq_usd": 0.0,
+      "pattern_id": 6,
+      "whale_count": 1,
+      "bot_count": 8,
+      "retail_count": 7,
+      "sol_5min": 1.13,
+      "bot_ratio": 0.5
+    },
+    {
+      "mint": "7NSNvZJAD1CDuAjoeohGErahzqRBX4gdphbsZR56pump",
+      "symbol": "Fatherless",
+      "name": "Fatherless",
+      "market_cap": 26685.08,
+      "vol_24h": 58721.35,
+      "liq_usd": 0.0,
+      "pattern_id": 6,
+      "whale_count": 2,
+      "bot_count": 31,
+      "retail_count": 9,
+      "sol_5min": 1.67,
+      "bot_ratio": 0.738
+    },
+    {
+      "mint": "E9owYUHk4h8qZxbvQu8dbAy3JavwxUKVHLE4tsgEpump",
+      "symbol": "COUNCIL",
+      "name": "The Staring Animals",
+      "market_cap": 11760.23,
+      "vol_24h": 17054.52,
+      "liq_usd": 0.0,
+      "pattern_id": 5,
+      "whale_count": 1,
+      "bot_count": 9,
+      "retail_count": 4,
+      "sol_5min": 0.42,
+      "bot_ratio": 0.643
+    },
+    {
+      "mint": "zJcN2TpW1VZKPBsQk4uG2FPRZoD9G4huBmyoFBSpump",
+      "symbol": "GORP",
+      "name": "Global Oil Recovery Program",
+      "market_cap": 101514.0,
+      "vol_24h": 15606.34,
+      "liq_usd": 23032.83,
+      "pattern_id": 5,
+      "whale_count": 1,
+      "bot_count": 8,
+      "retail_count": 3,
+      "sol_5min": 0.5,
+      "bot_ratio": 0.667
+    },
     {
       "mint": "4tmGvMpqCG9C4keZTRzYqVh9ivynBfXKXvKQXgmjpump",
       "symbol": "XYBER",
@@ -776,9 +846,9 @@
     "BALEIA_FORTE": 9,
     "BOT_SWARM": 2,
     "LENTO_WHALE": 12,
-    "ORGANIC": 11,
-    "RUG_CAND": 8,
-    "MISTO": 13
+    "ORGANIC": 12,
+    "RUG_CAND": 10,
+    "MISTO": 15
   },
   "wallets": [
     {
@@ -926,6 +996,12 @@
       "total_sol": 1.3808
     },
     {
+      "wallet": "6jcJS43AA5VDaeWNRJuunMgmHdKXBMKHxGeSKLi44mHo",
+      "role": "whale",
+      "tokens": 1,
+      "total_sol": 1.2705
+    },
+    {
       "wallet": "7bzbK6uaDpxbdbHnNDAcpEF2qRnfMcEpBFGDFFhNMmFv",
       "role": "whale",
       "tokens": 1,
@@ -938,10 +1014,22 @@
       "total_sol": 1.2515
     },
     {
+      "wallet": "68FqrTQ1SeWeg3LfCQh1TPq5bWu9UdDgEsFxSbPTK11z",
+      "role": "retail",
+      "tokens": 1,
+      "total_sol": 1.2247
+    },
+    {
       "wallet": "SQHK48QT8SY1vYN44iXji7wQ6CJek8AjfX6mBp47TZq",
       "role": "whale",
       "tokens": 1,
       "total_sol": 1.1836
+    },
+    {
+      "wallet": "2XP8EBqv3kbA8ky24CWom1hzaMtofxRJvkdqxcKac1c1",
+      "role": "whale",
+      "tokens": 1,
+      "total_sol": 1.1293
     },
     {
       "wallet": "GU5t9FukDB1FF5aXKndBbZP4rWKAnWSm9v2YmfgHFj2N",
@@ -1062,45 +1150,16 @@
       "role": "retail",
       "tokens": 1,
       "total_sol": 0.5319
-    },
-    {
-      "wallet": "CKAooSmSJXFF67UMbd1hfCmqG8K7wcu7Y9PaJpS2T1VQ",
-      "role": "whale",
-      "tokens": 1,
-      "total_sol": 0.497
-    },
-    {
-      "wallet": "ACCT_12_HQWFsoBe",
-      "role": "whale",
-      "tokens": 1,
-      "total_sol": 0.4915
-    },
-    {
-      "wallet": "ACCT_15_8EmD2Kpx",
-      "role": "whale",
-      "tokens": 1,
-      "total_sol": 0.4915
     }
   ],
   "sim": {
-    "total_trades": 13,
-    "trades": 13,
+    "total_trades": 14,
+    "trades": 14,
     "wins": 5,
-    "losses": 8,
-    "pnl_sol": 3.07917,
+    "losses": 9,
+    "pnl_sol": 2.94354,
     "entry_sol": 10.0,
     "last_trades": [
-      {
-        "symbol": "Solana",
-        "mint": "5kuTkFHSha6Dc4po34fhHVYfUf9XzqFSGxRN41rmpump",
-        "entry": 2.57e-05,
-        "exit": 3.5e-05,
-        "pnl_pct": 36.19,
-        "pnl_sol": 3.61868,
-        "exit_reason": "TP",
-        "hold_min": 3.6,
-        "ts": 1781874433
-      },
       {
         "symbol": "Navi",
         "mint": "AdEDzMybuRBJBoF4Hm17qbp5yqsXEyNjnYFMDH2mpump",
@@ -1199,31 +1258,42 @@
         "exit_reason": "SL",
         "hold_min": 0.2,
         "ts": 1781888171
+      },
+      {
+        "symbol": "XYBER",
+        "mint": "4tmGvMpqCG9C4keZTRzYqVh9ivynBfXKXvKQXgmjpump",
+        "entry": 2.057e-05,
+        "exit": 1.778e-05,
+        "pnl_pct": -13.56,
+        "pnl_sol": -0.13563,
+        "exit_reason": "SL",
+        "hold_min": 6.3,
+        "ts": 1782066745
       }
     ],
     "log_tail": [
-      "[18:11:59] [t=56.6min] [skip] XYBER h1=+26% m5=+26% liq=$14,233 wh=359 sol5m=161.94 bot=0% | ['B/S=1.2<2.0']\n",
-      "[18:11:59] [t=56.6min] [skip] DAD h1=+189% m5=+40% liq=$0 wh=1104 sol5m=497.06 bot=0% | ['liq=$0<$8,000', 'B/S=1.6<2.0']\n",
-      "[18:12:14] [t=56.9min] [SCANNER] +52 candidatos (fila=52)\n",
-      "[18:12:29] [t=57.1min] [SCANNER] +52 candidatos (fila=52)\n",
-      "[18:12:29] [t=57.1min] [skip] ELENIN h1=+730% m5=+53% liq=$0 wh=287 sol5m=129.20 bot=0% | ['liq=$0<$8,000', 'B/S=1.2<2.0']\n",
-      "[18:12:29] [t=57.1min] [skip] MEEP h1=+22% m5=-74% liq=$0 wh=71 sol5m=32.10 bot=0% | ['m5=-74%<=0', 'liq=$0<$8,000', 'B/S=0.5<2.0']\n",
-      "[18:12:44] [t=57.4min] [SCANNER] +52 candidatos (fila=52)\n",
-      "[18:12:59] [t=57.6min] [SCANNER] +52 candidatos (fila=52)\n",
-      "[18:13:14] [t=57.9min] [SCANNER] +52 candidatos (fila=52)\n",
-      "[18:13:22] [t=58.0min] [STATUS] posicoes=0 | trades=0 | wins=0 losses=0 | pnl=+0.00000SOL\n",
-      "[18:13:29] [t=58.1min] [SCANNER] +52 candidatos (fila=52)\n",
-      "[18:13:29] [t=58.1min] [skip] XYBER h1=+52% m5=+52% liq=$15,683 wh=701 sol5m=315.62 bot=0% | ['B/S=1.1<2.0']\n",
-      "[18:13:29] [t=58.1min] [skip] DAD h1=+172% m5=-38% liq=$0 wh=473 sol5m=213.09 bot=0% | ['m5=-38%<=0', 'liq=$0<$8,000', 'B/S=1.6<2.0']\n",
-      "[18:13:44] [t=58.4min] [SCANNER] +52 candidatos (fila=52)\n",
-      "[18:13:59] [t=58.6min] [SCANNER] +52 candidatos (fila=52)\n",
-      "[18:13:59] [t=58.6min] [skip] ELENIN h1=+767% m5=+108% liq=$0 wh=214 sol5m=96.54 bot=0% | ['liq=$0<$8,000', 'B/S=1.4<2.0']\n",
-      "[18:13:59] [t=58.6min] [skip] MEEP h1=+16% m5=-65% liq=$0 wh=35 sol5m=15.89 bot=0% | ['m5=-65%<=0', 'liq=$0<$8,000', 'B/S=0.3<2.0']\n",
-      "[18:14:14] [t=58.9min] [SCANNER] +52 candidatos (fila=52)\n",
-      "[18:14:30] [t=59.1min] [SCANNER] +52 candidatos (fila=52)\n",
-      "[18:15:22] [t=60.0min] [STATUS] posicoes=0 | trades=0 | wins=0 losses=0 | pnl=+0.00000SOL\n"
+      "[18:41:40] [t=86.3min] [SCANNER] +54 candidatos (fila=54)\n",
+      "[18:41:55] [t=86.6min] [SCANNER] +54 candidatos (fila=54)\n",
+      "[18:42:10] [t=86.8min] [SCANNER] +54 candidatos (fila=54)\n",
+      "[18:42:25] [t=87.1min] [SCANNER] +54 candidatos (fila=54)\n",
+      "[18:42:40] [t=87.3min] [SCANNER] +54 candidatos (fila=54)\n",
+      "[18:42:40] [t=87.3min] [skip] DANK h1=+89% m5=-41% liq=$0 wh=45 sol5m=20.36 bot=0% | ['m5=-41%<=0', 'liq=$0<$8,000', 'B/S=0.6<2.0']\n",
+      "[18:42:40] [t=87.3min] [skip] MESSI h1=-82% m5=+0% liq=$12 wh=0 sol5m=0.00 bot=0% | ['m5=+0%<=0', 'liq=$12<$8,000', 'whales=0<2', 'sol5m=0.0<2.0', 'B/S=0.0<2.0']\n",
+      "[18:42:55] [t=87.6min] [SCANNER] +54 candidatos (fila=54)\n",
+      "[18:42:55] [t=87.6min] [skip] Fatherless h1=-62% m5=-47% liq=$7,714 wh=174 sol5m=78.48 bot=0% | ['m5=-47%<=0', 'liq=$7,714<$8,000', 'B/S=1.1<2.0']\n",
+      "[18:43:11] [t=87.8min] [SCANNER] +54 candidatos (fila=54)\n",
+      "[18:43:22] [t=88.0min] [STATUS] posicoes=0 | trades=1 | wins=0 losses=1 | pnl=-0.13563SOL\n",
+      "[18:43:26] [t=88.1min] [SCANNER] +54 candidatos (fila=54)\n",
+      "[18:43:41] [t=88.3min] [SCANNER] +54 candidatos (fila=54)\n",
+      "[18:43:56] [t=88.6min] [SCANNER] +54 candidatos (fila=54)\n",
+      "[18:44:11] [t=88.8min] [SCANNER] +54 candidatos (fila=54)\n",
+      "[18:44:11] [t=88.8min] [skip] DANK h1=+92% m5=+42% liq=$0 wh=26 sol5m=11.93 bot=0% | ['liq=$0<$8,000', 'B/S=1.2<2.0']\n",
+      "[18:44:11] [t=88.8min] [skip] MESSI h1=-82% m5=+0% liq=$12 wh=0 sol5m=0.00 bot=0% | ['m5=+0%<=0', 'liq=$12<$8,000', 'whales=0<2', 'sol5m=0.0<2.0', 'B/S=0.0<2.0']\n",
+      "[18:44:26] [t=89.1min] [SCANNER] +54 candidatos (fila=54)\n",
+      "[18:44:26] [t=89.1min] [skip] Fatherless h1=-61% m5=-30% liq=$7,843 wh=128 sol5m=57.78 bot=0% | ['m5=-30%<=0', 'liq=$7,843<$8,000', 'B/S=1.2<2.0']\n",
+      "[18:45:22] [t=90.0min] [STATUS] posicoes=0 | trades=1 | wins=0 losses=1 | pnl=-0.13563SOL\n"
     ]
   },
-  "total_tokens": 55,
-  "total_wallets": 402
+  "total_tokens": 60,
+  "total_wallets": 447
 }
