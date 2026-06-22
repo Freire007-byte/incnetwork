@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-22 20:29:00 UTC",
+  "updated_at": "2026-06-22 20:29:06 UTC",
   "tokens": [
     {
       "mint": "FXYBsfH1ArBjMcWuKphw1Zh7x78uhN2xJoUJPd9Epump",
@@ -1832,8 +1832,6 @@
       }
     ],
     "log_tail": [
-      "[20:25:58] [t=297.2min] [SCANNER] +49 candidatos (fila=49)\n",
-      "[20:26:14] [t=297.4min] [SCANNER] +49 candidatos (fila=49)\n",
       "[20:26:29] [t=297.7min] [SCANNER] +49 candidatos (fila=49)\n",
       "[20:26:29] [t=297.7min] [skip] curad h1=+32% m5=-8% liq=$14,461 wh=1440 sol5m=648.24 bot=0% | ['m5=-8%<=0', 'B/S=1.2<2.0']\n",
       "[20:26:44] [t=297.9min] [SCANNER] +49 candidatos (fila=49)\n",
@@ -1851,7 +1849,9 @@
       "[20:28:30] [t=299.7min] [skip] CODED h1=+38% m5=+0% liq=$1 wh=0 sol5m=0.00 bot=0% | ['m5=+0%<=0', 'liq=$1<$8,000', 'whales=0<2', 'sol5m=0.0<2.0', 'B/S=0.0<2.0']\n",
       "[20:28:30] [t=299.7min] [skip] PIP h1=-10% m5=-16% liq=$11,931 wh=129 sol5m=58.07 bot=0% | ['m5=-16%<=0', 'B/S=1.5<2.0']\n",
       "[20:28:45] [t=300.0min] [SCANNER] +47 candidatos (fila=47)\n",
-      "[20:28:49] [t=300.0min] [SIM FIM] Duracao atingida\n"
+      "[20:28:49] [t=300.0min] [SIM FIM] Duracao atingida\n",
+      "[20:29:00] [t=300.2min] \n",
+      "FIM: 8 trades | 6 wins | PnL=+1.70875 SOL\n"
     ]
   },
   "total_tokens": 125,
