@@ -1,0 +1,96 @@
+name: Caca Pump LIVE — Trading Real 24/7
+
+on:
+  schedule:
+    - cron: '0 */5 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: caca-pump-live
+  cancel-in-progress: false
+
+jobs:
+  run-live:
+    runs-on: ubuntu-latest
+    timeout-minutes: 320
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Restaurar memoria e trades
+        uses: actions/download-artifact@v4
+        with:
+          name: caca-pump-live-state
+          path: caca_pump_live/inc_study/
+        continue-on-error: true
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Instalar dependencias
+        run: pip install solders websocket-client pynacl requests --quiet
+
+      - name: Criar live_wallet.json
+        env:
+          SOLANA_PRIVATE_KEY: ${{ secrets.SOLANA_PRIVATE_KEY }}
+          ENTRY_SOL: ${{ vars.ENTRY_SOL || '0.01' }}
+          MAX_POSITIONS: ${{ vars.MAX_POSITIONS || '1' }}
+        run: |
+          mkdir -p caca_pump_live/inc_study
+          python3 -c "
+          import json, os
+          cfg = {
+            'private_key_b58': os.environ['SOLANA_PRIVATE_KEY'],
+            'entry_sol': float(os.environ.get('ENTRY_SOL', '0.01')),
+            'max_positions': int(os.environ.get('MAX_POSITIONS', '1')),
+            'slippage_pct': 15,
+            'priority_fee_sol': 0.00005,
+            'live_trading': True,
+          }
+          with open('caca_pump_live/live_wallet.json', 'w') as f:
+            json.dump(cfg, f)
+          print('live_wallet.json criado')
+          "
+
+      - name: Verificar saldo wallet
+        run: |
+          cd caca_pump_live
+          CACA_PUMP_DIR=$(pwd) python3 -c "
+          import real_trader as rt
+          info = rt.wallet_info()
+          print(f'Wallet: {info.get(\"public_key\",\"?\")}')
+          print(f'Saldo:  {info.get(\"sol_balance\",0):.6f} SOL')
+          print(f'Modo:   {\"REAL\" if info.get(\"live_trading\") else \"PAPER\"}')
+          "
+
+      - name: Rodar Caca Pump LIVE por 5h
+        run: |
+          cd caca_pump_live
+          CACA_PUMP_DIR=$(pwd) timeout 18000 python3 caca_pump_live.py 2>&1 | tee inc_study/live_results.txt || true
+          echo "Bot finalizado (5h ou erro)"
+
+      - name: Salvar estado (memoria + trades)
+        uses: actions/upload-artifact@v4
+        with:
+          name: caca-pump-live-state
+          path: |
+            caca_pump_live/inc_study/memory.json
+            caca_pump_live/inc_study/sim_trades.jsonl
+          retention-days: 30
+          overwrite: true
+        if: always()
+
+      - name: Resumo do ciclo
+        run: |
+          echo "=== RESUMO CACA PUMP LIVE ==="
+          tail -20 caca_pump_live/inc_study/live_results.txt 2>/dev/null || echo "sem log"
+        if: always()
