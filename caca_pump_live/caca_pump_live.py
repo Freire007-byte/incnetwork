@@ -468,78 +468,46 @@ def post_loss_monitor(trade):
 # ── Workers ───────────────────────────────────────────────────────────────────
 
 PUMP_FUN_PROGRAM = "6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P"
-SOL_RPC_WS       = f"wss://mainnet.helius-rpc.com/?api-key={_HELIUS_KEY}"
+PORTAL_WS        = "wss://pumpportal.fun/api/data"
 
 _ws_active = False
 
 def _ws_on_message(ws, message):
-    """Recebe logs do programa pump.fun em tempo real via Solana RPC WebSocket."""
+    """Recebe novos tokens em tempo real via pumpportal.fun WebSocket."""
     global _ws_active
     try:
         data = json.loads(message)
-        # Resposta de subscrição
-        if data.get("id") == 1:
-            sub_id = data.get("result")
-            log(f"[SCANNER-WS] subscrito logs pump.fun | sub_id={sub_id}")
+        if data.get("message"):
+            log(f"[SCANNER-WS] subscrito pumpportal | {data['message']}")
             _ws_active = True
             return
-        # Notificação de log
-        method = data.get("method")
-        if method != "logsNotification":
+        mint = data.get("mint", "")
+        if not mint:
             return
-        result = data["params"]["result"]["value"]
-        logs   = result.get("logs", [])
-        sig    = result.get("signature", "")
-        err    = result.get("err")
-        if err:
-            return  # transacção falhou
-        # Detectar criação de novo token (instrução "Create" na pump.fun)
-        is_create = any("Instruction: Create" in l for l in logs)
-        if not is_create:
-            return
-        # Extrair mint da transacção (via getTransaction)
-        tx = rpc("getTransaction", [sig, {"encoding": "jsonParsed",
-                                           "maxSupportedTransactionVersion": 0}])
-        if not tx:
-            return
-        accounts = ((tx.get("transaction") or {}).get("message") or {}).get("accountKeys", [])
-        # No pump.fun, o mint é o 1º token account criado
-        for acc in accounts:
-            addr = acc.get("pubkey", "") if isinstance(acc, dict) else str(acc)
-            if len(addr) == 44 and "pump" in addr.lower():
-                mint = addr
-                break
-        else:
-            # fallback: pegar 1º account que não seja system/pump program
-            for acc in accounts:
-                addr = acc.get("pubkey", "") if isinstance(acc, dict) else str(acc)
-                if len(addr) == 44 and addr != PUMP_FUN_PROGRAM:
-                    mint = addr
-                    break
-            else:
-                return
-
         with lock:
             if mint in seen_mints:
                 return
             seen_mints.add(mint)
-
-        log(f"[SCANNER-WS] NOVO TOKEN detectado | mint={mint[:16]}... | sig={sig[:16]}...")
-        try:
-            candidate_q.put_nowait({"mint": mint, "coin": {"mint": mint, "created_timestamp": int(time.time()*1000)}, "age_sec": 0.0})
-        except queue.Full:
-            pass
-
-    except Exception as e:
-        pass  # WS silencioso em caso de erro de parse
+        sym = data.get("symbol", "?")
+        log(f"[SCANNER-WS] NOVO TOKEN {sym} | mint={mint[:16]}...")
+        candidate_q.put_nowait({
+            "mint": mint,
+            "coin": {
+                "mint":              mint,
+                "symbol":            sym,
+                "name":              data.get("name", ""),
+                "created_timestamp": int(time.time() * 1000),
+            },
+            "age_sec": 0.0,
+        })
+    except queue.Full:
+        pass
+    except Exception:
+        pass
 
 def _ws_on_open(ws):
-    log("[SCANNER-WS] ligado ao Solana RPC WebSocket")
-    sub = json.dumps({
-        "jsonrpc": "2.0", "id": 1, "method": "logsSubscribe",
-        "params": [{"mentions": [PUMP_FUN_PROGRAM]}, {"commitment": "processed"}]
-    })
-    ws.send(sub)
+    log("[SCANNER-WS] ligado ao pumpportal.fun WebSocket")
+    ws.send(json.dumps({"method": "subscribeNewToken"}))
 
 def _ws_on_error(ws, error):
     log(f"[SCANNER-WS] erro: {error}")
@@ -551,15 +519,15 @@ def _ws_on_close(ws, code, msg):
 
 
 def scanner_worker():
-    """Scanner WebSocket tempo real + fallback HTTP DexScreener."""
+    """Scanner WebSocket tempo real (pumpportal.fun) + fallback HTTP."""
     import websocket as _ws_lib
-    log(f"[SCANNER] iniciado — WebSocket Solana RPC | janela < {MAX_AGE_SEC}s")
+    log(f"[SCANNER] iniciado — pumpportal.fun WebSocket | janela < {MAX_AGE_SEC}s")
 
     def run_ws():
         while True:
             try:
                 ws = _ws_lib.WebSocketApp(
-                    SOL_RPC_WS,
+                    PORTAL_WS,
                     on_open=_ws_on_open,
                     on_message=_ws_on_message,
                     on_error=_ws_on_error,
