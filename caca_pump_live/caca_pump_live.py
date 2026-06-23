@@ -807,6 +807,49 @@ def watchdog_worker():
 
         sol_p = get_sol_price()
         for mint in mints:
+            # Força saída por tempo mesmo sem preço (token morto/rug)
+            with lock:
+                if mint not in positions:
+                    continue
+                pos = positions[mint]
+            hold_min = (time.time() - pos["entry_time"]) / 60
+            if hold_min >= MAX_HOLD_MIN:
+                cur_fallback = pos.get("current_price") or pos["entry_price"]
+                pnl_pct_fb  = (cur_fallback - pos["entry_price"]) / pos["entry_price"] * 100
+                pnl_sol_fb  = ENTRY_SOL * (pnl_pct_fb / 100)
+                trade_fb = {
+                    "symbol": pos["symbol"], "name": pos.get("name", ""),
+                    "mint": mint, "entry_price": pos["entry_price"],
+                    "exit_price": cur_fallback, "pnl_pct": round(pnl_pct_fb, 2),
+                    "pnl_sol": round(pnl_sol_fb, 5), "exit_reason": "TEMPO",
+                    "hold_min": round(hold_min, 1), "open_dt": pos["open_dt"],
+                    "close_dt": time.strftime("%d/%m %H:%M:%S"), "ts": int(time.time()),
+                    "market_cap": pos.get("market_cap", 0), "age_sec": pos.get("age_sec", 0),
+                    "wallets": pos.get("wallets", []), "whale_count": pos.get("whale_count", 0),
+                    "pool_address": pos.get("pool_address", ""),
+                }
+                with lock:
+                    if mint in positions:
+                        del positions[mint]
+                        closed_trades.append(trade_fb)
+                tx_sell = ""
+                if LIVE_TRADING and _rt:
+                    res_sell = _rt.sell(mint, sell_pct=100.0)
+                    if res_sell.get("ok"):
+                        tx_sell = res_sell.get("sig", "")
+                    else:
+                        log(f"[REAL-ERRO] sell fallback falhou: {res_sell.get('error')}")
+                modo_s = "REAL" if (LIVE_TRADING and tx_sell) else "PAPER"
+                log(f"[{modo_s}] SAIDA TEMPO(sem preço) {pos['symbol']} | {hold_min:.1f}min | {pnl_pct_fb:+.1f}%"
+                    + (f" | TX={tx_sell[:20]}..." if tx_sell else ""))
+                try:
+                    with open(TRADES_FILE, "a", encoding="utf-8") as f:
+                        f.write(json.dumps(trade_fb) + "\n")
+                except Exception:
+                    pass
+                write_json()
+                continue
+
             detail = pumpfun_detail(mint)
             if not detail:
                 continue
