@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-23 06:14:00 UTC",
+  "updated_at": "2026-06-23 06:44:02 UTC",
   "tokens": [
     {
       "mint": "HJ3tZdsAjppMsupCyuzurFw2rQ3Pm7wNcfSpnDLZpump",
@@ -1300,26 +1300,26 @@
       }
     ],
     "log_tail": [
-      "[06:10:01] [t=116.1min] [STATUS] posicoes=0 | trades=2 | wins=1 losses=1 | pnl=+0.31843SOL\n",
-      "[06:10:03] [t=116.1min] [SCANNER] +53 candidatos (fila=53)\n",
-      "[06:10:18] [t=116.4min] [SCANNER] +53 candidatos (fila=53)\n",
-      "[06:10:33] [t=116.6min] [SCANNER] +53 candidatos (fila=53)\n",
-      "[06:10:48] [t=116.9min] [SCANNER] +53 candidatos (fila=53)\n",
-      "[06:11:03] [t=117.1min] [SCANNER] +53 candidatos (fila=53)\n",
-      "[06:11:19] [t=117.4min] [SCANNER] +53 candidatos (fila=53)\n",
-      "[06:11:19] [t=117.4min] [skip] BTCAT h1=+106% m5=+45% liq=$17,605 wh=401 sol5m=180.70 bot=0% | ['B/S=1.1<2.0']\n",
-      "[06:11:34] [t=117.6min] [SCANNER] +53 candidatos (fila=53)\n",
-      "[06:11:49] [t=117.9min] [SCANNER] +53 candidatos (fila=53)\n",
-      "[06:12:01] [t=118.1min] [STATUS] posicoes=0 | trades=2 | wins=1 losses=1 | pnl=+0.31843SOL\n",
-      "[06:12:04] [t=118.1min] [SCANNER] +53 candidatos (fila=53)\n",
-      "[06:12:19] [t=118.4min] [SCANNER] +53 candidatos (fila=53)\n",
-      "[06:12:34] [t=118.6min] [SCANNER] +53 candidatos (fila=53)\n",
-      "[06:12:49] [t=118.9min] [SCANNER] +53 candidatos (fila=53)\n",
-      "[06:12:49] [t=118.9min] [skip] BTCAT h1=+80% m5=-1% liq=$16,478 wh=404 sol5m=181.88 bot=0% | ['m5=-1%<=0', 'B/S=1.2<2.0']\n",
-      "[06:13:04] [t=119.1min] [SCANNER] +53 candidatos (fila=53)\n",
-      "[06:13:19] [t=119.4min] [SCANNER] +53 candidatos (fila=53)\n",
-      "[06:13:34] [t=119.6min] [SCANNER] +53 candidatos (fila=53)\n",
-      "[06:13:49] [t=119.9min] [SCANNER] +53 candidatos (fila=53)\n"
+      "[06:38:58] [t=145.0min] [SCANNER] +54 candidatos (fila=54)\n",
+      "[06:39:13] [t=145.3min] [SCANNER] +54 candidatos (fila=54)\n",
+      "[06:39:28] [t=145.5min] [SCANNER] +54 candidatos (fila=54)\n",
+      "[06:39:43] [t=145.8min] [SCANNER] +54 candidatos (fila=54)\n",
+      "[06:39:58] [t=146.0min] [SCANNER] +54 candidatos (fila=54)\n",
+      "[06:40:01] [t=146.1min] [STATUS] posicoes=0 | trades=2 | wins=1 losses=1 | pnl=+0.31843SOL\n",
+      "[06:40:13] [t=146.3min] [SCANNER] +54 candidatos (fila=54)\n",
+      "[06:40:28] [t=146.5min] [SCANNER] +54 candidatos (fila=54)\n",
+      "[06:40:43] [t=146.8min] [SCANNER] +54 candidatos (fila=54)\n",
+      "[06:40:58] [t=147.0min] [SCANNER] +54 candidatos (fila=54)\n",
+      "[06:41:13] [t=147.3min] [SCANNER] +54 candidatos (fila=54)\n",
+      "[06:41:28] [t=147.5min] [SCANNER] +54 candidatos (fila=54)\n",
+      "[06:42:01] [t=148.1min] [STATUS] posicoes=0 | trades=2 | wins=1 losses=1 | pnl=+0.31843SOL\n",
+      "[06:42:44] [t=148.8min] [SCANNER] +54 candidatos (fila=54)\n",
+      "[06:42:59] [t=149.1min] [SCANNER] +54 candidatos (fila=54)\n",
+      "[06:43:14] [t=149.3min] [SCANNER] +54 candidatos (fila=54)\n",
+      "[06:43:29] [t=149.6min] [SCANNER] +54 candidatos (fila=54)\n",
+      "[06:43:44] [t=149.8min] [SCANNER] +54 candidatos (fila=54)\n",
+      "[06:43:59] [t=150.1min] [SCANNER] +54 candidatos (fila=54)\n",
+      "[06:44:01] [t=150.1min] [STATUS] posicoes=0 | trades=2 | wins=1 losses=1 | pnl=+0.31843SOL\n"
     ]
   },
   "total_tokens": 62,
