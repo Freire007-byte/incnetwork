@@ -482,7 +482,7 @@ def _ws_on_message(ws, message):
             _ws_active = True
             return
         mint = data.get("mint", "")
-        if not mint:
+        if not mint or not mint.endswith("pump"):
             return
         with lock:
             if mint in seen_mints:
@@ -743,23 +743,25 @@ def trader_worker():
         modo = "PAPER"
         tx_sig = ""
         if LIVE_TRADING and _rt:
-            cfg = json.load(open(r"C:\Users\Loja\caca_pump_local\live_wallet.json"))
-            # Respeita max_positions do wallet config
+            cfg_path = os.path.join(_BASE, "live_wallet.json")
+            cfg = json.load(open(cfg_path))
             max_live = cfg.get("max_positions", 1)
             with lock:
-                if len(positions) >= max_live:
-                    continue
-            entry_sol_real = cfg.get("entry_sol", 0.02)
-            res = _rt.buy(sig["mint"], sol_amount=entry_sol_real)
-            if res.get("ok"):
-                modo   = "REAL"
-                tx_sig = res.get("sig", "")
-                with lock:
-                    if sig["mint"] in positions:
-                        positions[sig["mint"]]["tx_buy"] = tx_sig
-                        positions[sig["mint"]]["entry_sol_real"] = entry_sol_real
+                live_count = sum(1 for p in positions.values() if p.get("tx_buy"))
+            if live_count < max_live:
+                entry_sol_real = cfg.get("entry_sol", 0.02)
+                res = _rt.buy(sig["mint"], sol_amount=entry_sol_real)
+                if res.get("ok"):
+                    modo   = "REAL"
+                    tx_sig = res.get("sig", "")
+                    with lock:
+                        if sig["mint"] in positions:
+                            positions[sig["mint"]]["tx_buy"]         = tx_sig
+                            positions[sig["mint"]]["entry_sol_real"] = entry_sol_real
+                else:
+                    log(f"[REAL-ERRO] buy falhou: {res.get('error')} — modo PAPER")
             else:
-                log(f"[REAL-ERRO] buy falhou: {res.get('error')} — modo PAPER")
+                log(f"[SKIP-LIVE] {live_count}/{max_live} posicoes reais abertas — modo PAPER")
         log(f"[{modo}] ENTRADA {sig['symbol']} @ ${entry:.8f} | MC=${sig.get('market_cap',0):,.0f} | "
             f"TP +{TP_PCT:.0%} SL -{SL_PCT:.0%} | {sig.get('age_sec',0):.1f}s do launch"
             + (f" | TX={tx_sig[:20]}..." if tx_sig else ""))
