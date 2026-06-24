@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-24 05:16:05 UTC",
+  "updated_at": "2026-06-24 05:16:11 UTC",
   "tokens": [
     {
       "mint": "9DEtY2YMkXD7NrdNhZY8nsiDeQZaeNFj5WcfjRTPpump",
@@ -1748,8 +1748,6 @@
       }
     ],
     "log_tail": [
-      "[05:13:20] [t=297.4min] [skip] WSB h1=-1% m5=-31% liq=$11,752 wh=412 sol5m=185.73 bot=0% | ['m5=-31%<=0', 'B/S=1.3<2.0']\n",
-      "[05:13:20] [t=297.4min] [skip] HYFT h1=+1% m5=+0% liq=$0 wh=0 sol5m=0.01 bot=0% | ['liq=$0<$8,000', 'whales=0<2', 'sol5m=0.0<2.0', 'B/S=0.0<2.0']\n",
       "[05:13:20] [t=297.4min] [skip] wundys h1=+88% m5=-33% liq=$16,519 wh=1156 sol5m=520.38 bot=0% | ['m5=-33%<=0', 'B/S=1.2<2.0']\n",
       "[05:13:35] [t=297.6min] [SCANNER] +50 candidatos (fila=50)\n",
       "[05:13:50] [t=297.9min] [SCANNER] +50 candidatos (fila=50)\n",
@@ -1767,7 +1765,9 @@
       "[05:15:20] [t=299.4min] [SCANNER] +50 candidatos (fila=50)\n",
       "[05:15:35] [t=299.7min] [SCANNER] +50 candidatos (fila=50)\n",
       "[05:15:50] [t=299.9min] [SCANNER] +50 candidatos (fila=50)\n",
-      "[05:15:58] [t=300.0min] [SIM FIM] Duracao atingida\n"
+      "[05:15:58] [t=300.0min] [SIM FIM] Duracao atingida\n",
+      "[05:16:05] [t=300.2min] \n",
+      "FIM: 10 trades | 4 wins | PnL=+1.77584 SOL\n"
     ]
   },
   "total_tokens": 94,
