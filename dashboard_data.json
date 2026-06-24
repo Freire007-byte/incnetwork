@@ -1,6 +1,90 @@
 {
-  "updated_at": "2026-06-24 04:16:03 UTC",
+  "updated_at": "2026-06-24 04:46:04 UTC",
   "tokens": [
+    {
+      "mint": "6Kst8JpFA4RoFtvXMzGkPxkqgBgxMwKgvQUMXg31pump",
+      "symbol": "HUSHCOIN",
+      "name": "Hushcoin",
+      "market_cap": 17403.91,
+      "vol_24h": 51597.16,
+      "liq_usd": 0.0,
+      "pattern_id": 6,
+      "whale_count": 0,
+      "bot_count": 3,
+      "retail_count": 2,
+      "sol_5min": 0.0,
+      "bot_ratio": 0.6
+    },
+    {
+      "mint": "4eZkAL7NitdGMxsnkMuRmmFnLnLknS9bLPSpESePpump",
+      "symbol": "SANDWICH",
+      "name": "Jalapeno Popper Chicken Sandwich",
+      "market_cap": 10082.13,
+      "vol_24h": 15426.8,
+      "liq_usd": 0.0,
+      "pattern_id": 2,
+      "whale_count": 4,
+      "bot_count": 15,
+      "retail_count": 10,
+      "sol_5min": 4.38,
+      "bot_ratio": 0.517
+    },
+    {
+      "mint": "6fqwQCEYzCnpifjDR7MEPwT1i8ytFn8yMSLibW9tpump",
+      "symbol": "Wendy-chan",
+      "name": "Smug Wendy's",
+      "market_cap": 5105.6,
+      "vol_24h": 8794.16,
+      "liq_usd": 0.0,
+      "pattern_id": 6,
+      "whale_count": 0,
+      "bot_count": 9,
+      "retail_count": 8,
+      "sol_5min": 0.0,
+      "bot_ratio": 0.529
+    },
+    {
+      "mint": "CKQKwJ5PAK6zV5RmwqXYzLNjYSiS61h9KNv8YhhTBAGS",
+      "symbol": "WEN",
+      "name": "Wendy's Co",
+      "market_cap": 657390.0,
+      "vol_24h": 51322.61,
+      "liq_usd": 11348.2,
+      "pattern_id": 6,
+      "whale_count": 2,
+      "bot_count": 8,
+      "retail_count": 5,
+      "sol_5min": 0.87,
+      "bot_ratio": 0.533
+    },
+    {
+      "mint": "8huTPbKpRcacQudFW4r9A2yEbTeFw5VUGPEvAgjCpump",
+      "symbol": "GME",
+      "name": "GameStop",
+      "market_cap": 12525.86,
+      "vol_24h": 33633.03,
+      "liq_usd": 0.0,
+      "pattern_id": 5,
+      "whale_count": 1,
+      "bot_count": 12,
+      "retail_count": 5,
+      "sol_5min": 0.49,
+      "bot_ratio": 0.667
+    },
+    {
+      "mint": "8BAZo7QjnxfDvELnuXTkGSm1pddjggZ4upu8Vdwtpump",
+      "symbol": "WENDEEZ",
+      "name": "NUTS HIT YOUR CHIN",
+      "market_cap": 20090.62,
+      "vol_24h": 41630.11,
+      "liq_usd": 0.0,
+      "pattern_id": 4,
+      "whale_count": 0,
+      "bot_count": 0,
+      "retail_count": 2,
+      "sol_5min": 0.0,
+      "bot_ratio": 0.0
+    },
     {
       "mint": "3J6MQfXgiCg8kutQXfjHfHmEC7VzAz2rJL4Fe1oFpump",
       "symbol": "$MEOWGUL",
@@ -1083,10 +1167,10 @@
   "patterns": {
     "BALEIA_FORTE": 10,
     "BOT_SWARM": 4,
-    "LENTO_WHALE": 22,
-    "ORGANIC": 12,
-    "RUG_CAND": 5,
-    "MISTO": 24
+    "LENTO_WHALE": 23,
+    "ORGANIC": 13,
+    "RUG_CAND": 6,
+    "MISTO": 27
   },
   "wallets": [
     {
@@ -1136,6 +1220,12 @@
       "role": "whale",
       "tokens": 1,
       "total_sol": 4.493
+    },
+    {
+      "wallet": "9bjs5Km27zkrzk9WQXVyCAgByoAEbYRHoE93Pm5V4Puo",
+      "role": "whale",
+      "tokens": 1,
+      "total_sol": 3.9112
     },
     {
       "wallet": "Eqm4pdRd3kLSfie5mNHrVQgdaz3zLGVXmCT1qWsaaaJB",
@@ -1382,33 +1472,16 @@
       "role": "whale",
       "tokens": 1,
       "total_sol": 1.0936
-    },
-    {
-      "wallet": "5xjkNsHgppBp4HqiYzuZ2dww6yYcpqGwvRunmJdEzSLr",
-      "role": "whale",
-      "tokens": 1,
-      "total_sol": 1.0649
     }
   ],
   "sim": {
-    "total_trades": 17,
-    "trades": 17,
+    "total_trades": 18,
+    "trades": 18,
     "wins": 7,
-    "losses": 10,
-    "pnl_sol": 3.66191,
+    "losses": 11,
+    "pnl_sol": 3.44816,
     "entry_sol": 10.0,
     "last_trades": [
-      {
-        "symbol": "RICH",
-        "mint": "89SWf1zfiWSp3doPhM4vstqxjTF1iozs1EU8noN6pump",
-        "entry": 3.525e-05,
-        "exit": 5.681e-05,
-        "pnl_pct": 61.16,
-        "pnl_sol": 6.11631,
-        "exit_reason": "TP",
-        "hold_min": 1.5,
-        "ts": 1781878819
-      },
       {
         "symbol": "MechaWar",
         "mint": "DAE2ugmx3GsZbM6RMvvVjm1Z2QmwguDDMCDpsVVbpump",
@@ -1507,31 +1580,42 @@
         "exit_reason": "SL",
         "hold_min": 1.7,
         "ts": 1782269409
+      },
+      {
+        "symbol": "WEN",
+        "mint": "CKQKwJ5PAK6zV5RmwqXYzLNjYSiS61h9KNv8YhhTBAGS",
+        "entry": 0.0006573,
+        "exit": 0.0005168,
+        "pnl_pct": -21.38,
+        "pnl_sol": -0.21375,
+        "exit_reason": "SL",
+        "hold_min": 0.5,
+        "ts": 1782275496
       }
     ],
     "log_tail": [
-      "[04:12:58] [t=237.0min] [SCANNER] +50 candidatos (fila=50)\n",
-      "[04:12:58] [t=237.0min] [skip] BIOSPIRE h1=+47% m5=-59% liq=$0 wh=56 sol5m=25.38 bot=0% | ['m5=-59%<=0', 'liq=$0<$8,000', 'B/S=0.7<2.0']\n",
-      "[04:13:13] [t=237.3min] [SCANNER] +50 candidatos (fila=50)\n",
-      "[04:13:28] [t=237.5min] [SCANNER] +50 candidatos (fila=50)\n",
-      "[04:13:43] [t=237.8min] [SCANNER] +50 candidatos (fila=50)\n",
-      "[04:13:58] [t=238.0min] [SCANNER] +50 candidatos (fila=50)\n",
-      "[04:13:58] [t=238.0min] [skip] WEN h1=+15% m5=-6% liq=$12,778 wh=120 sol5m=54.27 bot=0% | ['m5=-6%<=0', 'B/S=1.2<2.0']\n",
-      "[04:14:08] [t=238.2min] [STATUS] posicoes=0 | trades=4 | wins=2 losses=2 | pnl=+0.58274SOL\n",
-      "[04:14:13] [t=238.3min] [SCANNER] +50 candidatos (fila=50)\n",
-      "[04:14:28] [t=238.5min] [SCANNER] +50 candidatos (fila=50)\n",
-      "[04:14:28] [t=238.5min] [skip] BIOSPIRE h1=+16% m5=-63% liq=$0 wh=47 sol5m=21.28 bot=0% | ['m5=-63%<=0', 'liq=$0<$8,000', 'B/S=0.5<2.0']\n",
-      "[04:14:43] [t=238.8min] [SCANNER] +50 candidatos (fila=50)\n",
-      "[04:14:58] [t=239.0min] [SCANNER] +50 candidatos (fila=50)\n",
-      "[04:15:13] [t=239.3min] [SCANNER] +50 candidatos (fila=50)\n",
-      "[04:15:28] [t=239.5min] [SCANNER] +50 candidatos (fila=50)\n",
-      "[04:15:29] [t=239.5min] [skip] WEN h1=+35% m5=+11% liq=$13,868 wh=77 sol5m=34.90 bot=0% | ['B/S=1.3<2.0']\n",
-      "[04:15:44] [t=239.8min] [SCANNER] +50 candidatos (fila=50)\n",
-      "[04:15:59] [t=240.0min] [SCANNER] +50 candidatos (fila=50)\n",
-      "[04:15:59] [t=240.0min] [skip] GME h1=+235% m5=+43% liq=$0 wh=56 sol5m=25.65 bot=0% | ['liq=$0<$8,000', 'B/S=1.6<2.0']\n",
-      "[04:15:59] [t=240.0min] [skip] BIOSPIRE h1=+10% m5=-51% liq=$0 wh=19 sol5m=8.61 bot=0% | ['m5=-51%<=0', 'liq=$0<$8,000', 'B/S=0.2<2.0']\n"
+      "[04:42:54] [t=267.0min] [SCANNER] +48 candidatos (fila=48)\n",
+      "[04:42:54] [t=267.0min] [skip] WENDEEZ h1=-70% m5=+77% liq=$6,368 wh=33 sol5m=15.06 bot=0% | ['liq=$6,368<$8,000', 'B/S=1.8<2.0']\n",
+      "[04:43:09] [t=267.2min] [SCANNER] +48 candidatos (fila=48)\n",
+      "[04:43:09] [t=267.2min] [skip] Wendy-chan h1=+161% m5=+3% liq=$0 wh=57 sol5m=25.65 bot=0% | ['liq=$0<$8,000', 'B/S=1.1<2.0']\n",
+      "[04:43:24] [t=267.5min] [SCANNER] +48 candidatos (fila=48)\n",
+      "[04:43:39] [t=267.7min] [SCANNER] +48 candidatos (fila=48)\n",
+      "[04:43:39] [t=267.7min] [skip] SANDWICH h1=+0% m5=-67% liq=$0 wh=48 sol5m=22.05 bot=0% | ['m5=-67%<=0', 'liq=$0<$8,000', 'B/S=0.6<2.0']\n",
+      "[04:43:54] [t=268.0min] [SCANNER] +48 candidatos (fila=48)\n",
+      "[04:44:09] [t=268.2min] [SCANNER] +48 candidatos (fila=48)\n",
+      "[04:44:10] [t=268.2min] [STATUS] posicoes=0 | trades=5 | wins=2 losses=3 | pnl=+0.36899SOL\n",
+      "[04:44:24] [t=268.5min] [SCANNER] +48 candidatos (fila=48)\n",
+      "[04:44:39] [t=268.7min] [SCANNER] +48 candidatos (fila=48)\n",
+      "[04:44:39] [t=268.7min] [skip] Wendy-chan h1=+149% m5=+21% liq=$0 wh=68 sol5m=30.86 bot=0% | ['liq=$0<$8,000', 'B/S=1.1<2.0']\n",
+      "[04:44:54] [t=269.0min] [SCANNER] +48 candidatos (fila=48)\n",
+      "[04:45:09] [t=269.2min] [SCANNER] +48 candidatos (fila=48)\n",
+      "[04:45:09] [t=269.2min] [skip] SANDWICH h1=-18% m5=-17% liq=$0 wh=10 sol5m=4.81 bot=0% | ['m5=-17%<=0', 'liq=$0<$8,000', 'B/S=0.6<2.0']\n",
+      "[04:45:10] [t=269.2min] [skip] HUSHCOIN h1=-15% m5=-15% liq=$10,729 wh=46 sol5m=21.01 bot=0% | ['m5=-15%<=0', 'B/S=1.1<2.0']\n",
+      "[04:45:24] [t=269.5min] [SCANNER] +48 candidatos (fila=48)\n",
+      "[04:45:40] [t=269.7min] [SCANNER] +48 candidatos (fila=48)\n",
+      "[04:45:55] [t=270.0min] [SCANNER] +48 candidatos (fila=48)\n"
     ]
   },
-  "total_tokens": 77,
-  "total_wallets": 634
+  "total_tokens": 83,
+  "total_wallets": 686
 }
