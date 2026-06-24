@@ -1,6 +1,48 @@
 {
-  "updated_at": "2026-06-24 03:16:02 UTC",
+  "updated_at": "2026-06-24 03:46:02 UTC",
   "tokens": [
+    {
+      "mint": "CuwbX6yqPwcVXmHxgTXmYX8tiZqTVEUz1hG3MVqopump",
+      "symbol": "WEN",
+      "name": "Wendy's Co",
+      "market_cap": 12176.54,
+      "vol_24h": 11713.82,
+      "liq_usd": 0.0,
+      "pattern_id": 2,
+      "whale_count": 4,
+      "bot_count": 25,
+      "retail_count": 8,
+      "sol_5min": 3.42,
+      "bot_ratio": 0.676
+    },
+    {
+      "mint": "DgizYRTGoWLnsZhPeiFboMj2cPAS9uahTstC2D7Dpump",
+      "symbol": "\u05d3\u05d1\u05e9 \u05d7\u05dc\u05d1",
+      "name": "Net & Yahu's",
+      "market_cap": 10106.08,
+      "vol_24h": 29925.02,
+      "liq_usd": 0.0,
+      "pattern_id": 6,
+      "whale_count": 0,
+      "bot_count": 2,
+      "retail_count": 2,
+      "sol_5min": 0.0,
+      "bot_ratio": 0.5
+    },
+    {
+      "mint": "3p8Y7BTK6BtYqDDDnVCDqmUjdVCggjW9vAygWLYcpump",
+      "symbol": "ANGIE",
+      "name": "The Trash Can Bandit",
+      "market_cap": 24071.0,
+      "vol_24h": 3929.06,
+      "liq_usd": 10833.64,
+      "pattern_id": 6,
+      "whale_count": 0,
+      "bot_count": 1,
+      "retail_count": 2,
+      "sol_5min": 0.0,
+      "bot_ratio": 0.333
+    },
     {
       "mint": "66pQgfLHEfbHSBgYSZSrKEdJHHaGiYbgCtNbz48Apump",
       "symbol": "WEN",
@@ -957,10 +999,10 @@
   "patterns": {
     "BALEIA_FORTE": 10,
     "BOT_SWARM": 4,
-    "LENTO_WHALE": 18,
+    "LENTO_WHALE": 19,
     "ORGANIC": 12,
     "RUG_CAND": 5,
-    "MISTO": 19
+    "MISTO": 21
   },
   "wallets": [
     {
@@ -1022,6 +1064,12 @@
       "role": "whale",
       "tokens": 1,
       "total_sol": 3.0444
+    },
+    {
+      "wallet": "5sna7RtyfmWBYq3ZAMZa7J1FdGQe7sUx5116S98bhHnY",
+      "role": "whale",
+      "tokens": 1,
+      "total_sol": 2.9334
     },
     {
       "wallet": "7tesNksRqMgjeinrBHzoDCwVQCVSB2smUDAf737zRv74",
@@ -1256,12 +1304,6 @@
       "role": "whale",
       "tokens": 1,
       "total_sol": 0.9936
-    },
-    {
-      "wallet": "DcRXXBtifMsTTwtqzMcAZWfoLfsBMgyJqPDG4i86NN52",
-      "role": "whale",
-      "tokens": 1,
-      "total_sol": 0.993
     }
   ],
   "sim": {
@@ -1384,28 +1426,28 @@
       }
     ],
     "log_tail": [
-      "[03:11:49] [t=175.9min] [SCANNER] +47 candidatos (fila=47)\n",
-      "[03:12:04] [t=176.1min] [SCANNER] +47 candidatos (fila=47)\n",
-      "[03:12:08] [t=176.2min] [STATUS] posicoes=0 | trades=4 | wins=2 losses=2 | pnl=+0.58274SOL\n",
-      "[03:12:19] [t=176.4min] [SCANNER] +47 candidatos (fila=47)\n",
-      "[03:12:35] [t=176.6min] [SCANNER] +47 candidatos (fila=47)\n",
-      "[03:12:50] [t=176.9min] [SCANNER] +47 candidatos (fila=47)\n",
-      "[03:13:05] [t=177.1min] [SCANNER] +47 candidatos (fila=47)\n",
-      "[03:13:20] [t=177.4min] [SCANNER] +47 candidatos (fila=47)\n",
-      "[03:13:35] [t=177.6min] [SCANNER] +47 candidatos (fila=47)\n",
-      "[03:13:50] [t=177.9min] [SCANNER] +47 candidatos (fila=47)\n",
-      "[03:14:05] [t=178.1min] [SCANNER] +47 candidatos (fila=47)\n",
-      "[03:14:08] [t=178.2min] [STATUS] posicoes=0 | trades=4 | wins=2 losses=2 | pnl=+0.58274SOL\n",
-      "[03:14:20] [t=178.4min] [SCANNER] +47 candidatos (fila=47)\n",
-      "[03:14:35] [t=178.7min] [SCANNER] +47 candidatos (fila=47)\n",
-      "[03:14:50] [t=178.9min] [SCANNER] +47 candidatos (fila=47)\n",
-      "[03:15:06] [t=179.2min] [SCANNER] +47 candidatos (fila=47)\n",
-      "[03:15:21] [t=179.4min] [SCANNER] +48 candidatos (fila=48)\n",
-      "[03:15:21] [t=179.4min] [skip] ANGIE h1=+578% m5=+48% liq=$0 wh=238 sol5m=107.13 bot=0% | ['liq=$0<$8,000', 'B/S=1.3<2.0']\n",
-      "[03:15:36] [t=179.7min] [SCANNER] +48 candidatos (fila=48)\n",
-      "[03:15:51] [t=179.9min] [SCANNER] +48 candidatos (fila=48)\n"
+      "[03:42:16] [t=206.3min] [SCANNER] +49 candidatos (fila=49)\n",
+      "[03:42:31] [t=206.6min] [SCANNER] +49 candidatos (fila=49)\n",
+      "[03:42:31] [t=206.6min] [skip] WEN h1=-46% m5=-29% liq=$8,542 wh=78 sol5m=35.11 bot=0% | ['m5=-29%<=0', 'B/S=1.2<2.0']\n",
+      "[03:42:46] [t=206.8min] [SCANNER] +49 candidatos (fila=49)\n",
+      "[03:43:01] [t=207.1min] [SCANNER] +49 candidatos (fila=49)\n",
+      "[03:43:16] [t=207.3min] [SCANNER] +49 candidatos (fila=49)\n",
+      "[03:43:31] [t=207.6min] [SCANNER] +49 candidatos (fila=49)\n",
+      "[03:43:47] [t=207.8min] [SCANNER] +49 candidatos (fila=49)\n",
+      "[03:44:02] [t=208.1min] [SCANNER] +49 candidatos (fila=49)\n",
+      "[03:44:02] [t=208.1min] [skip] WEN h1=-41% m5=-17% liq=$8,939 wh=77 sol5m=34.77 bot=0% | ['m5=-17%<=0', 'B/S=1.1<2.0']\n",
+      "[03:44:08] [t=208.2min] [STATUS] posicoes=0 | trades=4 | wins=2 losses=2 | pnl=+0.58274SOL\n",
+      "[03:44:17] [t=208.3min] [SCANNER] +49 candidatos (fila=49)\n",
+      "[03:44:32] [t=208.6min] [SCANNER] +49 candidatos (fila=49)\n",
+      "[03:44:47] [t=208.8min] [SCANNER] +49 candidatos (fila=49)\n",
+      "[03:45:02] [t=209.1min] [SCANNER] +49 candidatos (fila=49)\n",
+      "[03:45:17] [t=209.3min] [SCANNER] +49 candidatos (fila=49)\n",
+      "[03:45:32] [t=209.6min] [SCANNER] +49 candidatos (fila=49)\n",
+      "[03:45:32] [t=209.6min] [skip] WEN h1=-39% m5=-5% liq=$9,070 wh=41 sol5m=18.83 bot=0% | ['m5=-5%<=0', 'B/S=1.2<2.0']\n",
+      "[03:45:47] [t=209.9min] [SCANNER] +49 candidatos (fila=49)\n",
+      "[03:46:02] [t=210.1min] [SCANNER] +49 candidatos (fila=49)\n"
     ]
   },
-  "total_tokens": 68,
-  "total_wallets": 537
+  "total_tokens": 71,
+  "total_wallets": 559
 }
