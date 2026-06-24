@@ -1,6 +1,34 @@
 {
-  "updated_at": "2026-06-23 23:45:38 UTC",
+  "updated_at": "2026-06-24 00:15:39 UTC",
   "tokens": [
+    {
+      "mint": "Doqpv6jVic3odZS1y73GYA6STrd6Vg5AUMurmchHpump",
+      "symbol": "Pokelana",
+      "name": "PokeLana",
+      "market_cap": 15484.04,
+      "vol_24h": 42995.67,
+      "liq_usd": 0.0,
+      "pattern_id": 2,
+      "whale_count": 3,
+      "bot_count": 17,
+      "retail_count": 9,
+      "sol_5min": 2.2,
+      "bot_ratio": 0.586
+    },
+    {
+      "mint": "5qjZLdVTe6aRtN2LWXQqnFw789HdSv99tRXXi7zYpump",
+      "symbol": "STARMIND",
+      "name": "STARMIND",
+      "market_cap": 88065.0,
+      "vol_24h": 272543.88,
+      "liq_usd": 21876.75,
+      "pattern_id": 1,
+      "whale_count": 0,
+      "bot_count": 7,
+      "retail_count": 0,
+      "sol_5min": 0.0,
+      "bot_ratio": 1.0
+    },
     {
       "mint": "FipQi1WZW8eEA86GaMVHfvsAWwvmmboR5wfwLrCeqW2y",
       "symbol": "$CWIF",
@@ -1372,40 +1400,12 @@
       "retail_count": 0,
       "sol_5min": 0.0,
       "bot_ratio": 0.0
-    },
-    {
-      "mint": "3Ziv8YD4Uv7sqYsaECTrbeUCfwKKPpTQ1PhZmEvWjupx",
-      "symbol": "TAK",
-      "name": "THE ARK",
-      "market_cap": 5198.47,
-      "vol_24h": 7893.67,
-      "liq_usd": 0.0,
-      "pattern_id": 4,
-      "whale_count": 0,
-      "bot_count": 0,
-      "retail_count": 101,
-      "sol_5min": 0.29,
-      "bot_ratio": 0.0
-    },
-    {
-      "mint": "FMqh9mqR6drPZqqW6wPqLHxX4rqNDWGhYLaMfoaJpump",
-      "symbol": "world",
-      "name": "world.xyz",
-      "market_cap": 62052.0,
-      "vol_24h": 192175.62,
-      "liq_usd": 17684.34,
-      "pattern_id": 0,
-      "whale_count": 28,
-      "bot_count": 0,
-      "retail_count": 570,
-      "sol_5min": 17.22,
-      "bot_ratio": 0.0
     }
   ],
   "patterns": {
     "BALEIA_FORTE": 19,
-    "BOT_SWARM": 4,
-    "LENTO_WHALE": 20,
+    "BOT_SWARM": 5,
+    "LENTO_WHALE": 21,
     "ORGANIC": 18,
     "RUG_CAND": 11,
     "MISTO": 38
@@ -1832,28 +1832,28 @@
       }
     ],
     "log_tail": [
-      "[23:40:16] [t=264.8min] [SCANNER] +51 candidatos (fila=51)\n",
-      "[23:40:31] [t=265.0min] [SCANNER] +51 candidatos (fila=51)\n",
-      "[23:40:46] [t=265.3min] [SCANNER] +50 candidatos (fila=50)\n",
-      "[23:41:01] [t=265.5min] [SCANNER] +50 candidatos (fila=50)\n",
-      "[23:41:17] [t=265.8min] [SCANNER] +50 candidatos (fila=50)\n",
-      "[23:41:32] [t=266.0min] [SCANNER] +50 candidatos (fila=50)\n",
-      "[23:41:47] [t=266.3min] [SCANNER] +50 candidatos (fila=50)\n",
-      "[23:41:59] [t=266.5min] [STATUS] posicoes=0 | trades=11 | wins=4 losses=7 | pnl=+0.26237SOL\n",
-      "[23:43:02] [t=267.5min] [SCANNER] +50 candidatos (fila=50)\n",
-      "[23:43:17] [t=267.8min] [SCANNER] +50 candidatos (fila=50)\n",
-      "[23:43:32] [t=268.0min] [SCANNER] +50 candidatos (fila=50)\n",
-      "[23:43:47] [t=268.3min] [SCANNER] +50 candidatos (fila=50)\n",
-      "[23:43:59] [t=268.5min] [STATUS] posicoes=0 | trades=11 | wins=4 losses=7 | pnl=+0.26237SOL\n",
-      "[23:44:03] [t=268.5min] [SCANNER] +50 candidatos (fila=50)\n",
-      "[23:44:18] [t=268.8min] [SCANNER] +50 candidatos (fila=50)\n",
-      "[23:44:33] [t=269.0min] [SCANNER] +50 candidatos (fila=50)\n",
-      "[23:44:48] [t=269.3min] [SCANNER] +50 candidatos (fila=50)\n",
-      "[23:45:03] [t=269.5min] [SCANNER] +50 candidatos (fila=50)\n",
-      "[23:45:18] [t=269.8min] [SCANNER] +50 candidatos (fila=50)\n",
-      "[23:45:33] [t=270.1min] [SCANNER] +50 candidatos (fila=50)\n"
+      "[00:10:58] [t=295.5min] [SCANNER] +49 candidatos (fila=49)\n",
+      "[00:11:13] [t=295.7min] [SCANNER] +49 candidatos (fila=49)\n",
+      "[00:11:28] [t=296.0min] [SCANNER] +49 candidatos (fila=49)\n",
+      "[00:11:43] [t=296.2min] [SCANNER] +49 candidatos (fila=49)\n",
+      "[00:11:59] [t=296.5min] [STATUS] posicoes=0 | trades=11 | wins=4 losses=7 | pnl=+0.26237SOL\n",
+      "[00:12:59] [t=297.5min] [SCANNER] +49 candidatos (fila=49)\n",
+      "[00:12:59] [t=297.5min] [skip] Pokelana h1=+874% m5=-5% liq=$0 wh=201 sol5m=90.53 bot=0% | ['m5=-5%<=0', 'liq=$0<$8,000', 'B/S=1.3<2.0']\n",
+      "[00:13:14] [t=297.7min] [SCANNER] +49 candidatos (fila=49)\n",
+      "[00:13:29] [t=298.0min] [SCANNER] +49 candidatos (fila=49)\n",
+      "[00:13:44] [t=298.2min] [SCANNER] +49 candidatos (fila=49)\n",
+      "[00:13:59] [t=298.5min] [SCANNER] +49 candidatos (fila=49)\n",
+      "[00:13:59] [t=298.5min] [STATUS] posicoes=0 | trades=11 | wins=4 losses=7 | pnl=+0.26237SOL\n",
+      "[00:14:14] [t=298.7min] [SCANNER] +49 candidatos (fila=49)\n",
+      "[00:14:29] [t=299.0min] [SCANNER] +48 candidatos (fila=48)\n",
+      "[00:14:29] [t=299.0min] [skip] Pokelana h1=+923% m5=-13% liq=$0 wh=100 sol5m=45.34 bot=0% | ['m5=-13%<=0', 'liq=$0<$8,000', 'B/S=1.5<2.0']\n",
+      "[00:14:44] [t=299.2min] [SCANNER] +48 candidatos (fila=48)\n",
+      "[00:14:59] [t=299.5min] [SCANNER] +48 candidatos (fila=48)\n",
+      "[00:15:15] [t=299.7min] [SCANNER] +48 candidatos (fila=48)\n",
+      "[00:15:30] [t=300.0min] [SCANNER] +48 candidatos (fila=48)\n",
+      "[00:15:32] [t=300.0min] [SIM FIM] Duracao atingida\n"
     ]
   },
-  "total_tokens": 110,
-  "total_wallets": 797
+  "total_tokens": 112,
+  "total_wallets": 818
 }
