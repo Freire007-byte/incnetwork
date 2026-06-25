@@ -1,6 +1,62 @@
 {
-  "updated_at": "2026-06-25 21:50:53 UTC",
+  "updated_at": "2026-06-25 22:20:54 UTC",
   "tokens": [
+    {
+      "mint": "HqhumkTH3YNup3Q2e8Rf8Mo5WuAXmu7afe7PySw4pump",
+      "symbol": "Greenland",
+      "name": "greenland energy fan club",
+      "market_cap": 84448.0,
+      "vol_24h": 313900.64,
+      "liq_usd": 14575.31,
+      "pattern_id": 6,
+      "whale_count": 2,
+      "bot_count": 9,
+      "retail_count": 4,
+      "sol_5min": 0.98,
+      "bot_ratio": 0.6
+    },
+    {
+      "mint": "D7yxpaFWi4cxHEtXv6kNNJPX1dXJgrMadQrNEzhSpump",
+      "symbol": "\ud835\udd4fMonkey",
+      "name": "\ud835\udd4f Monkey",
+      "market_cap": 8625.4,
+      "vol_24h": 33356.03,
+      "liq_usd": 0.0,
+      "pattern_id": 2,
+      "whale_count": 4,
+      "bot_count": 18,
+      "retail_count": 5,
+      "sol_5min": 1.78,
+      "bot_ratio": 0.667
+    },
+    {
+      "mint": "6UaQVkWkRZXcQoXueKZfuqjuVnPPjjdmY6Rjqed4pump",
+      "symbol": "snoopy",
+      "name": "snoopy",
+      "market_cap": 20161.0,
+      "vol_24h": 5407.51,
+      "liq_usd": 9767.44,
+      "pattern_id": 6,
+      "whale_count": 2,
+      "bot_count": 19,
+      "retail_count": 4,
+      "sol_5min": 1.31,
+      "bot_ratio": 0.76
+    },
+    {
+      "mint": "5ANxE2RowhdQBPgn7wcjK4BC2GwgQSU9hGDcUnwEpump",
+      "symbol": "ALEX",
+      "name": "Account 1",
+      "market_cap": 4199.36,
+      "vol_24h": 15090.33,
+      "liq_usd": 0.0,
+      "pattern_id": 5,
+      "whale_count": 1,
+      "bot_count": 7,
+      "retail_count": 3,
+      "sol_5min": 1.18,
+      "bot_ratio": 0.636
+    },
     {
       "mint": "pqxF3Up8G9HWpLVV1aCyBKT1HubkUX5MeZNSZtNpump",
       "symbol": "PAPCAT",
@@ -704,10 +760,10 @@
   ],
   "patterns": {
     "BALEIA_FORTE": 6,
-    "LENTO_WHALE": 11,
+    "LENTO_WHALE": 12,
     "ORGANIC": 18,
-    "RUG_CAND": 6,
-    "MISTO": 9
+    "RUG_CAND": 7,
+    "MISTO": 11
   },
   "wallets": [
     {
@@ -789,6 +845,12 @@
       "total_sol": 1.5184
     },
     {
+      "wallet": "sidxzdx4SjMcBrrsSxYZwi97FqsWsMGoArCwVz1zZtK",
+      "role": "whale",
+      "tokens": 1,
+      "total_sol": 1.3147
+    },
+    {
       "wallet": "FFrUck1AqBcNnQuz427vkTduNZ4Nb5ozMx6pcMKwFDgy",
       "role": "whale",
       "tokens": 1,
@@ -817,6 +879,12 @@
       "role": "whale",
       "tokens": 1,
       "total_sol": 1.2086
+    },
+    {
+      "wallet": "6AYSUX9HCGmrYxp2QYgXasNGFy2mnKCacu7shSKw7KEN",
+      "role": "whale",
+      "tokens": 1,
+      "total_sol": 1.1785
     },
     {
       "wallet": "ACCT_20_ARW7vE3N",
@@ -909,10 +977,22 @@
       "total_sol": 0.6114
     },
     {
+      "wallet": "CCAZPRBdWVn4CHvJ6N4nsUmP6ZNBrbfz31EiypTk3TFj",
+      "role": "whale",
+      "tokens": 1,
+      "total_sol": 0.5986
+    },
+    {
       "wallet": "GHi8jEBW9AhBT6rL16hHANucVJCjdaHt8L262EQpY46S",
       "role": "whale",
       "tokens": 1,
       "total_sol": 0.5906
+    },
+    {
+      "wallet": "Du82T7Br9jcnuTmJkkXuXCQCynWT7tS3vVWyMtURTQEL",
+      "role": "whale",
+      "tokens": 1,
+      "total_sol": 0.5657
     },
     {
       "wallet": "DwFWDye5hjCyNsbSxwUJ8ztS2DNLV2Lq6hLk4xx1oXvR",
@@ -933,6 +1013,12 @@
       "total_sol": 0.5109
     },
     {
+      "wallet": "3P4XgCc4yXvw9qNQNEGSkxCUpNndCFhVCvH1zNP6PgL9",
+      "role": "whale",
+      "tokens": 1,
+      "total_sol": 0.4951
+    },
+    {
       "wallet": "ACCT_14_FmC7fXKd",
       "role": "whale",
       "tokens": 1,
@@ -943,6 +1029,18 @@
       "role": "whale",
       "tokens": 1,
       "total_sol": 0.4939
+    },
+    {
+      "wallet": "CW89tsZKDSbBwQeZBjzvhQM3uwrjQkHTaiYyqidQyBHp",
+      "role": "whale",
+      "tokens": 1,
+      "total_sol": 0.4858
+    },
+    {
+      "wallet": "sidxzdx4SjMcBrrsSxYZwi97FqsWsMGoArCwVz1zZtK",
+      "role": "retail",
+      "tokens": 1,
+      "total_sol": 0.4665
     },
     {
       "wallet": "ACCT_18_FmC7fXKd",
@@ -963,52 +1061,10 @@
       "total_sol": 0.42
     },
     {
-      "wallet": "2nGiyzmAbum2WJpQVKfcQnTidtCadY63oNyq2tUQ1TgZ",
-      "role": "whale",
+      "wallet": "3P4XgCc4yXvw9qNQNEGSkxCUpNndCFhVCvH1zNP6PgL9",
+      "role": "retail",
       "tokens": 1,
-      "total_sol": 0.4165
-    },
-    {
-      "wallet": "Dk4gWM7h8keQEPGQAzA61vU6LWbqCoeSu6EYFm6HLfqZ",
-      "role": "whale",
-      "tokens": 1,
-      "total_sol": 0.3974
-    },
-    {
-      "wallet": "2HfDeEM8M3bcifTxyWgC55NGisiAAuFQcRNNBv7SHxXv",
-      "role": "whale",
-      "tokens": 1,
-      "total_sol": 0.3951
-    },
-    {
-      "wallet": "ACCT_11_7U74V3oJ",
-      "role": "whale",
-      "tokens": 1,
-      "total_sol": 0.3917
-    },
-    {
-      "wallet": "Dmk7z7y8ZMG4iw7WDGgusFu8V74Yog6Nj3ecsFVY8WXY",
-      "role": "whale",
-      "tokens": 1,
-      "total_sol": 0.3906
-    },
-    {
-      "wallet": "E1BG8A4Fbyshq6QAhXScpT8JtvFcej266nGbo16s3Pat",
-      "role": "whale",
-      "tokens": 1,
-      "total_sol": 0.3886
-    },
-    {
-      "wallet": "ACCT_13_37ewmjF4",
-      "role": "whale",
-      "tokens": 1,
-      "total_sol": 0.3642
-    },
-    {
-      "wallet": "PcWgMSejFb1AVxtRh2AmRppQcvezi5ZyjgUtVAeRzft",
-      "role": "whale",
-      "tokens": 1,
-      "total_sol": 0.3616
+      "total_sol": 0.4191
     }
   ],
   "sim": {
@@ -1131,28 +1187,28 @@
       }
     ],
     "log_tail": [
-      "[21:48:16] [t=27.4min] [SCANNER] +50 candidatos (fila=50)\n",
-      "[21:48:31] [t=27.6min] [SCANNER] +50 candidatos (fila=50)\n",
-      "[21:48:31] [t=27.6min] [skip] \ud835\udd4fCash h1=-11% m5=-6% liq=$0 wh=9 sol5m=4.27 bot=0% | ['m5=-6%<5%', 'liq=$0<$7,500', 'B/S=0.8<2.0']\n",
-      "[21:48:31] [t=27.7min] [skip] MINIONS h1=+167% m5=+36% liq=$18,754 wh=28 sol5m=12.73 bot=0% | ['B/S=0.6<2.0']\n",
-      "[21:48:31] [t=27.7min] [skip] bottom h1=-45% m5=-32% liq=$0 wh=17 sol5m=7.87 bot=0% | ['m5=-32%<5%', 'liq=$0<$7,500', 'B/S=0.5<2.0']\n",
-      "[21:48:31] [t=27.7min] [skip] Coolman h1=-90% m5=-2% liq=$3,507 wh=2 sol5m=1.30 bot=71% | ['SL_BLACKLIST', 'm5=-2%<5%', 'liq=$3,507<$7,500', 'B/S=1.2<2.0']\n",
-      "[21:48:46] [t=27.9min] [SCANNER] +50 candidatos (fila=50)\n",
-      "[21:48:56] [t=28.1min] [STATUS] posicoes=0 | trades=3 | wins=1 losses=2 | pnl=-0.09331SOL\n",
-      "[21:49:01] [t=28.1min] [SCANNER] +50 candidatos (fila=50)\n",
-      "[21:49:16] [t=28.4min] [SCANNER] +50 candidatos (fila=50)\n",
-      "[21:49:31] [t=28.7min] [SCANNER] +50 candidatos (fila=50)\n",
-      "[21:49:46] [t=28.9min] [SCANNER] +50 candidatos (fila=50)\n",
-      "[21:50:01] [t=29.2min] [SCANNER] +50 candidatos (fila=50)\n",
-      "[21:50:01] [t=29.2min] [skip] \ud835\udd4fCash h1=-11% m5=+6% liq=$0 wh=3 sol5m=1.75 bot=0% | ['liq=$0<$7,500']\n",
-      "[21:50:01] [t=29.2min] [skip] MINIONS h1=+160% m5=+16% liq=$18,494 wh=17 sol5m=7.89 bot=0% | ['B/S=0.3<2.0']\n",
-      "[21:50:01] [t=29.2min] [skip] bottom h1=-54% m5=-13% liq=$0 wh=8 sol5m=3.85 bot=0% | ['m5=-13%<5%', 'liq=$0<$7,500', 'B/S=0.4<2.0']\n",
-      "[21:50:02] [t=29.2min] [skip] Coolman h1=-91% m5=-22% liq=$3,306 wh=2 sol5m=1.27 bot=0% | ['SL_BLACKLIST', 'm5=-22%<5%', 'liq=$3,306<$7,500', 'B/S=0.4<2.0']\n",
-      "[21:50:16] [t=29.4min] [SCANNER] +50 candidatos (fila=50)\n",
-      "[21:50:31] [t=29.7min] [SCANNER] +50 candidatos (fila=50)\n",
-      "[21:50:46] [t=29.9min] [SCANNER] +50 candidatos (fila=50)\n"
+      "[22:17:40] [t=56.8min] [skip] PAPCAT h1=+29% m5=+25% liq=$12,893 wh=158 sol5m=71.42 bot=0% | ['B/S=1.1<2.0']\n",
+      "[22:17:55] [t=57.1min] [SCANNER] +50 candidatos (fila=50)\n",
+      "[22:18:10] [t=57.3min] [SCANNER] +50 candidatos (fila=50)\n",
+      "[22:18:25] [t=57.6min] [SCANNER] +50 candidatos (fila=50)\n",
+      "[22:18:40] [t=57.8min] [SCANNER] +50 candidatos (fila=50)\n",
+      "[22:18:56] [t=58.1min] [SCANNER] +50 candidatos (fila=50)\n",
+      "[22:18:56] [t=58.1min] [skip] \ud835\udd4fMonkey h1=+407% m5=+39% liq=$0 wh=116 sol5m=52.24 bot=0% | ['liq=$0<$7,500', 'B/S=1.1<2.0']\n",
+      "[22:18:56] [t=58.1min] [STATUS] posicoes=0 | trades=3 | wins=1 losses=2 | pnl=-0.09331SOL\n",
+      "[22:19:11] [t=58.3min] [SCANNER] +50 candidatos (fila=50)\n",
+      "[22:19:11] [t=58.3min] [skip] snoopy h1=-92% m5=-85% liq=$3,221 wh=75 sol5m=33.93 bot=0% | ['m5=-85%<5%', 'liq=$3,221<$7,500', 'B/S=0.5<2.0']\n",
+      "[22:19:11] [t=58.3min] [skip] PAPCAT h1=+20% m5=+14% liq=$12,437 wh=169 sol5m=76.33 bot=0% | ['B/S=1.1<2.0']\n",
+      "[22:19:26] [t=58.6min] [SCANNER] +50 candidatos (fila=50)\n",
+      "[22:19:41] [t=58.8min] [SCANNER] +50 candidatos (fila=50)\n",
+      "[22:19:56] [t=59.1min] [SCANNER] +50 candidatos (fila=50)\n",
+      "[22:20:11] [t=59.3min] [SCANNER] +50 candidatos (fila=50)\n",
+      "[22:20:26] [t=59.6min] [SCANNER] +50 candidatos (fila=50)\n",
+      "[22:20:26] [t=59.6min] [skip] \ud835\udd4fMonkey h1=+345% m5=-16% liq=$0 wh=73 sol5m=33.19 bot=0% | ['m5=-16%<5%', 'liq=$0<$7,500', 'B/S=1.2<2.0']\n",
+      "[22:20:41] [t=59.8min] [SCANNER] +51 candidatos (fila=51)\n",
+      "[22:20:41] [t=59.8min] [skip] snoopy h1=-91% m5=-38% liq=$3,485 wh=16 sol5m=7.23 bot=33% | ['m5=-38%<5%', 'liq=$3,485<$7,500', 'B/S=0.4<2.0']\n",
+      "[22:20:41] [t=59.8min] [skip] PAPCAT h1=+43% m5=+11% liq=$13,572 wh=83 sol5m=37.37 bot=0% | ['B/S=1.2<2.0']\n"
     ]
   },
-  "total_tokens": 50,
-  "total_wallets": 364
+  "total_tokens": 54,
+  "total_wallets": 414
 }
