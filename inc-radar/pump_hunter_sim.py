@@ -34,6 +34,46 @@ trades    = []
 lock      = threading.Lock()
 start_ts  = time.time()
 
+# --- MODO ADAPTATIVO ---
+adaptive = {
+    "recent_pnl":    [],          # últimos 10 PnL em SOL
+    "min_liq":       MIN_LIQ_USD,
+    "min_sol5m":     MIN_SOL_5MIN,
+    "min_buysell":   MIN_BUYSELL_RATIO,
+}
+
+def _update_adaptive(pnl_sol):
+    """Chama após cada trade fechado. Ajusta filtros com base no win rate recente."""
+    adaptive["recent_pnl"].append(pnl_sol)
+    if len(adaptive["recent_pnl"]) > 10:
+        adaptive["recent_pnl"].pop(0)
+    n = len(adaptive["recent_pnl"])
+    if n < 5:
+        return
+    wr = sum(1 for x in adaptive["recent_pnl"] if x > 0) / n
+    if wr < 0.35:
+        adaptive["min_liq"]     = min(MIN_LIQ_USD * 1.5, 15000)
+        adaptive["min_sol5m"]   = min(MIN_SOL_5MIN * 1.5, 4.0)
+        adaptive["min_buysell"] = min(MIN_BUYSELL_RATIO * 1.3, 3.0)
+        log(f"[ADAPTIVE] WR={wr:.0%} ({n}tr) → APERTAR: liq=${adaptive['min_liq']:.0f} sol5m={adaptive['min_sol5m']:.1f} B/S={adaptive['min_buysell']:.1f}")
+    elif wr > 0.60:
+        adaptive["min_liq"]     = max(MIN_LIQ_USD * 0.85, 6000)
+        adaptive["min_sol5m"]   = max(MIN_SOL_5MIN * 0.85, 1.5)
+        adaptive["min_buysell"] = max(MIN_BUYSELL_RATIO * 0.85, 1.5)
+        log(f"[ADAPTIVE] WR={wr:.0%} ({n}tr) → RELAXAR: liq=${adaptive['min_liq']:.0f} sol5m={adaptive['min_sol5m']:.1f} B/S={adaptive['min_buysell']:.1f}")
+    else:
+        adaptive["min_liq"]     = MIN_LIQ_USD
+        adaptive["min_sol5m"]   = MIN_SOL_5MIN
+        adaptive["min_buysell"] = MIN_BUYSELL_RATIO
+
+def _dynamic_tp(m5, h1):
+    """TP maior quando momentum é mais forte."""
+    if m5 >= 15 or h1 >= 50:
+        return 0.55
+    elif m5 >= 8 or h1 >= 25:
+        return 0.47
+    return TP_PCT
+
 def log(msg):
     t_min = (time.time() - start_ts) / 60
     line  = f"[{time.strftime('%H:%M:%S', time.gmtime())}] [t={t_min:.1f}min] {msg}"
@@ -145,12 +185,15 @@ def classifier_worker():
         bot_ratio = bot_c / max(1, total)
         buy_sell = buys_m5 / max(1, sells_m5)
         reasons   = []
-        if m5 <= 0:                       reasons.append(f"m5={m5:+.0f}%<=0")
-        if liq < MIN_LIQ_USD:             reasons.append(f"liq=${liq:,.0f}<${MIN_LIQ_USD:,.0f}")
-        if whale_c < MIN_WHALE_COUNT:     reasons.append(f"whales={whale_c}<{MIN_WHALE_COUNT}")
-        if sol_5min < MIN_SOL_5MIN:       reasons.append(f"sol5m={sol_5min:.1f}<{MIN_SOL_5MIN}")
-        if bot_ratio > MAX_BOT_RATIO:     reasons.append(f"bots={bot_ratio:.0%}>{MAX_BOT_RATIO:.0%}")
-        if buy_sell < MIN_BUYSELL_RATIO:  reasons.append(f"B/S={buy_sell:.1f}<{MIN_BUYSELL_RATIO}")
+        cur_liq     = adaptive["min_liq"]
+        cur_sol5m   = adaptive["min_sol5m"]
+        cur_buysell = adaptive["min_buysell"]
+        if m5 <= 0:                   reasons.append(f"m5={m5:+.0f}%<=0")
+        if liq < cur_liq:             reasons.append(f"liq=${liq:,.0f}<${cur_liq:,.0f}")
+        if whale_c < MIN_WHALE_COUNT: reasons.append(f"whales={whale_c}<{MIN_WHALE_COUNT}")
+        if sol_5min < cur_sol5m:      reasons.append(f"sol5m={sol_5min:.1f}<{cur_sol5m:.1f}")
+        if bot_ratio > MAX_BOT_RATIO: reasons.append(f"bots={bot_ratio:.0%}>{MAX_BOT_RATIO:.0%}")
+        if buy_sell < cur_buysell:    reasons.append(f"B/S={buy_sell:.1f}<{cur_buysell:.1f}")
 
         if reasons:
             log(f"[skip] {sym} h1={h1:+.0f}% m5={m5:+.0f}% liq=${liq:,.0f} wh={whale_c} sol5m={sol_5min:.2f} bot={bot_ratio:.0%} | {reasons}")
@@ -192,14 +235,15 @@ def trader_worker():
             if len(positions) >= MAX_POSITIONS: continue
             if sig["mint"] in positions: continue
 
-        entry = get_price(sig["mint"]) or sig["price"]
-        tp    = entry * (1 + TP_PCT)
-        sl    = entry * (1 - SL_PCT)
-        log(f"[SIM ENTRADA] {sig['symbol']} @ ${entry:.8f} | TP=${tp:.8f} (+{TP_PCT:.0%}) SL=${sl:.8f} (-{SL_PCT:.0%}) max={MAX_HOLD_MIN}min")
+        entry  = get_price(sig["mint"]) or sig["price"]
+        dyn_tp = _dynamic_tp(sig["m5"], sig["h1"])
+        tp     = entry * (1 + dyn_tp)
+        sl     = entry * (1 - SL_PCT)
+        log(f"[SIM ENTRADA] {sig['symbol']} @ ${entry:.8f} | TP=${tp:.8f} (+{dyn_tp:.0%}) SL=${sl:.8f} (-{SL_PCT:.0%}) max={MAX_HOLD_MIN}min")
         with lock:
             positions[sig["mint"]] = {
                 "symbol": sig["symbol"], "entry": entry,
-                "tp": tp, "sl": sl,
+                "tp": tp, "sl": sl, "dyn_tp": dyn_tp,
                 "entry_time": time.time(),
                 "whale_count": sig["whale_count"],
                 "sol_5min": sig["sol_5min"],
@@ -282,6 +326,7 @@ def _close_position(mint, pos, price, reason):
         "ts":       int(time.time()),
     }
     trades.append(trade)
+    _update_adaptive(pnl_sol)
     with open(TRADES_FILE, "a") as f:
         f.write(json.dumps(trade) + "\n")
     label = "LUCRO" if pnl_sol > 0 else "PERDA"
@@ -290,10 +335,13 @@ def _close_position(mint, pos, price, reason):
     del positions[mint]
 
 if __name__ == "__main__":
-    log("=" * 55)
+    log("=" * 60)
     log(f"SIMULACAO PUMP HUNTER -- {SIM_DURATION_MIN/60:.0f} horas -- SEM SOL REAL")
-    log(f"Config: entry={ENTRY_SOL}SOL tp={TP_PCT:.0%} sl={SL_PCT:.0%} max={MAX_HOLD_MIN}min")
-    log("=" * 55)
+    log(f"Config: entry={ENTRY_SOL}SOL tp={TP_PCT:.0%}(dyn) sl={SL_PCT:.0%} max={MAX_HOLD_MIN}min")
+    log(f"MODO ADAPTATIVO: filtros ajustam com WR dos ultimos 10 trades")
+    log(f"  TP dinamico: m5>=15%→55% | m5>=8%→47% | base→{TP_PCT:.0%}")
+    log(f"  Filtros: liq WR<35%→apertar, WR>60%→relaxar (base cada 5 trades)")
+    log("=" * 60)
 
     threads = [
         threading.Thread(target=scanner_worker,    daemon=True),
