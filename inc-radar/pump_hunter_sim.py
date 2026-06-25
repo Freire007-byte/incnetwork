@@ -2,8 +2,13 @@
 # pump_hunter_sim.py -- Simulacao 7 dias, 1 SOL por entrada
 # Detecta pumps reais e simula trades sem gastar SOL
 
-import subprocess, json, time, os, queue, threading, sys
+import subprocess, json, time, os, queue, threading, sys, collections
 from concurrent.futures import ThreadPoolExecutor, as_completed
+try:
+    import websocket
+    _HAS_WS = True
+except ImportError:
+    _HAS_WS = False
 
 SIM_DURATION_MIN = 300  # 5 horas -- margem antes do job timeout de 350min
 ENTRY_SOL        = 0.3   # 0.3 SOL por entrada (posicao menor, mais trades)
@@ -120,6 +125,59 @@ def get_price(mint):
     p = max(sols, key=lambda x: float((x.get("liquidity") or {}).get("usd") or 0))
     price = float((p.get("priceUsd") or 0))
     return price if price > 0 else None
+
+def pumpfun_scanner_worker():
+    """WebSocket pump.fun — tokens novos em tempo real, adiciona após 60s de maturação."""
+    if not _HAS_WS:
+        log("[PUMPFUN] websocket-client não instalado — ignorando")
+        return
+    pending = collections.deque()  # (mint, ts_add)
+    MATURAR_S = 60  # espera 60s para DexScreener indexar
+
+    def on_message(ws, msg):
+        try:
+            d = json.loads(msg)
+            mint = d.get("mint") or d.get("tokenAddress") or d.get("address")
+            if mint:
+                pending.append((mint, time.time()))
+        except: pass
+
+    def on_error(ws, err):
+        log(f"[PUMPFUN] WS erro: {err}")
+
+    def on_close(ws, *a):
+        log("[PUMPFUN] WS fechado — reconectar em 10s")
+
+    def on_open(ws):
+        log("[PUMPFUN] conectado — subscribeNewToken")
+        ws.send(json.dumps({"method": "subscribeNewToken"}))
+
+    log("[PUMPFUN] iniciado")
+    while True:
+        elapsed = (time.time() - start_ts) / 60
+        if elapsed >= SIM_DURATION_MIN:
+            break
+        try:
+            ws = websocket.WebSocketApp(
+                "wss://pumpportal.fun/api/data",
+                on_open=on_open, on_message=on_message,
+                on_error=on_error, on_close=on_close,
+            )
+            t = threading.Thread(target=ws.run_forever, kwargs={"ping_interval": 30}, daemon=True)
+            t.start()
+            while t.is_alive():
+                now = time.time()
+                # Liberta tokens maduros para classificação
+                while pending and now - pending[0][1] >= MATURAR_S:
+                    mint, _ = pending.popleft()
+                    try:
+                        candidate_q.put_nowait(mint)
+                    except queue.Full:
+                        pass
+                time.sleep(2)
+        except Exception as e:
+            log(f"[PUMPFUN] erro: {e}")
+        time.sleep(10)
 
 def scanner_worker():
     log("[SCANNER] iniciado")
@@ -391,6 +449,7 @@ if __name__ == "__main__":
     log("=" * 60)
 
     threads = [
+        threading.Thread(target=pumpfun_scanner_worker, daemon=True),
         threading.Thread(target=scanner_worker,    daemon=True),
         threading.Thread(target=classifier_worker, daemon=True),
         threading.Thread(target=trader_worker,     daemon=True),
