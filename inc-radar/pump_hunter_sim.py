@@ -29,10 +29,11 @@ os.makedirs("/tmp/inc_study", exist_ok=True)
 candidate_q = queue.Queue(maxsize=200)
 signal_q    = queue.Queue(maxsize=10)
 
-positions = {}
-trades    = []
-lock      = threading.Lock()
-start_ts  = time.time()
+positions    = {}
+trades       = []
+sl_blacklist = set()   # tokens que SL'd nesta sessão — não re-entrar
+lock         = threading.Lock()
+start_ts     = time.time()
 
 # --- MODO ADAPTATIVO TEMPO REAL ---
 adaptive = {
@@ -208,7 +209,8 @@ def classifier_worker():
         cur_liq     = adaptive["min_liq"]
         cur_sol5m   = adaptive["min_sol5m"]
         cur_buysell = adaptive["min_buysell"]
-        if m5 <= 0:                   reasons.append(f"m5={m5:+.0f}%<=0")
+        if mint in sl_blacklist:      reasons.append(f"SL_BLACKLIST")
+        if m5 < 5:                    reasons.append(f"m5={m5:+.0f}%<5%")
         if liq < cur_liq:             reasons.append(f"liq=${liq:,.0f}<${cur_liq:,.0f}")
         if whale_c < MIN_WHALE_COUNT: reasons.append(f"whales={whale_c}<{MIN_WHALE_COUNT}")
         if sol_5min < cur_sol5m:      reasons.append(f"sol5m={sol_5min:.1f}<{cur_sol5m:.1f}")
@@ -309,6 +311,9 @@ def watchdog_worker():
 
                 if hold_min >= MAX_HOLD_MIN:
                     price = price or get_price(mint) or pos["entry"]
+                    # Extende 5min se posição lucrativa acima do BE (+8%)
+                    if price and price > pos["entry"] * 1.08 and hold_min < MAX_HOLD_MIN + 5:
+                        continue
                     with lock:
                         if mint in positions:
                             _close_position(mint, pos, price, "TEMPO")
@@ -347,7 +352,7 @@ def watchdog_worker():
                         if mint in positions:
                             _close_position(mint, pos, price, reason)
 
-        time.sleep(3)
+        time.sleep(1)
 
 def _close_position(mint, pos, price, reason):
     pnl_pct = (price - pos["entry"]) / pos["entry"] * 100
@@ -368,6 +373,9 @@ def _close_position(mint, pos, price, reason):
     _update_adaptive(pnl_sol)
     with open(TRADES_FILE, "a") as f:
         f.write(json.dumps(trade) + "\n")
+    if reason == "SL":
+        sl_blacklist.add(mint)
+        log(f"[BLACKLIST] {pos['symbol']} adicionado — não re-entra esta sessão")
     label = "LUCRO" if pnl_sol > 0 else "PERDA"
     log(f"[SIM SAIDA {label}] {pos['symbol']} | {reason} {hold:.0f}min | "
         f"{pnl_pct:+.2f}% | {pnl_sol:+.5f} SOL | motivo: {reason}")
