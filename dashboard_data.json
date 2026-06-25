@@ -1,6 +1,76 @@
 {
-  "updated_at": "2026-06-25 18:50:23 UTC",
+  "updated_at": "2026-06-25 19:20:24 UTC",
   "tokens": [
+    {
+      "mint": "4HGgVNFeRCc1nL3vzKqFSHsvocKiPc2Xusjuy5R5pump",
+      "symbol": "DEGEN",
+      "name": "Degen The Otter",
+      "market_cap": 13423.6,
+      "vol_24h": 19620.24,
+      "liq_usd": 0.0,
+      "pattern_id": 6,
+      "whale_count": 1,
+      "bot_count": 10,
+      "retail_count": 8,
+      "sol_5min": 0.98,
+      "bot_ratio": 0.526
+    },
+    {
+      "mint": "HiNnUE76RbV4DGQ2uc15CNPJiZsJky5SHnj8dpDipump",
+      "symbol": "Minionify",
+      "name": "Minionification",
+      "market_cap": 5225.78,
+      "vol_24h": 28589.36,
+      "liq_usd": 0.0,
+      "pattern_id": 2,
+      "whale_count": 4,
+      "bot_count": 16,
+      "retail_count": 8,
+      "sol_5min": 5.4,
+      "bot_ratio": 0.571
+    },
+    {
+      "mint": "CGQ2zDEJhYv1ssVEPL7B8n5Lahs522J6tTdso3ZNpump",
+      "symbol": "VINTED",
+      "name": "United Against Human Trafficking",
+      "market_cap": 5095.53,
+      "vol_24h": 7989.21,
+      "liq_usd": 0.0,
+      "pattern_id": 6,
+      "whale_count": 2,
+      "bot_count": 12,
+      "retail_count": 2,
+      "sol_5min": 1.04,
+      "bot_ratio": 0.75
+    },
+    {
+      "mint": "4PTyCcy1FrvNrBLL8PmLiA3gpMyENh1Mw7uarNbVpump",
+      "symbol": "MTRG",
+      "name": "Micro Tragedy",
+      "market_cap": 14742.91,
+      "vol_24h": 39627.94,
+      "liq_usd": 0.0,
+      "pattern_id": 5,
+      "whale_count": 1,
+      "bot_count": 5,
+      "retail_count": 1,
+      "sol_5min": 0.36,
+      "bot_ratio": 0.714
+    },
+    {
+      "mint": "G5ZHj4BC4uo9Sjiz9c1pm9557bnXWKMJwVJyj3nvpump",
+      "symbol": "PEER",
+      "name": "Peer Cycles",
+      "market_cap": 13287.29,
+      "vol_24h": 21464.05,
+      "liq_usd": 0.0,
+      "pattern_id": 6,
+      "whale_count": 2,
+      "bot_count": 17,
+      "retail_count": 5,
+      "sol_5min": 1.47,
+      "bot_ratio": 0.708
+    },
     {
       "mint": "37ewmjF4m1k8BjeVVHNQHVsKMwoc5WVZzBBKaqnkpump",
       "symbol": "BLEEKY",
@@ -1335,10 +1405,10 @@
   "patterns": {
     "BALEIA_FORTE": 14,
     "BOT_SWARM": 2,
-    "LENTO_WHALE": 28,
+    "LENTO_WHALE": 29,
     "ORGANIC": 13,
-    "RUG_CAND": 5,
-    "MISTO": 33
+    "RUG_CAND": 6,
+    "MISTO": 36
   },
   "wallets": [
     {
@@ -1394,6 +1464,12 @@
       "role": "whale",
       "tokens": 1,
       "total_sol": 3.9462
+    },
+    {
+      "wallet": "ACCT_19_HiNnUE76",
+      "role": "whale",
+      "tokens": 1,
+      "total_sol": 3.7997
     },
     {
       "wallet": "oo3GujwGfQhnTeTY7RDsRFxC334XyetPBGCG4XHD6yF",
@@ -1466,6 +1542,12 @@
       "role": "whale",
       "tokens": 1,
       "total_sol": 2.4555000000000002
+    },
+    {
+      "wallet": "Aeg9rNNqNPw6qQ2RgzBHvz25AF1fPqiVBKupd6YQNZmT",
+      "role": "whale",
+      "tokens": 2,
+      "total_sol": 2.4253
     },
     {
       "wallet": "741TyxhtrGgdtHJDmygqtjXyxmSLYGEucu42Bguj1tbg",
@@ -1606,12 +1688,6 @@
       "total_sol": 1.3487
     },
     {
-      "wallet": "Aeg9rNNqNPw6qQ2RgzBHvz25AF1fPqiVBKupd6YQNZmT",
-      "role": "whale",
-      "tokens": 1,
-      "total_sol": 1.344
-    },
-    {
       "wallet": "2GHcUSEjvu1XPraXRBQmqNX9sboQ8ey23nD7zEXVKWMN",
       "role": "whale",
       "tokens": 1,
@@ -1634,12 +1710,6 @@
       "role": "whale",
       "tokens": 1,
       "total_sol": 1.1925
-    },
-    {
-      "wallet": "B3SVsuQsN86Ukb3RrD4D8gNmnBbgFRkxtYNxmrnjS2uq",
-      "role": "whale",
-      "tokens": 1,
-      "total_sol": 1.1859
     }
   ],
   "sim": {
@@ -1762,28 +1832,28 @@
       }
     ],
     "log_tail": [
-      "[18:46:28] [t=146.2min] [SIM SAIDA LUCRO] Chad | TP 7min | +53.86% | +0.53856 SOL | motivo: TP\n",
-      "[18:46:42] [t=146.4min] [SCANNER] +51 candidatos (fila=51)\n",
-      "[18:46:42] [t=146.4min] [skip] Chad h1=+70% m5=+69% liq=$14,670 wh=83 sol5m=37.50 bot=0% | ['B/S=1.5<2.6']\n",
-      "[18:46:57] [t=146.7min] [SCANNER] +51 candidatos (fila=51)\n",
-      "[18:47:13] [t=146.9min] [SCANNER] +51 candidatos (fila=51)\n",
-      "[18:47:28] [t=147.2min] [SCANNER] +51 candidatos (fila=51)\n",
-      "[18:47:43] [t=147.4min] [SCANNER] +51 candidatos (fila=51)\n",
-      "[18:47:58] [t=147.7min] [SCANNER] +51 candidatos (fila=51)\n",
-      "[18:47:58] [t=147.7min] [skip] BLEEKY h1=+390% m5=+25% liq=$0 wh=94 sol5m=42.53 bot=59% | ['liq=$0<$12,000']\n",
-      "[18:47:58] [t=147.7min] [skip] burnz h1=+146% m5=-27% liq=$0 wh=15 sol5m=6.82 bot=0% | ['m5=-27%<=0', 'liq=$0<$12,000', 'B/S=0.4<2.6']\n",
-      "[18:48:13] [t=147.9min] [SCANNER] +51 candidatos (fila=51)\n",
-      "[18:48:13] [t=148.0min] [skip] Chad h1=+37% m5=+1% liq=$13,190 wh=100 sol5m=45.39 bot=0% | ['B/S=1.5<2.6']\n",
-      "[18:48:26] [t=148.2min] [STATUS] posicoes=0 | trades=5 | wins=1 losses=4 | pnl=-0.06347SOL\n",
-      "[18:48:29] [t=148.2min] [SCANNER] +51 candidatos (fila=51)\n",
-      "[18:48:44] [t=148.5min] [SCANNER] +51 candidatos (fila=51)\n",
-      "[18:48:59] [t=148.7min] [SCANNER] +51 candidatos (fila=51)\n",
-      "[18:49:14] [t=149.0min] [SCANNER] +51 candidatos (fila=51)\n",
-      "[18:49:29] [t=149.2min] [SCANNER] +51 candidatos (fila=51)\n",
-      "[18:49:29] [t=149.2min] [skip] BLEEKY h1=-14% m5=-14% liq=$10,383 wh=31 sol5m=14.05 bot=0% | ['m5=-14%<=0', 'liq=$10,383<$12,000', 'B/S=0.9<2.6']\n",
-      "[18:49:29] [t=149.2min] [skip] burnz h1=+171% m5=-20% liq=$0 wh=15 sol5m=7.06 bot=0% | ['m5=-20%<=0', 'liq=$0<$12,000', 'B/S=0.6<2.6']\n"
+      "[19:17:15] [t=177.0min] [SCANNER] +49 candidatos (fila=49)\n",
+      "[19:17:30] [t=177.2min] [SCANNER] +49 candidatos (fila=49)\n",
+      "[19:17:45] [t=177.5min] [SCANNER] +49 candidatos (fila=49)\n",
+      "[19:17:45] [t=177.5min] [skip] Minionify h1=+187% m5=+4% liq=$0 wh=91 sol5m=41.18 bot=0% | ['liq=$0<$12,000', 'B/S=1.4<2.6']\n",
+      "[19:17:45] [t=177.5min] [skip] DEGEN h1=+441% m5=-12% liq=$0 wh=57 sol5m=26.05 bot=7% | ['m5=-12%<=0', 'liq=$0<$12,000', 'B/S=1.6<2.6']\n",
+      "[19:18:00] [t=177.7min] [SCANNER] +49 candidatos (fila=49)\n",
+      "[19:18:16] [t=178.0min] [SCANNER] +49 candidatos (fila=49)\n",
+      "[19:18:26] [t=178.2min] [STATUS] posicoes=0 | trades=5 | wins=1 losses=4 | pnl=-0.06347SOL\n",
+      "[19:18:31] [t=178.2min] [SCANNER] +49 candidatos (fila=49)\n",
+      "[19:18:31] [t=178.2min] [skip] MTRG h1=-26% m5=-26% liq=$14 wh=0 sol5m=0.01 bot=0% | ['m5=-26%<=0', 'liq=$14<$12,000', 'whales=0<2', 'sol5m=0.0<3.0', 'B/S=0.0<2.6']\n",
+      "[19:18:46] [t=178.5min] [SCANNER] +49 candidatos (fila=49)\n",
+      "[19:19:01] [t=178.7min] [SCANNER] +49 candidatos (fila=49)\n",
+      "[19:19:16] [t=179.0min] [SCANNER] +49 candidatos (fila=49)\n",
+      "[19:19:16] [t=179.0min] [skip] Minionify h1=+218% m5=+23% liq=$0 wh=73 sol5m=32.98 bot=0% | ['liq=$0<$12,000', 'B/S=1.3<2.6']\n",
+      "[19:19:16] [t=179.0min] [skip] DEGEN h1=+478% m5=+43% liq=$0 wh=30 sol5m=13.81 bot=43% | ['liq=$0<$12,000', 'B/S=2.4<2.6']\n",
+      "[19:19:31] [t=179.3min] [SCANNER] +49 candidatos (fila=49)\n",
+      "[19:19:46] [t=179.5min] [SCANNER] +49 candidatos (fila=49)\n",
+      "[19:20:01] [t=179.8min] [SCANNER] +49 candidatos (fila=49)\n",
+      "[19:20:02] [t=179.8min] [skip] MTRG h1=-26% m5=-26% liq=$14 wh=0 sol5m=0.01 bot=0% | ['m5=-26%<=0', 'liq=$14<$12,000', 'whales=0<2', 'sol5m=0.0<3.0', 'B/S=0.0<2.6']\n",
+      "[19:20:17] [t=180.0min] [SCANNER] +49 candidatos (fila=49)\n"
     ]
   },
-  "total_tokens": 95,
-  "total_wallets": 902
+  "total_tokens": 100,
+  "total_wallets": 965
 }
