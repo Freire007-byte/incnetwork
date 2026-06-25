@@ -6,18 +6,18 @@ import subprocess, json, time, os, queue, threading, sys
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 SIM_DURATION_MIN = 300  # 5 horas -- margem antes do job timeout de 350min
-ENTRY_SOL        = 1.0   # 1 SOL real por entrada
-TP_PCT           = 0.40   # +40% take profit (pumps que valem entrar vao longe)
-SL_PCT           = 0.12   # -12% stop loss (DexScreener lag faz exit real ser -10 a -15%)
-MAX_HOLD_MIN     = 10     # saida forcada apos 10 min (nao aguenta rugs lentos)
+ENTRY_SOL        = 0.3   # 0.3 SOL por entrada (posicao menor, mais trades)
+TP_PCT           = 0.40   # +40% take profit
+SL_PCT           = 0.12   # -12% stop loss
+MAX_HOLD_MIN     = 10     # saida forcada apos 10 min
 MAX_POSITIONS    = 3
 
 MIN_WHALE_COUNT  = 2
-MIN_SOL_5MIN     = 2.0    # era 0.5 -- exige volume real (filtra micro-rugs)
-MAX_TOKEN_AGE_MIN= 20     # era 60 -- entra cedo no pump, nao no pico
-MAX_BOT_RATIO    = 0.75   # era 0.90 -- mais exigente contra bots
-MIN_LIQ_USD      = 8000   # era 5000 -- liquidez minima para slippage aceitavel
-MIN_BUYSELL_RATIO= 2.0    # buys_m5 deve ser 2x os sells (pump genuino)
+MIN_SOL_5MIN     = 0.8    # relaxado: era 2.0
+MAX_TOKEN_AGE_MIN= 30     # relaxado: era 20min
+MAX_BOT_RATIO    = 0.80   # relaxado: era 0.75
+MIN_LIQ_USD      = 5000   # relaxado: era 8000
+MIN_BUYSELL_RATIO= 1.5    # relaxado: era 2.0
 WHALE_SOL_MIN    = 0.3
 BOT_SOL_MAX      = 0.005
 
@@ -34,37 +34,57 @@ trades    = []
 lock      = threading.Lock()
 start_ts  = time.time()
 
-# --- MODO ADAPTATIVO ---
+# --- MODO ADAPTATIVO TEMPO REAL ---
 adaptive = {
     "recent_pnl":    [],          # últimos 10 PnL em SOL
     "min_liq":       MIN_LIQ_USD,
     "min_sol5m":     MIN_SOL_5MIN,
     "min_buysell":   MIN_BUYSELL_RATIO,
+    "consec_losses": 0,           # perdas consecutivas
+    "consec_wins":   0,           # wins consecutivos
+    "pause_until":   0,           # pausa entradas (timestamp)
 }
 
 def _update_adaptive(pnl_sol):
-    """Chama após cada trade fechado. Ajusta filtros com base no win rate recente."""
     adaptive["recent_pnl"].append(pnl_sol)
     if len(adaptive["recent_pnl"]) > 10:
         adaptive["recent_pnl"].pop(0)
-    n = len(adaptive["recent_pnl"])
-    if n < 5:
+
+    if pnl_sol > 0:
+        adaptive["consec_losses"] = 0
+        adaptive["consec_wins"]  += 1
+    else:
+        adaptive["consec_wins"]   = 0
+        adaptive["consec_losses"] += 1
+
+    # 3 perdas consecutivas → pausa 10 min + filtros máximos
+    if adaptive["consec_losses"] >= 3:
+        adaptive["pause_until"]   = time.time() + 600
+        adaptive["min_liq"]       = min(MIN_LIQ_USD * 2.0, 20000)
+        adaptive["min_sol5m"]     = min(MIN_SOL_5MIN * 2.0, 6.0)
+        adaptive["min_buysell"]   = min(MIN_BUYSELL_RATIO * 1.5, 3.5)
+        log(f"[ADAPTIVE] ⚠ 3 PERDAS CONSECUTIVAS → PAUSAR 10min | filtros máximos")
         return
+
+    n  = len(adaptive["recent_pnl"])
+    if n < 2: return          # adapta a partir do 2º trade
+
     wr = sum(1 for x in adaptive["recent_pnl"] if x > 0) / n
+
     if wr < 0.35:
         adaptive["min_liq"]     = min(MIN_LIQ_USD * 1.5, 15000)
         adaptive["min_sol5m"]   = min(MIN_SOL_5MIN * 1.5, 4.0)
         adaptive["min_buysell"] = min(MIN_BUYSELL_RATIO * 1.3, 3.0)
-        log(f"[ADAPTIVE] WR={wr:.0%} ({n}tr) → APERTAR: liq=${adaptive['min_liq']:.0f} sol5m={adaptive['min_sol5m']:.1f} B/S={adaptive['min_buysell']:.1f}")
     elif wr > 0.60:
-        adaptive["min_liq"]     = max(MIN_LIQ_USD * 0.85, 6000)
-        adaptive["min_sol5m"]   = max(MIN_SOL_5MIN * 0.85, 1.5)
-        adaptive["min_buysell"] = max(MIN_BUYSELL_RATIO * 0.85, 1.5)
-        log(f"[ADAPTIVE] WR={wr:.0%} ({n}tr) → RELAXAR: liq=${adaptive['min_liq']:.0f} sol5m={adaptive['min_sol5m']:.1f} B/S={adaptive['min_buysell']:.1f}")
+        adaptive["min_liq"]     = max(MIN_LIQ_USD * 0.85, 4000)
+        adaptive["min_sol5m"]   = max(MIN_SOL_5MIN * 0.85, 0.6)
+        adaptive["min_buysell"] = max(MIN_BUYSELL_RATIO * 0.85, 1.3)
     else:
         adaptive["min_liq"]     = MIN_LIQ_USD
         adaptive["min_sol5m"]   = MIN_SOL_5MIN
         adaptive["min_buysell"] = MIN_BUYSELL_RATIO
+
+    log(f"[ADAPTIVE] WR={wr:.0%} ({n}tr) cl={adaptive['consec_losses']} cw={adaptive['consec_wins']} → liq=${adaptive['min_liq']:.0f} sol5m={adaptive['min_sol5m']:.1f} B/S={adaptive['min_buysell']:.1f}")
 
 def _dynamic_tp(m5, h1):
     """TP maior quando momentum é mais forte."""
@@ -231,6 +251,13 @@ def trader_worker():
             time.sleep(1)
             continue
 
+        # Verifica pausa por perdas consecutivas
+        if time.time() < adaptive["pause_until"]:
+            rem = (adaptive["pause_until"] - time.time()) / 60
+            log(f"[ADAPTIVE] ENTRADA BLOQUEADA — pausa ativa ({rem:.1f}min restantes)")
+            time.sleep(30)
+            continue
+
         with lock:
             if len(positions) >= MAX_POSITIONS: continue
             if sig["mint"] in positions: continue
@@ -289,12 +316,24 @@ def watchdog_worker():
 
                 if not price: continue
 
+                # Trailing SL multi-nível (tempo real)
                 with lock:
-                    if mint in positions and not positions[mint].get("be_applied") and price >= pos["entry"] * 1.20:
-                        positions[mint]["sl"] = pos["entry"] * 1.08
-                        positions[mint]["be_applied"] = True
-                        log(f"[BREAK-EVEN] {pos['symbol']} SL → entry+8% @ ${pos['entry']*1.08:.8f}")
                     if mint in positions:
+                        cur_sl  = positions[mint]["sl"]
+                        ep      = pos["entry"]
+                        sym     = pos["symbol"]
+                        trail_levels = [
+                            (1.50, 1.35, "+50%→SL+35%"),
+                            (1.35, 1.20, "+35%→SL+20%"),
+                            (1.20, 1.08, "+20%→SL+8%"),
+                        ]
+                        for trig, sl_mult, label in trail_levels:
+                            if price >= ep * trig:
+                                new_sl = ep * sl_mult
+                                if new_sl > cur_sl:
+                                    positions[mint]["sl"] = new_sl
+                                    log(f"[TRAIL] {sym} {label} @ ${new_sl:.8f}")
+                                break
                         pos = positions[mint]
 
                 reason = None
