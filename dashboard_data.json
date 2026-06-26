@@ -1,6 +1,62 @@
 {
-  "updated_at": "2026-06-26 06:51:32 UTC",
+  "updated_at": "2026-06-26 07:21:33 UTC",
   "tokens": [
+    {
+      "mint": "2iSMBr2CmEWRVQE55edbSvvgCNhCbJ24VePEkmz5pump",
+      "symbol": "STARS",
+      "name": "The Trench Stars",
+      "market_cap": 101574.0,
+      "vol_24h": 237189.84,
+      "liq_usd": 22901.07,
+      "pattern_id": 5,
+      "whale_count": 1,
+      "bot_count": 15,
+      "retail_count": 7,
+      "sol_5min": 0.53,
+      "bot_ratio": 0.652
+    },
+    {
+      "mint": "EFKpwtQ8VQu5XVES97D9kV6LWcZPxYRxuDZj33vupump",
+      "symbol": "AlvoraFi",
+      "name": "AlvoraFi",
+      "market_cap": 7826.31,
+      "vol_24h": 15802.3,
+      "liq_usd": 0.0,
+      "pattern_id": 6,
+      "whale_count": 1,
+      "bot_count": 10,
+      "retail_count": 8,
+      "sol_5min": 0.46,
+      "bot_ratio": 0.526
+    },
+    {
+      "mint": "HZRnhPrEoddCir4thWEaSn1u6As3nxJ3QKB6rHPppump",
+      "symbol": "BTC",
+      "name": "Buy The Cycle",
+      "market_cap": 122716.0,
+      "vol_24h": 199001.87,
+      "liq_usd": 24980.33,
+      "pattern_id": 6,
+      "whale_count": 2,
+      "bot_count": 6,
+      "retail_count": 6,
+      "sol_5min": 2.38,
+      "bot_ratio": 0.429
+    },
+    {
+      "mint": "Fr5ukjtNZWjWBSDyWpuBJiucsaGukQqy3Nco3YbMjUoV",
+      "symbol": "VLC",
+      "name": "Velocoin",
+      "market_cap": 20394.0,
+      "vol_24h": 846.39,
+      "liq_usd": 2403.82,
+      "pattern_id": 6,
+      "whale_count": 1,
+      "bot_count": 5,
+      "retail_count": 4,
+      "sol_5min": 0.5,
+      "bot_ratio": 0.5
+    },
     {
       "mint": "5smhpPdmPcCmxraWLshaKBQqysuWSDGPMT9RKoLbpump",
       "symbol": "EVENTMESH",
@@ -1253,8 +1309,8 @@
     "BOT_SWARM": 4,
     "LENTO_WHALE": 17,
     "ORGANIC": 20,
-    "RUG_CAND": 4,
-    "MISTO": 36
+    "RUG_CAND": 5,
+    "MISTO": 39
   },
   "wallets": [
     {
@@ -1364,6 +1420,12 @@
       "role": "whale",
       "tokens": 1,
       "total_sol": 1.9783
+    },
+    {
+      "wallet": "68E7sGHtjdLsurrCMCXHZunimkei3Nyc6paTAMHyUey3",
+      "role": "whale",
+      "tokens": 1,
+      "total_sol": 1.9667
     },
     {
       "wallet": "EkzDX6v8FgT6VzEZmQZpD1nsZRyiDaa8LpXynRHs1iN9",
@@ -1550,12 +1612,6 @@
       "role": "whale",
       "tokens": 1,
       "total_sol": 0.8769
-    },
-    {
-      "wallet": "BgDzeTMUK3C46GGjLKxsGTCHDJ7MKGdzqua6XtT7L11j",
-      "role": "whale",
-      "tokens": 1,
-      "total_sol": 0.8224
     }
   ],
   "sim": {
@@ -1678,28 +1734,28 @@
       }
     ],
     "log_tail": [
-      "[06:47:59] [t=266.6min] [skip] HARVEST h1=-18% m5=-1% liq=$10,724 wh=4 sol5m=2.07 bot=33% | ['m5=-1%<5%', 'B/S=1.3<2.2']\n",
-      "[06:48:12] [t=266.8min] [SCANNER] +54 candidatos (fila=54)\n",
-      "[06:48:27] [t=267.0min] [SCANNER] +54 candidatos (fila=54)\n",
-      "[06:48:42] [t=267.3min] [SCANNER] +54 candidatos (fila=54)\n",
-      "[06:48:58] [t=267.5min] [SCANNER] +54 candidatos (fila=54)\n",
-      "[06:49:13] [t=267.8min] [SCANNER] +54 candidatos (fila=54)\n",
-      "[06:49:28] [t=268.1min] [SCANNER] +54 candidatos (fila=54)\n",
-      "[06:49:28] [t=268.1min] [skip] \u51ea\u3061\u3083\u3093 h1=+40% m5=-60% liq=$14,620 wh=1225 sol5m=551.54 bot=0% | ['m5=-60%<5%', 'B/S=2.0<2.2']\n",
-      "[06:49:28] [t=268.1min] [skip] LiquidityCoin h1=-52% m5=-6% liq=$7 wh=0 sol5m=0.00 bot=0% | ['m5=-6%<5%', 'liq=$7<$10,000', 'whales=0<2', 'sol5m=0.0<1.6', 'B/S=0.0<2.2']\n",
-      "[06:49:43] [t=268.3min] [SCANNER] +54 candidatos (fila=54)\n",
-      "[06:49:50] [t=268.4min] [STATUS] posicoes=0 | trades=8 | wins=3 losses=5 | pnl=-0.04558SOL\n",
-      "[06:49:58] [t=268.6min] [SCANNER] +54 candidatos (fila=54)\n",
-      "[06:50:13] [t=268.8min] [SCANNER] +54 candidatos (fila=54)\n",
-      "[06:50:28] [t=269.1min] [SCANNER] +54 candidatos (fila=54)\n",
-      "[06:50:43] [t=269.3min] [SCANNER] +54 candidatos (fila=54)\n",
-      "[06:50:58] [t=269.6min] [SCANNER] +54 candidatos (fila=54)\n",
-      "[06:50:58] [t=269.6min] [skip] \u51ea\u3061\u3083\u3093 h1=-74% m5=-93% liq=$6,353 wh=1522 sol5m=685.27 bot=0% | ['m5=-93%<5%', 'liq=$6,353<$10,000', 'B/S=1.2<2.2']\n",
-      "[06:50:58] [t=269.6min] [skip] LiquidityCoin h1=-52% m5=-3% liq=$7 wh=0 sol5m=0.00 bot=0% | ['m5=-3%<5%', 'liq=$7<$10,000', 'whales=0<2', 'sol5m=0.0<1.6', 'B/S=0.0<2.2']\n",
-      "[06:51:13] [t=269.8min] [SCANNER] +54 candidatos (fila=54)\n",
-      "[06:51:28] [t=270.1min] [SCANNER] +54 candidatos (fila=54)\n"
+      "[07:17:22] [t=296.0min] [SCANNER] +53 candidatos (fila=53)\n",
+      "[07:17:37] [t=296.2min] [SCANNER] +53 candidatos (fila=53)\n",
+      "[07:17:38] [t=296.2min] [skip] Rubenhood h1=+10% m5=-27% liq=$12,561 wh=123 sol5m=55.43 bot=0% | ['m5=-27%<5%', 'B/S=1.6<2.2']\n",
+      "[07:17:50] [t=296.4min] [STATUS] posicoes=0 | trades=8 | wins=3 losses=5 | pnl=-0.04558SOL\n",
+      "[07:17:52] [t=296.5min] [SCANNER] +53 candidatos (fila=53)\n",
+      "[07:18:07] [t=296.7min] [SCANNER] +53 candidatos (fila=53)\n",
+      "[07:18:23] [t=297.0min] [SCANNER] +53 candidatos (fila=53)\n",
+      "[07:18:38] [t=297.2min] [SCANNER] +53 candidatos (fila=53)\n",
+      "[07:18:53] [t=297.5min] [SCANNER] +53 candidatos (fila=53)\n",
+      "[07:19:08] [t=297.7min] [SCANNER] +53 candidatos (fila=53)\n",
+      "[07:19:08] [t=297.7min] [skip] Rubenhood h1=-32% m5=-59% liq=$9,870 wh=156 sol5m=70.64 bot=0% | ['m5=-59%<5%', 'liq=$9,870<$10,000', 'B/S=1.5<2.2']\n",
+      "[07:19:23] [t=298.0min] [SCANNER] +53 candidatos (fila=53)\n",
+      "[07:19:38] [t=298.2min] [SCANNER] +53 candidatos (fila=53)\n",
+      "[07:19:50] [t=298.4min] [STATUS] posicoes=0 | trades=8 | wins=3 losses=5 | pnl=-0.04558SOL\n",
+      "[07:19:53] [t=298.5min] [SCANNER] +53 candidatos (fila=53)\n",
+      "[07:20:08] [t=298.7min] [SCANNER] +53 candidatos (fila=53)\n",
+      "[07:20:23] [t=299.0min] [SCANNER] +53 candidatos (fila=53)\n",
+      "[07:20:38] [t=299.2min] [SCANNER] +53 candidatos (fila=53)\n",
+      "[07:20:39] [t=299.2min] [skip] Rubenhood h1=-23% m5=-36% liq=$10,535 wh=180 sol5m=81.34 bot=0% | ['m5=-36%<5%', 'B/S=1.4<2.2']\n",
+      "[07:21:25] [t=300.0min] [SIM FIM] Duracao atingida\n"
     ]
   },
-  "total_tokens": 89,
-  "total_wallets": 695
+  "total_tokens": 93,
+  "total_wallets": 741
 }
