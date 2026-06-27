@@ -10,7 +10,7 @@ try:
 except ImportError:
     _HAS_WS = False
 
-SIM_DURATION_MIN = 300  # 5 horas -- margem antes do job timeout de 350min
+SIM_DURATION_MIN = 280  # 4h 40min -- 70 min margem antes do job timeout de 350min
 ENTRY_SOL        = 0.3   # 0.3 SOL por entrada (posicao menor, mais trades)
 TP_PCT           = 0.40   # +40% take profit
 SL_PCT           = 0.12   # -12% stop loss

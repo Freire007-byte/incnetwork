@@ -1993,13 +1993,13 @@ async function loadCacaPump(){
 loadCacaPump();
 setInterval(loadCacaPump, 10000);
 
-async function load(){
+async function load(signal){
   try{
     const t = Date.now();
     const [r1, r2, r3] = await Promise.all([
-      fetch('data.json?t='+t),
-      fetch('celeste_data.json?t='+t).catch(()=>null),
-      fetch('inc_radar_data.json?t='+t).catch(()=>null)
+      fetch('data.json?t='+t, { signal }),
+      fetch('celeste_data.json?t='+t, { signal }).catch(()=>null),
+      fetch('inc_radar_data.json?t='+t, { signal }).catch(()=>null)
     ]);
     const d = await r1.json();
     if(r2 && r2.ok){
@@ -2010,7 +2010,7 @@ async function load(){
     }
     // Caça Pump live (local)
     try{
-      const r4 = await fetch('caca_pump_live_data.json?t='+t).catch(()=>null);
+      const r4 = await fetch('caca_pump_live_data.json?t='+t, { signal }).catch(()=>null);
       if(r4 && r4.ok) renderCacaPumpLive(await r4.json());
     } catch(e){ console.warn('caca_pump_live err',e); }
     if(!d.celeste){ console.warn('celeste ausente em data.json e celeste_data.json'); }
@@ -2061,10 +2061,21 @@ setInterval(()=>{
     ? 'Dados: '+((lastData.updated_at||'').split(' ')[1]||'—') + '  ↻ '+sec+'s'
     : '↻ '+sec+'s';
 }, 1000);
-// data refresh every 5s
+// data refresh every 5s (with abort controller to prevent memory leak)
+let _loadController = null;
 async function loadAndReset(){
   _nextLoad = Date.now() + 5000;
-  await load();
+  // Cancel previous fetch if still pending
+  if (_loadController) _loadController.abort();
+  _loadController = new AbortController();
+  const timeout = setTimeout(() => _loadController.abort(), 8000);
+  try {
+    await load(_loadController.signal);
+  } catch (e) {
+    if (e.name !== 'AbortError') console.error('Load failed:', e);
+  } finally {
+    clearTimeout(timeout);
+  }
 }
 loadAndReset();
 setInterval(loadAndReset, 5000);
