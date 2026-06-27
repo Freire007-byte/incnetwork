@@ -66,6 +66,9 @@ def collect_pumpfun(conn):
     r = subprocess.run(["curl","-s","--max-time","12",
         "-A","Mozilla/5.0","-H","Origin: https://pump.fun",
         "-H","Referer: https://pump.fun/", url], capture_output=True)
+    if r.returncode != 0 or not r.stdout:
+        log("pumpfun curl failed, retry next cycle")
+        return 0
     try: data = json.loads(r.stdout)
     except: return 0
     if not isinstance(data, list): return 0

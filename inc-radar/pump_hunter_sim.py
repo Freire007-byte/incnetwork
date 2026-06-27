@@ -108,14 +108,40 @@ def log(msg):
         with open(LOG_FILE, "a") as f: f.write(line + "\n")
     except: pass
 
-def curl_get(url, timeout=12):
+def curl_get(url, timeout=12, retries=2):
+    for attempt in range(retries):
+        try:
+            r = subprocess.run(["curl","-s","--max-time",str(timeout),
+                "-A","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+                "-H","Accept: application/json", url],
+                capture_output=True)
+            if r.returncode != 0:
+                if attempt < retries - 1:
+                    time.sleep(1 + attempt)
+                    continue
+                return None
+            return json.loads(r.stdout) if r.stdout else None
+        except:
+            if attempt < retries - 1:
+                time.sleep(1 + attempt)
+                continue
+            return None
+    return None
+
+_sol_price_cache = {"price": 175.0, "ts": 0}
+def get_sol_price():
+    global _sol_price_cache
+    now = time.time()
+    if now - _sol_price_cache["ts"] < 60:  # cache 60s
+        return _sol_price_cache["price"]
     try:
-        r = subprocess.run(["curl","-s","--max-time",str(timeout),
-            "-A","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-            "-H","Accept: application/json", url],
-            capture_output=True)
-        return json.loads(r.stdout) if r.stdout else None
-    except: return None
+        d = curl_get("https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd", timeout=8)
+        if d and "solana" in d and "usd" in d["solana"]:
+            price = float(d["solana"]["usd"])
+            _sol_price_cache = {"price": price, "ts": now}
+            return price
+    except: pass
+    return _sol_price_cache["price"]  # fallback último valor
 
 def get_price(mint):
     d = curl_get(f"https://api.dexscreener.com/latest/dex/tokens/{mint}", timeout=8)
@@ -255,7 +281,7 @@ def classifier_worker():
         buys_m5  = int((p.get("txns") or {}).get("m5", {}).get("buys") or 0)
         sells_m5 = int((p.get("txns") or {}).get("m5", {}).get("sells") or 0)
         buys_h1  = int((p.get("txns") or {}).get("h1", {}).get("buys") or 0)
-        SOL_PRICE = 175.0
+        SOL_PRICE = get_sol_price()
         avg_buy_usd = vol_m5 / max(1, buys_m5)
         whale_c  = max(0, int(vol_m5 / (WHALE_SOL_MIN * SOL_PRICE * 1.5)))
         bot_c    = max(0, int(buys_m5 * max(0, 1 - avg_buy_usd / 40)))
