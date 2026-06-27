@@ -1,0 +1,71 @@
+name: Caça Pump Auto-Evolution
+
+on:
+  schedule:
+    - cron: '0,30 * * * *'  # A cada 30 minutos
+
+  workflow_dispatch:
+
+jobs:
+  evolve:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: evolution
+      cancel-in-progress: false
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install numpy pandas
+
+      - name: Restore DB from Artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: caca-pump-db
+          path: data/
+        continue-on-error: true
+
+      - name: Restore Evolution Logs
+        uses: actions/download-artifact@v3
+        with:
+          name: evolution-logs
+          path: evolution_logs/
+        continue-on-error: true
+
+      - name: Run Evolution Cycle
+        run: |
+          mkdir -p evolution_logs logs
+          python agents/evolution_engine.py --single-cycle
+        env:
+          DB_PATH: ${{ github.workspace }}/data/caca_pump.db
+
+      - name: Update Evolution Logs
+        run: |
+          git config user.email "github-actions@anthropic.com"
+          git config user.name "Evolution Bot"
+          git add evolution_logs/
+          git commit -m "evolution: auto-optimization cycle $(date -u +'%Y-%m-%d %H:%M') UTC" || echo "No changes"
+
+      - name: Push Updates
+        run: |
+          git push origin main || echo "No updates to push"
+
+      - name: Save Evolution Logs
+        uses: actions/upload-artifact@v3
+        with:
+          name: evolution-logs
+          path: evolution_logs/
+          retention-days: 90
+
+      - name: Notify Completion
+        run: |
+          echo "✓ Evolution cycle complete"
+          echo "Current params: $(cat evolution_logs/current_params.json | jq -c '.')"
