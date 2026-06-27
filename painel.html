@@ -2081,6 +2081,13 @@ loadAndReset();
 setInterval(loadAndReset, 5000);
 // full page reload every 5 min to flush cache
 setTimeout(()=> location.reload(), 300000);
+
+// Register Service Worker for offline support (Phase 2)
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js')
+    .then(reg => console.log('✓ Service Worker registrado'))
+    .catch(err => console.warn('Service Worker registration failed:', err));
+}
 </script>
 </body>
 </html>

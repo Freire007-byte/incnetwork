@@ -56,6 +56,35 @@ self.addEventListener("fetch", event => {
     return; // deixa o browser lidar normalmente
   }
 
+  // JSON data (painel integrado) — Network-first com cache fallback (5s timeout)
+  if (url.pathname.endsWith('.json')) {
+    event.respondWith(
+      Promise.race([
+        fetch(event.request),
+        new Promise((resolve) => setTimeout(() => resolve(null), 5000))
+      ])
+        .then((response) => {
+          if (!response) {
+            // Timeout, tenta cache
+            return caches.match(event.request)
+              .then((cached) => cached || new Response('{}', { headers: { 'Content-Type': 'application/json' } }));
+          }
+          // Sucesso, atualiza cache
+          if (response.ok) {
+            const clone = response.clone();
+            caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
+          }
+          return response;
+        })
+        .catch(() => {
+          // Erro, tenta cache
+          return caches.match(event.request)
+            .then((cached) => cached || new Response('{}', { headers: { 'Content-Type': 'application/json' } }));
+        })
+    );
+    return;
+  }
+
   // Assets locais e fonts — Cache-first
   event.respondWith(
     caches.match(event.request).then(cached => {
