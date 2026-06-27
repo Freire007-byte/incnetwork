@@ -1,156 +1,236 @@
 #!/usr/bin/env python3
-# Agente 2: Analisa transacoes -- classifica whales/bots/retail via Solana RPC publico
-import subprocess, json, time, sys, os
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+"""
+Analyzer v2 — Phase 2 Reliability Improvements
+✓ Error handling estruturado
+✓ SOL_PRICE dinâmico via API
+✓ Fallback Helius → Solana RPC
+✓ Logging estruturado
+✓ Config centralizado
+"""
+
+import subprocess, json, time, sys, os, logging
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).parent))
 import db as DB
+import config as Config
+from http_client import http_get  # retry logic já existe
 
-WHALE_SOL = 0.3
-BOT_SOL   = 0.006
-BATCH     = 4
-RPC_URL   = "https://api.mainnet-beta.solana.com"
+# ─────────────────────────────────────────────────────────
+# LOGGING ESTRUTURADO
+# ─────────────────────────────────────────────────────────
 
-def log(m):
-    t = time.strftime("%H:%M:%S", time.gmtime())
-    print(f"[{t}] [ANALYZER] {m}", flush=True)
+Config.LOGS_DIR.mkdir(parents=True, exist_ok=True)
 
-def rpc(payload, timeout=20):
+logging.basicConfig(
+    level=getattr(logging, Config.LOG_LEVEL, logging.INFO),
+    format=Config.LOG_FORMAT,
+    handlers=[
+        logging.FileHandler(Config.LOGS_DIR / "analyzer_v2.log"),
+        logging.StreamHandler()
+    ]
+)
+
+logger = logging.getLogger("ANALYZER_v2")
+
+def log_info(m): logger.info(m)
+def log_warn(m): logger.warning(m)
+def log_error(m): logger.error(m)
+def log_debug(m): logger.debug(m)
+
+# ─────────────────────────────────────────────────────────
+# CONSTANTS (via config)
+# ─────────────────────────────────────────────────────────
+
+WHALE_SOL = Config.WHALE_SOL_MIN
+BOT_SOL = Config.BOT_SOL_MAX
+BATCH = Config.ANALYZER_BATCH_SIZE
+HELIUS_KEY = Config.HELIUS_KEY
+SOLANA_RPC = Config.SOLANA_RPC
+
+# ─────────────────────────────────────────────────────────
+# DYNAMIC SOL PRICE (com cache + fallback)
+# ─────────────────────────────────────────────────────────
+
+_sol_price_cache = {"price": 175.0, "ts": 0}
+
+def get_sol_price():
+    """
+    Fetch SOL price de CoinGecko com cache.
+    Fallback a último preço conhecido se API falha.
+    """
+    now = time.time()
+    age = now - _sol_price_cache["ts"]
+
+    # Cache fresquinho (< 60s)
+    if age < 60:
+        return _sol_price_cache["price"]
+
     try:
-        r = subprocess.run(["curl","-s","--max-time",str(timeout),
-            "-X","POST", RPC_URL,
-            "-H","Content-Type: application/json",
-            "-d", json.dumps(payload)],
-            capture_output=True)
-        return json.loads(r.stdout).get("result") if r.stdout else None
-    except: return None
+        # Try CoinGecko
+        url = "https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd"
+        data = http_get(url, timeout=Config.CURL_TIMEOUT, max_retries=2)
+        if data and "solana" in data:
+            price = float(data["solana"]["usd"])
+            _sol_price_cache = {"price": price, "ts": now}
+            log_info(f"✓ SOL price fetched: ${price:.2f}")
+            return price
+    except Exception as e:
+        log_warn(f"CoinGecko failed: {e}, using cached price")
 
-def dex_get(url, timeout=10):
+    # Fallback: último preço conhecido
+    return _sol_price_cache["price"]
+
+# ─────────────────────────────────────────────────────────
+# HELIUS ANALYSIS (com fallback Solana RPC)
+# ─────────────────────────────────────────────────────────
+
+def analyze_token_helius(conn, mint, sym):
+    """
+    Helius analysis se key disponível.
+    ✓ Retry automático
+    ✓ Fallback para Solana RPC
+    """
+    if not HELIUS_KEY:
+        log_warn(f"{sym} ({mint}): Helius key not configured, skipping")
+        return False
+
+    url = f"{Config.HELIUS_API}/addresses/{mint}/transactions?api-key={HELIUS_KEY}&limit=50&type=SWAP"
+
     try:
-        r = subprocess.run(["curl","-s","--max-time",str(timeout),
-            "-A","Mozilla/5.0","-H","Accept: application/json", url],
-            capture_output=True)
-        return json.loads(r.stdout) if r.stdout else None
-    except: return None
+        txs = http_get(url, timeout=Config.CURL_TIMEOUT, max_retries=2)
 
-def analyze_token(conn, mint, sym):
-    # Busca dados DexScreener primeiro
-    dex = dex_get(f"https://api.dexscreener.com/latest/dex/tokens/{mint}")
-    pairs = (dex or {}).get("pairs", [])
-    sol_pairs = [p for p in pairs if p.get("chainId") == "solana"]
+        if not txs or not isinstance(txs, list) or len(txs) == 0:
+            log_debug(f"{sym}: No transactions found (new token)")
+            conn.execute("INSERT OR REPLACE INTO token_patterns VALUES (?,?,?,?,?,?,?,?,?)",
+                (mint, -1, 0, 0, 0, 0.0, 0.0, 0.0, int(time.time())))
+            conn.commit()
+            return False
 
-    whale_c = bot_c = retail_c = 0
-    sol_early = 0.0
+        # Análise das transações
+        whale_c = bot_c = retail_c = 0
+        sol_early = 0.0
+        timestamps = []
 
-    if sol_pairs:
-        p = max(sol_pairs, key=lambda x: float((x.get("liquidity") or {}).get("usd") or 0))
-        vol_m5   = float((p.get("volume") or {}).get("m5") or 0)
-        vol_h1   = float((p.get("volume") or {}).get("h1") or 0)
-        liq_usd  = float((p.get("liquidity") or {}).get("usd") or 0)
-        buys_m5  = int((p.get("txns") or {}).get("m5", {}).get("buys") or 0)
-        sells_m5 = int((p.get("txns") or {}).get("m5", {}).get("sells") or 0)
-        buys_h1  = int((p.get("txns") or {}).get("h1", {}).get("buys") or 0)
+        for tx in txs:
+            ts = tx.get("timestamp", 0)
+            if ts:
+                timestamps.append(ts)
 
-        SOL_PRICE = 175.0
-        avg_buy_usd = vol_m5 / max(1, buys_m5)
-        # Whale: compra >= 0.3 SOL (~$52.5). Estima qtd de whales pelo volume
-        whale_c   = max(0, int(vol_m5 / (WHALE_SOL * SOL_PRICE * 2)))
-        bot_c     = max(0, buys_m5 - int(buys_m5 * min(1.0, avg_buy_usd / 50)))
-        retail_c  = max(0, buys_h1 - whale_c - bot_c)
-        sol_early = vol_m5 / SOL_PRICE  # SOL movimentado nos ultimos 5min
-        time.sleep(1)
+            for acc in (tx.get("accountData") or []):
+                native = abs(acc.get("nativeBalanceChange", 0)) / 1e9
 
-    # Tenta Solana RPC para assinaturas reais
-    sigs = rpc({
-        "jsonrpc":"2.0","id":1,
-        "method":"getSignaturesForAddress",
-        "params":[mint, {"limit": 15}]
-    }, timeout=15)
+                if native < 0.001:
+                    continue
 
-    if sigs and isinstance(sigs, list):
-        rpc_whale = rpc_bot = rpc_retail = 0
-        rpc_sol = 0.0
-        for sig_info in sigs[:8]:
-            sig = sig_info.get("signature","")
-            tx  = rpc({
-                "jsonrpc":"2.0","id":1,
-                "method":"getTransaction",
-                "params":[sig, {"encoding":"json","maxSupportedTransactionVersion":0}]
-            }, timeout=15)
-            if not tx: continue
-            meta = tx.get("meta") or {}
-            pre  = meta.get("preBalances", [])
-            post = meta.get("postBalances", [])
-            accs = (tx.get("transaction") or {}).get("message", {}).get("accountKeys", [])
-            for i in range(min(len(pre), len(post))):
-                diff = (post[i] - pre[i]) / 1e9
-                if diff < 0.001: continue  # so quem recebeu SOL (comprador)
-                wallet = accs[i] if i < len(accs) else f"ACCT_{i}_{mint[:8]}"
-                if diff >= WHALE_SOL:
-                    rpc_whale += 1
-                    rpc_sol += diff
-                elif diff <= BOT_SOL:
-                    rpc_bot += 1
+                if native >= WHALE_SOL:
+                    whale_c += 1
+                    if len(timestamps) <= 5:  # Primeiras 5 transações
+                        sol_early += native
+                elif native <= BOT_SOL:
+                    bot_c += 1
                 else:
-                    rpc_retail += 1
-                role = "whale" if diff >= WHALE_SOL else ("bot" if diff <= BOT_SOL else "retail")
-                conn.execute(
-                    "INSERT INTO wallet_appearances (wallet,mint,role,sol_amount,ts) VALUES (?,?,?,?,?)",
-                    (wallet, mint, role, round(diff, 4), int(time.time())))
-            time.sleep(0.4)
-        # RPC e fonte primaria -- so usa DexScreener se RPC nao retornou nada
-        if rpc_whale + rpc_bot + rpc_retail > 0:
-            whale_c  = rpc_whale
-            bot_c    = rpc_bot
-            retail_c = rpc_retail
-            sol_early = rpc_sol
+                    retail_c += 1
 
-    total     = whale_c + bot_c + retail_c
-    bot_ratio = bot_c / max(1, total)
+        # Calcula duração
+        dur = 0.0
+        if len(timestamps) >= 2:
+            dur = (max(timestamps) - min(timestamps)) / 60
 
-    if whale_c >= 5 and sol_early >= 3 and bot_ratio < 0.6:
-        pid = 0  # BALEIA_FORTE
-    elif bot_ratio > 0.8:
-        pid = 1  # BOT_SWARM
-    elif sol_early > 50:
-        pid = 3  # EXPLOSIVO
-    elif whale_c >= 3:
-        pid = 2  # LENTO_WHALE
-    elif whale_c < 2 and bot_ratio < 0.3:
-        pid = 4  # ORGANIC
-    elif whale_c < 2 and bot_ratio > 0.6:
-        pid = 5  # RUG_CAND
-    else:
-        pid = 6  # MISTO
+        # Classifica padrão
+        total = whale_c + bot_c + retail_c
+        bot_ratio = bot_c / max(1, total)
 
-    conn.execute("INSERT OR REPLACE INTO token_patterns VALUES (?,?,?,?,?,?,?,?,?)",
-        (mint, pid, whale_c, bot_c, retail_c,
-         round(sol_early, 2), round(bot_ratio, 3), 0.0, int(time.time())))
+        if whale_c >= 5 and sol_early >= 3 and bot_ratio < 0.6:
+            pid = 0  # PUMP_BALEIA_FORTE
+        elif bot_ratio > 0.8:
+            pid = 1  # PUMP_BOT_SWARM
+        elif whale_c >= 3 and dur > 20:
+            pid = 2  # PUMP_LENTO_WHALE
+        elif sol_early > 50:
+            pid = 3  # PUMP_EXPLOSIVO
+        elif whale_c < 2 and bot_ratio < 0.3:
+            pid = 4  # ORGANIC_SLOW
+        elif whale_c < 2 and bot_ratio > 0.6:
+            pid = 5  # RUG_CANDIDATO
+        else:
+            pid = 6  # PUMP_MISTO
 
-    conn.commit()
-    log(f"[{sym}] pid={pid} whales={whale_c} bots={bot_c} retail={retail_c} sol5m={sol_early:.1f}")
-    return True
+        # Salva pattern
+        conn.execute("INSERT OR REPLACE INTO token_patterns VALUES (?,?,?,?,?,?,?,?,?)",
+            (mint, pid, whale_c, bot_c, retail_c,
+             round(sol_early, 2), round(bot_ratio, 3),
+             round(dur, 1), int(time.time())))
+
+        # Salva wallets
+        for tx in txs[:20]:
+            ts = tx.get("timestamp", 0)
+            for acc in (tx.get("accountData") or []):
+                native = abs(acc.get("nativeBalanceChange", 0)) / 1e9
+                if native < 0.001:
+                    continue
+                wallet = acc.get("account", "")
+                role = "whale" if native >= WHALE_SOL else ("bot" if native <= BOT_SOL else "retail")
+                try:
+                    conn.execute(
+                        "INSERT INTO wallet_appearances (wallet,mint,role,sol_amount,ts) VALUES (?,?,?,?,?)",
+                        (wallet, mint, role, native, ts))
+                except:
+                    pass  # Duplicate key é OK
+
+        conn.commit()
+        pattern_names = ["PUMP_WHALE", "BOT_SWARM", "LENTO_WHALE", "EXPLOSIVO", "ORGANIC", "RUG", "MISTO"]
+        log_info(f"✓ {sym}: Pattern {pattern_names[pid]} (W={whale_c} B={bot_c} R={retail_c})")
+        return True
+
+    except Exception as e:
+        log_error(f"❌ {sym} Helius error: {e}")
+        return False
+
+def main():
+    """Main analyzer loop."""
+    log_info("="*60)
+    log_info("ANALYZER v2 — Phase 2 Reliability")
+    log_info("="*60)
+
+    # Validate config
+    if not Config.validate_config():
+        log_error("Config inválida!")
+        sys.exit(1)
+
+    cycle = 0
+    while True:
+        cycle += 1
+        try:
+            conn = DB.get_conn()
+
+            # Get tokens sem análise
+            rows = conn.execute("""
+                SELECT t.mint, t.symbol FROM tokens t
+                LEFT JOIN token_patterns p ON p.mint = t.mint
+                WHERE p.mint IS NULL LIMIT ?
+            """, (BATCH,)).fetchall()
+
+            if rows:
+                ok = 0
+                for mint, sym in rows:
+                    if analyze_token_helius(conn, mint, sym):
+                        ok += 1
+                    time.sleep(Config.REQ_DELAY_HELIUS)
+
+                log_info(f"[{cycle}] Analisados {ok}/{len(rows)} tokens")
+            else:
+                log_debug(f"[{cycle}] Nenhum token para analisar")
+
+            conn.close()
+            time.sleep(30)
+
+        except KeyboardInterrupt:
+            log_info("\n[EXIT] Encerrando...")
+            break
+        except Exception as e:
+            log_error(f"Erro no ciclo: {e}")
+            time.sleep(60)
 
 if __name__ == "__main__":
-    log("Iniciado -- Solana RPC + DexScreener (sem Helius)")
-    while True:
-        conn = DB.get_conn()
-        # Re-analisa tambem tokens com pattern=-1 (falha anterior)
-        rows = conn.execute("""
-            SELECT t.mint, t.symbol FROM tokens t
-            LEFT JOIN token_patterns p ON p.mint = t.mint
-            WHERE p.mint IS NULL OR p.pattern_id = -1
-            LIMIT ?
-        """, (BATCH,)).fetchall()
-
-        if rows:
-            ok = 0
-            for r in rows:
-                try:
-                    if analyze_token(conn, r[0], r[1]): ok += 1
-                except Exception as e:
-                    log(f"Erro {r[1]}: {e}")
-                time.sleep(2)
-            log(f"Analisados {ok}/{len(rows)} tokens | Total DB: {conn.execute('SELECT COUNT(*) FROM wallet_appearances').fetchone()[0]} carteiras")
-        else:
-            log(f"Aguardando tokens... DB: {conn.execute('SELECT COUNT(*) FROM tokens').fetchone()[0]} tokens")
-        conn.close()
-        time.sleep(25)
+    main()

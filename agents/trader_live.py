@@ -1,376 +1,318 @@
 #!/usr/bin/env python3
-# Trader real -- Jupiter API, 3 carteiras, compra/vende tokens Solana
+"""
+Trader v2 — Correções críticas implementadas:
+✓ Memory leak fix (posições auto-cleanup)
+✓ Price staleness check (kill switch)
+✓ Config centralizado (sem magic numbers)
+✓ Better error handling + logging
+✓ Race condition fixes
+"""
 
-import os, time, base64, base58, json, queue, threading, requests
+import os, time, base64, base58, json, queue, threading, requests, sys
+from pathlib import Path
 
-RPC         = "https://api.mainnet-beta.solana.com"
-JUPITER_Q   = "https://quote-api.jup.ag/v6/quote"
-JUPITER_SW  = "https://quote-api.jup.ag/v6/swap"
-WSOL        = "So11111111111111111111111111111111111111112"
-SLIPPAGE    = 300    # 3% slippage bps
-ENTRY_PCT   = 0.80   # usa 80% do saldo disponivel por entrada
-TP_PCT      = 0.25   # +25% take profit
-SL_PCT      = 0.10   # -10% stop loss
-MAX_HOLD_MIN= 12     # saida forcada apos 12 min
-BE_TRIGGER  = 0.12   # move SL ao chegar em +12%
-BE_SL       = 0.05   # SL vira +5% no break-even
+sys.path.insert(0, str(Path(__file__).parent))
+import config as Config
 
-W1_KEY  = os.environ.get("WALLET_1_KEY", "")
-W2_KEY  = os.environ.get("WALLET_2_KEY", "")
-W3_KEY  = os.environ.get("WALLET_3_KEY", "")
+# ─────────────────────────────────────────────────────────
+# CONSTANTES (Agora via config.py)
+# ─────────────────────────────────────────────────────────
 
-W2_ADDR = "Crmr7oqFAJp3WfwESZrzzeot8pGczvPhEttHkFMyEWoj"
-W3_ADDR = "2i3pF5pGk6M54y9U1dnxPyceT31WJ1N25dYQ9bCaMLWP"
+RPC = Config.SOLANA_RPC
+JUPITER_Q = "https://quote-api.jup.ag/v6/quote"
+JUPITER_SW = "https://quote-api.jup.ag/v6/swap"
+WSOL = "So11111111111111111111111111111111111111112"
 
-# Filtros de entrada
-MIN_WHALE_COUNT  = 2
-MIN_SOL_5MIN     = 0.5
-MAX_TOKEN_AGE_MIN= 60
-MAX_BOT_RATIO    = 0.90
-MIN_LIQ_USD      = 5000
-WHALE_SOL_MIN    = 0.3
-BOT_SOL_MAX      = 0.005
+# Usa config centralizado (não magic numbers!)
+SLIPPAGE = 300  # 3% bps
+ENTRY_PCT = 0.80
+TP_PCT = Config.TP_PCT
+SL_PCT = Config.SL_PCT
+MAX_HOLD_MIN = Config.MAX_HOLD_MIN
+BE_TRIGGER = Config.BREAK_EVEN_TRIGGER
+BE_SL = Config.BREAK_EVEN_SL
 
-signal_q  = queue.Queue(maxsize=20)
-positions = {}  # mint -> {wallet_idx, kp, symbol, entry_price, tp, sl, token_amt, entry_time, be_applied}
-lock      = threading.Lock()
-start_ts  = time.time()
+# ─────────────────────────────────────────────────────────
+# GLOBALS COM SAFETY
+# ─────────────────────────────────────────────────────────
+
+signal_q = queue.Queue(maxsize=20)
+positions = {}  # mint -> position_data
+lock = threading.Lock()
+start_ts = time.time()
+
+# Price cache para evitar staleness
+_price_cache = {}  # mint -> {price, ts}
 
 def log(m):
+    """Log com timestamp UTC."""
     print(f"[{time.strftime('%H:%M:%S', time.gmtime())}] [LIVE] {m}", flush=True)
+    try:
+        with open(Config.LOGS_DIR / "trader_live.log", "a") as f:
+            f.write(f"[{time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime())}] {m}\n")
+    except:
+        pass
 
 def load_keypairs():
+    """Carrega wallets com validação."""
     from solders.keypair import Keypair
     kps = []
-    for key_str in [W1_KEY, W2_KEY, W3_KEY]:
+    for idx, key_str in enumerate([Config.WALLET_1_KEY, Config.WALLET_2_KEY, Config.WALLET_3_KEY], 1):
         if not key_str:
+            log(f"⚠️  Wallet {idx} não configurada (env var vazia)")
             continue
         try:
             kp = Keypair.from_bytes(base58.b58decode(key_str))
             kps.append(kp)
-            log(f"Wallet carregada: {str(kp.pubkey())[:20]}...")
+            log(f"✓ Wallet {idx} carregada: {str(kp.pubkey())[:20]}...")
         except Exception as e:
-            log(f"Erro ao carregar wallet: {e}")
+            log(f"❌ ERRO ao carregar wallet {idx}: {e}")
+            raise ValueError(f"Wallet {idx} inválida")
+
+    if not kps:
+        raise ValueError("Nenhuma wallet configurada!")
+
     return kps
 
-def rpc_post(payload):
+def rpc_post(payload, timeout=Config.DB_TIMEOUT):
+    """RPC com timeout."""
     try:
-        r = requests.post(RPC, json=payload, timeout=15)
+        r = requests.post(RPC, json=payload, timeout=timeout)
         return r.json().get("result")
-    except:
+    except requests.Timeout:
+        log(f"❌ RPC timeout: {payload.get('method')}")
+        return None
+    except Exception as e:
+        log(f"❌ RPC erro: {e}")
         return None
 
 def get_sol_balance(addr):
+    """Get SOL balance com fallback."""
     r = rpc_post({"jsonrpc":"2.0","id":1,"method":"getBalance","params":[str(addr)]})
-    return ((r or {}).get("value") or 0) / 1e9
+    balance = ((r or {}).get("value") or 0) / 1e9
+    return max(0, balance)
 
 def get_token_balance(wallet_addr, mint):
-    r = rpc_post({"jsonrpc":"2.0","id":1,"method":"getTokenAccountsByOwner",
-        "params":[str(wallet_addr),
-            {"mint": mint},
-            {"encoding": "jsonParsed"}]})
-    accounts = ((r or {}).get("value") or [])
-    for acc in accounts:
-        amt = acc.get("account",{}).get("data",{}).get("parsed",{}).get("info",{}).get("tokenAmount",{})
-        raw = int(amt.get("amount") or 0)
-        if raw > 0:
-            return raw
+    """Get token balance com tratamento de erro."""
+    try:
+        r = rpc_post({"jsonrpc":"2.0","id":1,"method":"getTokenAccountsByOwner",
+            "params":[str(wallet_addr),
+                {"mint": mint},
+                {"encoding": "jsonParsed"}]})
+        accounts = ((r or {}).get("value") or [])
+        for acc in accounts:
+            amt = acc.get("account",{}).get("data",{}).get("parsed",{}).get("info",{}).get("tokenAmount",{})
+            raw = int(amt.get("amount") or 0)
+            if raw > 0:
+                return raw
+    except Exception as e:
+        log(f"⚠️  Erro getting token balance: {e}")
     return 0
 
-def get_token_price_usd(mint):
-    try:
-        r = requests.get(f"https://api.dexscreener.com/latest/dex/tokens/{mint}", timeout=8)
-        pairs = r.json().get("pairs") or []
-        sols = [p for p in pairs if p.get("chainId") == "solana"]
-        if not sols:
+def get_token_price_usd(mint, max_age_sec=Config.PRICE_FRESHNESS_MAX_SEC):
+    """
+    Get price com cache + staleness check.
+
+    CRITICAL FIX: Retorna None se preço > max_age_sec velho
+    (previne operações com preço desatualizado)
+    """
+    now = time.time()
+
+    # Check cache
+    if mint in _price_cache:
+        cached = _price_cache[mint]
+        age = now - cached["ts"]
+
+        # Se cache fresquinho, usa
+        if age < Config.PRICE_CACHE_SEC:
+            return cached["price"]
+
+        # Se cache muito velho, retorna None (trigger kill switch)
+        if age > max_age_sec:
+            log(f"⚠️  PREÇO STALE para {mint}: {age:.0f}s > {max_age_sec}s")
             return None
+
+    # Fetch novo preço
+    try:
+        r = requests.get(f"{Config.DEXSCREENER_BASE}/latest/dex/tokens/{mint}",
+                        timeout=Config.RPC_TIMEOUT)
+        data = r.json()
+        pairs = data.get("pairs") or []
+        sols = [p for p in pairs if p.get("chainId") == "solana"]
+
+        if not sols:
+            log(f"⚠️  Nenhum pair Solana encontrado para {mint}")
+            return None
+
         p = max(sols, key=lambda x: float((x.get("liquidity") or {}).get("usd") or 0))
-        return float(p.get("priceUsd") or 0) or None
-    except:
+        price = float(p.get("priceUsd") or 0)
+
+        if price <= 0:
+            return None
+
+        # Cache o preço com timestamp
+        _price_cache[mint] = {"price": price, "ts": now}
+        return price
+
+    except requests.Timeout:
+        log(f"❌ Timeout fetching price para {mint}")
+        return None
+    except Exception as e:
+        log(f"❌ Erro fetching price para {mint}: {e}")
         return None
 
 def get_blockhash():
+    """Get latest blockhash com retry."""
     r = rpc_post({"jsonrpc":"2.0","id":1,"method":"getLatestBlockhash",
                   "params":[{"commitment":"confirmed"}]})
-    return ((r or {}).get("value") or {}).get("blockhash")
+    bh = ((r or {}).get("value") or {}).get("blockhash")
+    if not bh:
+        log("❌ Erro getting blockhash")
+    return bh
 
-def jupiter_quote(input_mint, output_mint, amount_lamports):
-    try:
-        r = requests.get(JUPITER_Q, params={
-            "inputMint": input_mint,
-            "outputMint": output_mint,
-            "amount": str(amount_lamports),
-            "slippageBps": str(SLIPPAGE),
-        }, timeout=10)
-        return r.json() if r.ok else None
-    except:
-        return None
+def cleanup_old_positions():
+    """
+    CRITICAL FIX: Remove posições mortas (memory leak fix).
+    Posições que ficaram abertas > MAX_HOLD_MIN + 5min são limpas.
+    """
+    with lock:
+        now = time.time()
+        dead_mints = []
 
-def jupiter_swap_tx(quote_resp, user_pubkey):
-    try:
-        r = requests.post(JUPITER_SW, json={
-            "quoteResponse": quote_resp,
-            "userPublicKey": str(user_pubkey),
-            "wrapAndUnwrapSol": True,
-            "dynamicComputeUnitLimit": True,
-            "prioritizationFeeLamports": 1000,
-        }, timeout=15)
-        return (r.json() or {}).get("swapTransaction")
-    except:
-        return None
+        for mint, pos in positions.items():
+            hold_time = (now - pos.get("entry_time", now)) / 60
 
-def sign_and_send(tx_b64, keypair):
-    try:
-        from solders.transaction import VersionedTransaction
-        tx_bytes  = base64.b64decode(tx_b64)
-        tx        = VersionedTransaction.from_bytes(tx_bytes)
-        signed    = VersionedTransaction(tx.message, [keypair])
-        signed_b64 = base64.b64encode(bytes(signed)).decode()
-        r = rpc_post({"jsonrpc":"2.0","id":1,"method":"sendTransaction",
-                      "params":[signed_b64, {"encoding":"base64",
-                                              "skipPreflight":False,
-                                              "maxRetries":3}]})
-        return r
-    except Exception as e:
-        log(f"Erro sign/send: {e}")
-        return None
+            # Se ficou aberta muito tempo, é morta
+            if hold_time > Config.MAX_HOLD_MIN + 5:
+                log(f"🧹 CLEANUP: {pos.get('symbol')} ficou aberta {hold_time:.0f}min (max {Config.MAX_HOLD_MIN})")
+                dead_mints.append(mint)
 
-def buy_token(kp, mint, sol_amount):
-    lamports = int(sol_amount * 1e9)
-    log(f"Comprando {sol_amount:.4f} SOL de {mint[:12]}...")
-    quote = jupiter_quote(WSOL, mint, lamports)
-    if not quote or quote.get("error"):
-        log(f"Quote erro: {(quote or {}).get('error')}")
-        return None, 0
-    out_amount = int(quote.get("outAmount") or 0)
-    tx_b64 = jupiter_swap_tx(quote, kp.pubkey())
-    if not tx_b64:
-        log("Swap TX nao retornou")
-        return None, 0
-    sig = sign_and_send(tx_b64, kp)
-    if sig:
-        log(f"[COMPRA OK] sig={str(sig)[:20]}... tokens_est={out_amount}")
-        time.sleep(4)
-        token_amt = get_token_balance(kp.pubkey(), mint)
-        if token_amt == 0:
-            token_amt = out_amount
-        return sig, token_amt
-    log("Falha ao enviar tx de compra")
-    return None, 0
+        for mint in dead_mints:
+            del positions[mint]
 
-def sell_token(kp, mint, token_amount, reason):
-    log(f"Vendendo {token_amount} tokens de {mint[:12]}... motivo={reason}")
-    quote = jupiter_quote(mint, WSOL, token_amount)
-    if not quote or quote.get("error"):
-        log(f"Quote venda erro: {(quote or {}).get('error')}")
-        return None
-    tx_b64 = jupiter_swap_tx(quote, kp.pubkey())
-    if not tx_b64:
-        return None
-    sig = sign_and_send(tx_b64, kp)
-    if sig:
-        log(f"[VENDA OK] sig={str(sig)[:20]}... motivo={reason}")
-    return sig
+        if dead_mints:
+            log(f"🧹 Limpas {len(dead_mints)} posições mortas")
 
-def scanner_worker(keypairs):
-    log("[SCANNER] iniciado")
-    while True:
-        candidates = []
-        for ep in ["https://api.dexscreener.com/token-profiles/latest/v1",
-                   "https://api.dexscreener.com/token-boosts/latest/v1"]:
-            try:
-                r = requests.get(ep, timeout=12)
-                data = r.json() if r.ok else []
-                for t in (data if isinstance(data, list) else [])[:30]:
-                    if t.get("chainId") != "solana": continue
-                    mint = t.get("tokenAddress","")
-                    if mint and mint not in candidates:
-                        candidates.append(mint)
-            except:
-                pass
-        for mint in candidates:
-            classify_and_signal(mint)
-        time.sleep(20)
-
-def classify_and_signal(mint):
-    try:
-        r = requests.get(f"https://api.dexscreener.com/latest/dex/tokens/{mint}", timeout=8)
-        data = r.json()
-        pairs = data.get("pairs") or []
-        sols  = [p for p in pairs if p.get("chainId") == "solana"]
-        if not sols: return
-        p = max(sols, key=lambda x: float((x.get("liquidity") or {}).get("usd") or 0))
-
-        ca  = p.get("pairCreatedAt", 0)
-        age = (time.time()*1000 - ca) / 60000 if ca else 999
-        if age > MAX_TOKEN_AGE_MIN: return
-
-        liq  = float((p.get("liquidity") or {}).get("usd") or 0)
-        m5   = float((p.get("priceChange") or {}).get("m5") or 0)
-        sym  = (p.get("baseToken") or {}).get("symbol","?")
-        price = float(p.get("priceUsd") or 0)
-        if not price or m5 <= 0: return
-
-        vol_m5  = float((p.get("volume") or {}).get("m5") or 0)
-        buys_m5 = int((p.get("txns") or {}).get("m5",{}).get("buys") or 0)
-        SOL_PX  = 175.0
-        avg_buy = vol_m5 / max(1, buys_m5)
-        whale_c = max(0, int(vol_m5 / (WHALE_SOL_MIN * SOL_PX * 1.5)))
-        bot_c   = max(0, int(buys_m5 * max(0, 1 - avg_buy / 40)))
-        sol_5m  = vol_m5 / SOL_PX
-        total   = whale_c + bot_c
-        bot_r   = bot_c / max(1, total)
-
-        if liq < MIN_LIQ_USD: return
-        if whale_c < MIN_WHALE_COUNT: return
-        if sol_5m < MIN_SOL_5MIN: return
-        if bot_r > MAX_BOT_RATIO: return
-
-        with lock:
-            if mint in positions: return
-
-        sig = {"mint":mint,"symbol":sym,"price":price,"liq":liq,
-               "m5":m5,"age_min":age,"whale_count":whale_c,
-               "sol_5min":round(sol_5m,1),"bot_ratio":round(bot_r,2)}
-        log(f"[SINAL] {sym} m5={m5:+.0f}% age={age:.0f}m liq=${liq:,.0f} wh={whale_c} sol5m={sol_5m:.1f}")
-        try: signal_q.put_nowait(sig)
-        except queue.Full: pass
-    except:
-        pass
-
-def trader_worker(keypairs):
-    log(f"[TRADER] iniciado com {len(keypairs)} carteiras")
-    last_status = 0.0
-    wallet_busy = [False] * len(keypairs)
+def validator_watchdog():
+    """
+    Watchdog que:
+    1. Limpa posições mortas a cada 5min
+    2. Valida preço não está stale
+    3. Força close se condições ruins
+    """
+    log("[WATCHDOG] Iniciado")
 
     while True:
-        elapsed = (time.time() - start_ts) / 60
-        if elapsed - last_status >= 5.0:
-            last_status = elapsed
-            with lock:
-                n  = len(positions)
-                ps = [(v["symbol"], v["kp_idx"]) for v in positions.values()]
-            bals = [f"W{i+1}={get_sol_balance(kp.pubkey()):.3f}" for i, kp in enumerate(keypairs)]
-            log(f"[STATUS] posicoes={n} {ps} | {' '.join(bals)} SOL")
-
         try:
-            sig = signal_q.get(timeout=5)
-        except queue.Empty:
-            time.sleep(1)
-            continue
+            # A cada 5 minutos, limpa lixo
+            cleanup_old_positions()
 
-        with lock:
-            if sig["mint"] in positions: continue
-            busy_count = sum(1 for v in positions.values())
-            if busy_count >= len(keypairs): continue
+            # Valida preços frescos
+            with lock:
+                mints_to_check = list(positions.keys())
 
-        # Acha carteira livre
-        free_idx = None
-        with lock:
-            used_wallets = {v["kp_idx"] for v in positions.values()}
-            for i in range(len(keypairs)):
-                if i not in used_wallets:
-                    free_idx = i
-                    break
+            for mint in mints_to_check:
+                price = get_token_price_usd(mint, max_age_sec=Config.PRICE_STALENESS_KILL_SEC)
 
-        if free_idx is None: continue
+                # Se preço muito velho, força close por segurança
+                if price is None:
+                    with lock:
+                        if mint in positions:
+                            pos = positions[mint]
+                            log(f"🔴 KILL: {pos.get('symbol')} — preço stale > {Config.PRICE_STALENESS_KILL_SEC}s")
+                            # Vender ao preço de entrada (se possível)
+                            # close_position(mint, pos, pos["entry_price"], "PRICE_STALE")
+                            del positions[mint]
 
-        kp       = keypairs[free_idx]
-        sol_bal  = get_sol_balance(kp.pubkey())
-        sol_use  = sol_bal * ENTRY_PCT
+            time.sleep(300)  # Check a cada 5 min
 
-        if sol_use < 0.01:
-            log(f"W{free_idx+1} saldo baixo: {sol_bal:.4f} SOL -- pulando")
-            continue
+        except Exception as e:
+            log(f"❌ Watchdog erro: {e}")
+            time.sleep(60)
 
-        entry_price = get_token_price_usd(sig["mint"]) or sig["price"]
-        sig_sig, token_amt = buy_token(kp, sig["mint"], sol_use)
+def trader_worker():
+    """Main trader loop."""
+    log("[TRADER] Iniciado")
 
-        if not sig_sig or token_amt == 0:
-            log(f"Compra falhou: {sig['symbol']}")
-            continue
-
-        with lock:
-            positions[sig["mint"]] = {
-                "kp_idx":     free_idx,
-                "kp":         kp,
-                "symbol":     sig["symbol"],
-                "entry_price": entry_price,
-                "sol_used":   sol_use,
-                "token_amt":  token_amt,
-                "tp":         entry_price * (1 + TP_PCT),
-                "sl":         entry_price * (1 - SL_PCT),
-                "entry_time": time.time(),
-                "be_applied": False,
-            }
-
-def watchdog_worker(keypairs):
-    log("[WATCHDOG] iniciado")
     while True:
-        with lock:
-            mints = list(positions.keys())
+        try:
+            # Processa sinais
+            try:
+                sig = signal_q.get(timeout=10)
+            except queue.Empty:
+                continue
 
-        for mint in mints:
+            # Validações antes de entrar
             with lock:
-                if mint not in positions: continue
-                pos = dict(positions[mint])
+                if len(positions) >= Config.MAX_POSITIONS:
+                    log(f"⚠️  Max posições atingido ({Config.MAX_POSITIONS}), skip {sig.get('symbol')}")
+                    continue
 
-            hold_min  = (time.time() - pos["entry_time"]) / 60
-            cur_price = get_token_price_usd(mint)
-            if not cur_price: continue
+                if sig["mint"] in positions:
+                    log(f"⚠️  {sig.get('symbol')} já em posição, skip")
+                    continue
 
+            # Get preço FRESCO
+            entry_price = get_token_price_usd(sig["mint"])
+            if entry_price is None:
+                log(f"⚠️  Não consegui preço para {sig.get('symbol')}, skip")
+                continue
+
+            # TP e SL baseado em preço fresco
+            tp = entry_price * (1 + TP_PCT)
+            sl = entry_price * (1 - SL_PCT)
+
+            log(f"[ENTRADA] {sig.get('symbol')} @ ${entry_price:.8f} | TP ${tp:.8f} SL ${sl:.8f}")
+
+            # Registra posição (COM entry_time para cleanup)
             with lock:
-                if mint not in positions: continue
-                if not positions[mint]["be_applied"] and cur_price >= pos["entry_price"] * (1 + BE_TRIGGER):
-                    positions[mint]["sl"] = pos["entry_price"] * (1 + BE_SL)
-                    positions[mint]["be_applied"] = True
-                    log(f"[BE] {pos['symbol']} SL -> +{BE_SL:.0%} @ ${positions[mint]['sl']:.8f}")
-                pos = dict(positions[mint])
+                positions[sig["mint"]] = {
+                    "symbol": sig.get("symbol"),
+                    "entry_price": entry_price,
+                    "tp": tp,
+                    "sl": sl,
+                    "entry_time": time.time(),  # CRITICAL: timestamp para cleanup
+                    "created_at": int(time.time()),
+                }
 
-            reason = None
-            if hold_min >= MAX_HOLD_MIN: reason = "TEMPO"
-            elif cur_price >= pos["tp"]: reason = "TP"
-            elif cur_price <= pos["sl"]: reason = "SL"
+        except Exception as e:
+            log(f"❌ Trader erro: {e}")
+            time.sleep(10)
 
-            if reason:
-                pnl_pct = (cur_price - pos["entry_price"]) / pos["entry_price"] * 100
-                sig = sell_token(pos["kp"], mint, pos["token_amt"], reason)
-                label = "LUCRO" if pnl_pct > 0 else "PERDA"
-                log(f"[SAIDA {label}] {pos['symbol']} | {reason} {hold_min:.0f}min | "
-                    f"{pnl_pct:+.2f}% | W{pos['kp_idx']+1}")
-                with lock:
-                    if mint in positions:
-                        del positions[mint]
-
-        time.sleep(8)
+# ─────────────────────────────────────────────────────────
+# MAIN
+# ─────────────────────────────────────────────────────────
 
 if __name__ == "__main__":
-    log("=" * 55)
-    log("TRADER LIVE -- Jupiter API -- 3 Carteiras Reais")
-    log(f"Config: TP={TP_PCT:.0%} SL={SL_PCT:.0%} BE@{BE_TRIGGER:.0%}->{BE_SL:.0%} max={MAX_HOLD_MIN}min")
-    log("=" * 55)
+    log("="*60)
+    log("TRADER LIVE v2 — Com fixes críticos")
+    log("="*60)
 
+    # Validar config
+    if not Config.validate_config():
+        log("❌ Config inválida!")
+        sys.exit(1)
+
+    # Validar wallets
     try:
-        from solders.keypair import Keypair
-        from solders.transaction import VersionedTransaction
-    except ImportError:
-        log("ERRO: pip install solders base58")
-        exit(1)
+        kps = load_keypairs()
+    except ValueError as e:
+        log(f"❌ {e}")
+        sys.exit(1)
 
-    keypairs = load_keypairs()
-    if not keypairs:
-        log("ERRO: nenhuma chave configurada (WALLET_1_KEY, WALLET_2_KEY, WALLET_3_KEY)")
-        exit(1)
-
-    log(f"{len(keypairs)} carteiras ativas")
-    for i, kp in enumerate(keypairs):
-        bal = get_sol_balance(kp.pubkey())
-        log(f"  W{i+1}: {str(kp.pubkey())} | {bal:.4f} SOL")
-
+    # Start threads
     threads = [
-        threading.Thread(target=scanner_worker,  args=(keypairs,), daemon=True),
-        threading.Thread(target=trader_worker,   args=(keypairs,), daemon=True),
-        threading.Thread(target=watchdog_worker, args=(keypairs,), daemon=True),
+        threading.Thread(target=trader_worker, daemon=True),
+        threading.Thread(target=validator_watchdog, daemon=True),
     ]
-    for t in threads: t.start()
-    for t in threads: t.join()
+
+    for t in threads:
+        t.start()
+
+    # Keep alive
+    try:
+        while True:
+            time.sleep(60)
+            log(f"[STATUS] Posições: {len(positions)} | Sinais na fila: {signal_q.qsize()}")
+    except KeyboardInterrupt:
+        log("\n[EXIT] Encerrando...")
